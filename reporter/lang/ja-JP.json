@@ -1,17 +1,4 @@
 {
-    "msgType" : {
-        "info" : "[INFO]",
-        "warn" : "[WARN]",
-        "err" : "[ERROR]",
-        "test" : "[帯域幅測定]",
-        "con" : "[CONNECTED]",
-        "dis" : "[DISCONNECTED]"
-    },
-    
-    "infoMsg" : {
-    
-    }
-}{
     "msgIden" : {
         "info" : "[情報]",
         "warn" : "[通知]",
