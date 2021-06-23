@@ -17,8 +17,8 @@ module.exports = function shutdown() {
           break;
       }
       logger.info("System shutting down...");
-      console.log('');
-      // exec(shutdownCommand, (error, stdout, stderr) => resolve(stdout));
+      console.log("");
+      exec(shutdownCommand, (error, stdout, stderr) => resolve(stdout));
     } else resolve();
   });
 };
