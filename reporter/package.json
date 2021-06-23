@@ -1,6 +1,6 @@
 {
   "name": "reporter",
-  "version": "0.0.21",
+  "version": "0.0.22",
   "description": "The Xornet Reporter easily lets you connect your computer to the platform",
   "main": "index.js",
   "scripts": {

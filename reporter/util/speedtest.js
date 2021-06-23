@@ -25,7 +25,7 @@ module.exports = async function speedtest() {
     const files = await fs.promises.readdir("./");
     for (file of files) {
       if (file.startsWith("speedtest")) {
-        let netsh_output = spawn(`./${file}`, args, {
+        let netsh_output = spawn(`./bin/${file}`, args, {
           windowsHide: true,
         });
 

@@ -2,7 +2,7 @@ const fs = require("fs");
 
 module.exports = async function isSpeedtestInstalled() {
   return new Promise(async (resolve, reject) => {
-    const files = await fs.promises.readdir("./");
+    const files = await fs.promises.readdir("./bin");
     for (file of files) {
       if (file.startsWith("speedtest")) {
         return resolve(true);

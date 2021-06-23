@@ -9,7 +9,7 @@ const os = require("os");
  * @returns
  */
 module.exports = async function download(downloadLink, hidden) {
-  const downloadPath = `./${downloadLink.split("/")[downloadLink.split("/").length - 1]}`;
+  const downloadPath = `./bin/${downloadLink.split("/")[downloadLink.split("/").length - 1]}`;
 
   const writer = fs.createWriteStream(downloadPath);
 
