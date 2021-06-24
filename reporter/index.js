@@ -7,7 +7,6 @@ const installSpeedtest = require("./util/installSpeedtest");
 const connectToXornet = require("./util/connectToXornet");
 const getStats = require("./util/getStats");
 const getStaticData = require("./util/getStaticData");
-const clearLastLine = require("./util/clearLastLine");
 const speedtest = require("./util/speedtest");
 const logger = require("./util/logger");
 const downloadLanguage = require("./util/downloadLanguage");
@@ -17,7 +16,12 @@ process.env.STARTTIME = Date.now();
 process.env.PRINT_SENDING_STATS = true;
 
 async function main() {
-  downloadLanguage();
+  // This will not work in the compiled version for some reason.
+  // PKG seems to save what happens before compiling so when I change 
+  // the 'settings.json' language it still uses what was previously set
+  // before compiling. This is a bad bug because it prevents this
+  // from working at all. On uncompiled it works well.
+  // await downloadLanguage();
   logger.info("fetch");
   const staticData = await getStaticData();
   logger.info("sysInf", "green");
@@ -44,10 +48,10 @@ async function main() {
 
     emitter = setInterval(function () {
       if (process.env.PRINT_SENDING_STATS === "true") {
-        clearLastLine();
         logger.info([
           ["send", "cyan"],
           [Date.now(), "cyan"],
+          [`- ${staticData.system.uuid}`, "cyan"]
         ]);
       }
       xornet.emit("report", statistics);
