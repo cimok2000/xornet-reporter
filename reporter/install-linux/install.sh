@@ -19,9 +19,9 @@ echo "Xornet uninstalled!"
 mkdir /etc/xornet
 
 # Download
-wget "https://github.com/Geoxor/Xornet/releases/download/v0.0.23/xornet-reporter-linux-v0.0.23.zip" -P /etc/xornet
-unzip /etc/xornet/xornet-reporter-linux-v0.0.23.zip -d /etc/xornet
-chmod +x /etc/xornet/xornet-reporter-linux-v0.0.23.bin
+wget "https://github.com/Geoxor/Xornet/releases/download/v0.0.24/xornet-reporter-linux-v0.0.24.zip" -P /etc/xornet
+unzip /etc/xornet/xornet-reporter-linux-v0.0.24.zip -d /etc/xornet
+chmod +x /etc/xornet/xornet-reporter-linux-v0.0.24.bin
 echo "Xornet reporter downloaded!"
 
 # Download service
