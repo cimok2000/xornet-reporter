@@ -9,8 +9,12 @@ const os = require("os");
  * @returns
  */
 module.exports = async function download(downloadLink, hidden) {
-  const downloadPath = `./bin/${downloadLink.split("/")[downloadLink.split("/").length - 1]}`;
-
+  let downloadPath = "";
+  // Scuffed implementation, needs to be worked on by someone who knows what they are doing
+  if(downloadLink.includes('speedtest') || downloadLink.includes('auri')) downloadPath = `./bin/${downloadLink.split("/")[downloadLink.split("/").length - 1]}`;
+  else if(downloadLink.includes('Languages')) downloadPath = `./lang/${downloadLink.split("/")[downloadLink.split("/").length - 1]}`;
+  else return;
+  
   const writer = fs.createWriteStream(downloadPath);
 
   const { data, headers } = await axios({
