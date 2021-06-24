@@ -8,8 +8,8 @@ const os = require("os");
  * @param downloadLink {string}
  * @returns
  */
-module.exports = async function download(downloadLink, hidden) {
-  const downloadPath = `./bin/${downloadLink.split("/")[downloadLink.split("/").length - 1]}`;
+module.exports = async function download(downloadLink, downloadPath, hidden) {
+  downloadPath = `${downloadPath}/${downloadLink.split("/")[downloadLink.split("/").length - 1]}`;
 
   const writer = fs.createWriteStream(downloadPath);
 

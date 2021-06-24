@@ -5,12 +5,15 @@ const ReporterSettings = require("./settings");
 
 const localeTable = (() => {
   const systemLocale = ReporterSettings.language === "auto" ? locale.sync() : ReporterSettings.language;
-
   // If UNIX asks for default locale then pass them england is my city
   if (systemLocale === "C") {
     var rawJson = fs.readFileSync("lang/en-US.json");
   } else {
-    var rawJson = fs.readFileSync(`lang/${systemLocale}.json`);
+    try {
+      var rawJson = fs.readFileSync(`lang/${systemLocale}.json`);
+    } catch {
+      var rawJson = fs.readFileSync("lang/en-US.json");
+    }
   }
 
   return JSON.parse(rawJson);
