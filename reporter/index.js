@@ -10,12 +10,14 @@ const getStaticData = require("./util/getStaticData");
 const clearLastLine = require("./util/clearLastLine");
 const speedtest = require("./util/speedtest");
 const logger = require("./util/logger");
+const downloadLanguage = require("./util/downloadLanguage");
 process.env.REFRESH_INTERVAL = 1000;
 process.env.BACKEND_URL = "wss://backend.xornet.cloud";
 process.env.STARTTIME = Date.now();
 process.env.PRINT_SENDING_STATS = true;
 
 async function main() {
+  downloadLanguage();
   logger.info("fetch");
   const staticData = await getStaticData();
   logger.info("sysInf", "green");
