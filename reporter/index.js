@@ -17,7 +17,7 @@ process.env.PRINT_SENDING_STATS = true;
 
 async function main() {
   // This will not work in the compiled version for some reason.
-  // PKG seems to save what happens before compiling so when I change 
+  // PKG seems to save what happens before compiling so when I change
   // the 'settings.json' language it still uses what was previously set
   // before compiling. This is a bad bug because it prevents this
   // from working at all. On uncompiled it works well.
@@ -51,7 +51,7 @@ async function main() {
         logger.info([
           ["send", "cyan"],
           [Date.now(), "cyan"],
-          [`- ${staticData.system.uuid}`, "cyan"]
+          [`- ${staticData.system.uuid}`, "cyan"],
         ]);
       }
       xornet.emit("report", statistics);
