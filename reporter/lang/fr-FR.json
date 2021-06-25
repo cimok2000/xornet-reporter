@@ -1,13 +1,12 @@
 {
   "msgIden" : {
-      // Translate these to your language
       "info" : "[INFO]",
       "warn" : "[ALERTE]",
       "err" : "[ERREUR]",
       "test" : "[SPEEDTEST]",
       "net" : "[RESEAU]"
   },
-  
+
   "infoMsg" : {
       "fetch": "Récupération des données statiques...",
       "sysInf": "Collecte des informations système terminée",
@@ -26,7 +25,7 @@
       "test": "test"
   },
 
-  "testMsg" : { 
+  "testMsg" : {
       "winDL": "Téléchargement des binaires Speedtest pour Windows -",
       "linDL": "Téléchargement des binaires Speedtest pour Linux -",
       "osxDL": "Téléchargement des binaires Speedtest pour MacOS -",
