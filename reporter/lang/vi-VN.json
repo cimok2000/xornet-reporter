@@ -34,7 +34,7 @@
         "noTest": "Speedtest chưa được cài đặt",
         "isTest": "Speedtest đã được tìm thấy",
         "runTest": "Đang chạy Speedtest...",
-        "testDone": "chạy Speedtest hoàn tất -",
+        "testDone": "Chạy Speedtest hoàn tất -",
         "perf": "Performing:",
         "prog": "Progress:",
         "spd": "Tốc độ:",
