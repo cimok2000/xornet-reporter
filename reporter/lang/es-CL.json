@@ -33,7 +33,7 @@
       "instChk": "Buscando instalación de Speedtest",
       "noTest": "Speedtest no encontrado",
       "isTest": "Speedtest encontrado",
-      "runTest": "Ejecutando speedtest...",
+      "runTest": "Ejecutando SpeedTest...",
       "testDone": "Speedtest completado -",
       "perf": "Ejecutando:",
       "prog": "Progreso:",

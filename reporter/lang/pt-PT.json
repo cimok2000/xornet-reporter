@@ -3,7 +3,7 @@
         "info" : "[INFORMAÇÃO]",
         "warn" : "[AVISO]",
         "err" : "[ERRO]",
-            "_comment_speedtest": "SpeedTest can be changed to `Teste de Velocidade` but i don't see why you would do that",
+            "_comment_SpeedTest": "SpeedTest can be changed to `Teste de Velocidade` but i don't see why you would do that",
         "test" : "[SPEEDTEST]",
             "_comment_network": "Netwrok can be changed to `Rede` like in the brazilian for, but in portugual we don't use the translated form that much",
         "net" : "[NETWORK]"
@@ -28,14 +28,14 @@
     },
   
     "testMsg" : { 
-        "winDL": "A transferir o speedtest para Windows -",
-        "linDL": "A transferir o speedtest para Linux -",
-        "osxDL": "A transferir o speedtest para MacOS -",
+        "winDL": "A transferir o SpeedTest para Windows -",
+        "linDL": "A transferir o SpeedTest para Linux -",
+        "osxDL": "A transferir o SpeedTest para MacOS -",
         "dlFin": "Download Completo",
         "instChk": "À procura de uma instalação do SpeedTest...",
         "noTest": "O Speedtest não está instalado",
         "isTest": "Speedtest Encontrado",
-        "runTest": "A executar o speedtest...",
+        "runTest": "A executar o SpeedTest...",
         "testDone": "Speedtest Completo -",
         "perf": "A executar:",
         "prog": "Progresso:",

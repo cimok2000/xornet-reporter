@@ -33,7 +33,7 @@
         "instChk": "กำลังตรวจสอบหา Speedtest...",
         "noTest": "เครืองนี้ยังไม่ได้ติดตั้ง Speedtest",
         "isTest": "ค้นพบ Speedtest",
-        "runTest": "กำลังทำ speedtest...",
+        "runTest": "กำลังทำ SpeedTest...",
         "testDone": "Speedtest สำเร็จ -",
         "perf": "กำลังทำ:",
         "prog": "ควาบคืบหน้า:",

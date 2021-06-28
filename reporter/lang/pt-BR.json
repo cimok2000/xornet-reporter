@@ -3,7 +3,7 @@
         "info" : "[INFORMAÇÃO]",
         "warn" : "[AVISO]",
         "err" : "[ERRO]",
-            "_comment_speedtest": "SpeedTest can be changed to `Teste de Velocidade` but i don't see why you would do that",
+            "_comment_SpeedTest": "SpeedTest can be changed to `Teste de Velocidade` but i don't see why you would do that",
         "test" : "[SPEEDTEST]",
         "net" : "[REDE]"
     },
@@ -27,14 +27,14 @@
     },
   
     "testMsg" : { 
-        "winDL": "Baixando o speedtest para Windows -",
-        "linDL": "Baixando o speedtest para Linux -",
-        "osxDL": "Baixando o speedtest para MacOS -",
+        "winDL": "Baixando o SpeedTest para Windows -",
+        "linDL": "Baixando o SpeedTest para Linux -",
+        "osxDL": "Baixando o SpeedTest para MacOS -",
         "dlFin": "Download Completo",
         "instChk": "Porcurando por uma instalação do SpeedTest...",
         "noTest": "O Speedtest não está instalado",
         "isTest": "Speedtest Encontrado",
-        "runTest": "Correndo o speedtest...",
+        "runTest": "Correndo o SpeedTest...",
         "testDone": "Speedtest Completo -",
         "perf": "Correndo:",
         "prog": "Progresso:",
