@@ -32,7 +32,7 @@ describe("All reporter functions", () => {
   });
 
   it("Can downloads files successfully", async function () {
-    const downloadedFile = await download("https://cdn.discordapp.com/attachments/806300597338767450/850706885099257856/speedtest.exe", true);
+    const downloadedFile = await download("https://cdn.discordapp.com/attachments/806300597338767450/850706885099257856/speedtest.exe", "./bin", true);
     assert.typeOf(downloadedFile, "string");
   });
 

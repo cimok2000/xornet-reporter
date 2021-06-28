@@ -3,7 +3,7 @@ const fs = require("fs");
 class Settings {
   constructor() {
     const dir = fs.readdirSync("./");
-    dir.includes("settings.json") ? (this.settings = require("../settings.json")) : this.createNewSettings();
+    dir.includes("settings.json") ? (this.settings = JSON.parse(fs.readFileSync(`${process.cwd()}/settings.json`))) : this.createNewSettings();
   }
 
   createNewSettings() {

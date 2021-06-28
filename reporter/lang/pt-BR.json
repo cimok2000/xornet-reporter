@@ -1,0 +1,51 @@
+{
+    "msgIden" : {
+        "info" : "[INFORMAÇÃO]",
+        "warn" : "[AVISO]",
+        "err" : "[ERRO]",
+            "_comment_SpeedTest": "SpeedTest can be changed to `Teste de Velocidade` but i don't see why you would do that",
+        "test" : "[SPEEDTEST]",
+        "net" : "[REDE]"
+    },
+    
+    "infoMsg" : {
+        "fetch": "Coletando dados estáticos...",
+        "sysInf": "Coleta de informações do sistema concluida",
+        "load": "Carregando Estatísticas...",
+        "send": "Enviando Estatísticas - ",
+        "accChk": "Procurando por uma conta conectada a esta máquina",
+        "authCmp": "Autênticação concluida"
+    },
+  
+    "warnMsg" : {
+        "svrDn": "O Back-end do servidor aparenta estar offline/indisponível",
+        "goToURL": "Vai neste URL para adicionar esta máquina na sua conta e reinicia o reporter"
+    },
+  
+    "errMsg" : {
+        "test": "teste"
+    },
+  
+    "testMsg" : { 
+        "winDL": "Baixando o SpeedTest para Windows -",
+        "linDL": "Baixando o SpeedTest para Linux -",
+        "osxDL": "Baixando o SpeedTest para MacOS -",
+        "dlFin": "Download Completo",
+        "instChk": "Porcurando por uma instalação do SpeedTest...",
+        "noTest": "O Speedtest não está instalado",
+        "isTest": "Speedtest Encontrado",
+        "runTest": "Correndo o SpeedTest...",
+        "testDone": "Speedtest Completo -",
+        "perf": "Correndo:",
+        "prog": "Progresso:",
+        "spd": "Velocidade:",
+        "ping": "Ping:",
+        "upL": "Upload:",
+        "dnL": "Download:"
+    },
+  
+    "netMsg" : {
+        "con" : "Conectado a ",
+        "dis" : "Desconectado de "
+    }
+  }

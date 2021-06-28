@@ -10,15 +10,15 @@ module.exports = async function installSpeedtest() {
     case "win32":
       platform = "win64";
       logger.test(["windDL", `${platform} - ${arch}`]);
-      await download("https://backend.xornet.cloud/speedtest/speedtest.exe");
+      await download("https://backend.xornet.cloud/speedtest/speedtest.exe", "./bin");
       break;
     case "linux":
       logger.test(["linDL", `- ${platform} - ${arch}`]);
-      arch == "x64" ? await download("https://backend.xornet.cloud/speedtest/speedtest-linux-x86_64") : await download("https://backend.xornet.cloud/speedtest/speedtest-linux-arm");
+      arch == "x64" ? await download("https://backend.xornet.cloud/speedtest/speedtest-linux-x86_64", "./bin") : await download("https://backend.xornet.cloud/speedtest/speedtest-linux-arm", "./bin");
       break;
     case "darwin":
       logger.test(["osxDL", `- ${platform} - ${arch}`]);
-      await download("https://backend.xornet.cloud/speedtest/speedtest-macos");
+      await download("https://backend.xornet.cloud/speedtest/speedtest-macos", "./bin");
       break;
   }
 
