@@ -1,50 +1,50 @@
 {
   "msgIden" : {
-      "info" : "[INFO]",
-      "warn" : "[WARN]",
-      "err" : "[ERROR]",
-      "test" : "[SPEEDTEST]",
+      "info" : "[IMPORMASYON]",
+      "warn" : "[BABALA]",
+      "err" : "[MALI]",
+      "test" : "[SUBUKAN]",
       "net" : "[NETWORK]"
   },
   
   "infoMsg" : {
-      "fetch": "Fetching static data...",
-      "sysInf": "System information collection finished",
-      "load": "Loading Stats...",
-      "send": "Sending Stats -",
-      "accChk": "Checking for account linked to this machine",
-      "authCmp": "Authentication completed"
+      "fetch": "Pagkuha ng static na data...",
+      "sysInf": "Ang pagkuha ng impormasyon sa sistema ay natapos",
+      "load": "Nilo-load ang Stats...",
+      "send": "Pinapadala ang Stats -",
+      "accChk": "Sinusuri ang acount na nakakonek sa machine na ito",
+      "authCmp": "Natapos na ang pagpapatunay"
   },
 
   "warnMsg" : {
-      "svrDn": "Backend server appears to be offline/unavailable",
-      "goToURL": "Go to this URL to add this machine to your account and restart the reporter"
+      "svrDn": "Ang backend server ay offline/hindi magagamit",
+      "goToURL": "Pumunta sa URL na ito upang idagdag ang machine na ito sa iyong account at i-restart ang reporter"
   },
 
   "errMsg" : {
-      "test": "test"
+      "test": "subukan"
   },
 
   "testMsg" : { 
-      "winDL": "Downloading SpeedTest binaries for Windows -",
-      "linDL": "Downloading SpeedTest binaries for Linux -",
-      "osxDL": "Downloading SpeedTest binaries for MacOS -",
-      "dlFin": "Download finished",
-      "instChk": "Checking for SpeedTest installation...",
-      "noTest": "Speedtest not installed",
-      "isTest": "Speedtest found",
-      "runTest": "Performing SpeedTest...",
-      "testDone": "Speedtest complete -",
-      "perf": "Performing:",
-      "prog": "Progress:",
-      "spd": "Speed:",
+      "winDL": "Nagda-download ng Speedtest binaries para sa Windows -",
+      "linDL": "Nagda-download ng Speedtest binaries para sa Linux -",
+      "osxDL": "Nagda-download ng Speedtest binaries para sa MacOS -",
+      "dlFin": "Tapos na ang pag-download",
+      "instChk": "Sinusuri kung puwede mag-install ng Speedtest...",
+      "noTest": "Hindi naka-install ang Speedtest",
+      "isTest": "Nakita na ang Speedtest",
+      "runTest": "Isinasagawa ang Speedtest...",
+      "testDone": "Tapos na ang Speedtest -",
+      "perf": "Isinasagawa:",
+      "prog": "Progreso:",
+      "spd": "Bilis:",
       "ping": "Ping:",
       "upL": "Upload:",
       "dnL": "Download:"
   },
 
   "netMsg" : {
-      "con" : "Connected to ",
-      "dis" : "Disconnected from "
+      "con" : "Nakakonekta sa ",
+      "dis" : "Natanggal sa "
   }
 }
