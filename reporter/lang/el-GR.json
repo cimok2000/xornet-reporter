@@ -1,50 +1,50 @@
 {
   "msgIden" : {
-      "info" : "[INFO]",
-      "warn" : "[WARN]",
-      "err" : "[ERROR]",
+      "info" : "[Πληροφορία]",
+      "warn" : "[Προειδοποίηση]",
+      "err" : "[Σφάλμα]",
       "test" : "[SPEEDTEST]",
-      "net" : "[NETWORK]"
+      "net" : "[Δύκτιο]"
   },
   
   "infoMsg" : {
-      "fetch": "Fetching static data...",
-      "sysInf": "System information collection finished",
-      "load": "Loading Stats...",
-      "send": "Sending Stats -",
-      "accChk": "Checking for account linked to this machine",
-      "authCmp": "Authentication completed"
+      "fetch": "Ανάκτηση στατικών δεδομένων...",
+      "sysInf": "Η συλλογή πληροφοριών συστήματος ολοκληρώθηκε",
+      "load": "Φόρτωση στατιστικών...",
+      "send": "Αποστολή στατιστικών -",
+      "accChk": "Έλεγχος λογαριασμού συνδεδεμένου με αυτό το μηχάνημα",
+      "authCmp": "Ο έλεγχος ταυτότητας ολοκληρώθηκε"
   },
 
   "warnMsg" : {
-      "svrDn": "Backend server appears to be offline/unavailable",
-      "goToURL": "Go to this URL to add this machine to your account and restart the reporter"
+      "svrDn": "Ο διακομιστής Backend φαίνεται να είναι εκτός σύνδεσης / μη διαθέσιμος",
+      "goToURL": "Μεταβείτε σε αυτήν τη διεύθυνση URL για να προσθέσετε αυτό το μηχάνημα στον λογαριασμό σας και επανεκκινήστε το Reporter"
   },
 
   "errMsg" : {
-      "test": "test"
+      "test": "Δοκιμή"
   },
 
   "testMsg" : { 
-      "winDL": "Downloading speedtest binaries for Windows -",
-      "linDL": "Downloading speedtest binaries for Linux -",
-      "osxDL": "Downloading speedtest binaries for MacOS -",
-      "dlFin": "Download finished",
-      "instChk": "Checking for SpeedTest installation...",
-      "noTest": "Speedtest not installed",
-      "isTest": "Speedtest found",
-      "runTest": "Performing speedtest...",
-      "testDone": "Speedtest complete -",
-      "perf": "Performing:",
-      "prog": "Progress:",
-      "spd": "Speed:",
+      "winDL": "Λήψη SpeedTest για Windows -",
+      "linDL": "Λήψη SpeedTest για Linux -",
+      "osxDL": "Λήψη SpeedTest για MacOS -",
+      "dlFin": "Η λήψη ολοκληρώθηκε",
+      "instChk": "Έλεγχος εγκατάστασης SpeedTest...",
+      "noTest": "Το SpeedTest δεν έχει εγκατασταθεί",
+      "isTest": "Το SpeedTest βρέθηκε",
+      "runTest": "Εκτέλεση δοκιμής ταχύτητας δικτύου...",
+      "testDone": "Δοκιμής ταχύτητας ολοκληρώθηκε -",
+      "perf": "Εκτέλεση:",
+      "prog": "Πρόοδος:",
+      "spd": "Ταχύτητα:",
       "ping": "Ping:",
-      "upL": "Upload:",
-      "dnL": "Download:"
+      "upL": "Ταχύτητα Μεταφόρτωσης:",
+      "dnL": "Ταχύτητα Λήψης:"
   },
 
   "netMsg" : {
-      "con" : "Connected to ",
-      "dis" : "Disconnected from "
+      "con" : "Συνδέθηκε στο ",
+      "dis" : "Αποσυνδέθηκε απο το "
   }
 }
