@@ -1,50 +1,50 @@
 {
   "msgIden" : {
-      "info" : "[INFO]",
-      "warn" : "[WARN]",
-      "err" : "[ERROR]",
-      "test" : "[SPEEDTEST]",
-      "net" : "[NETWORK]"
+      "info" : "[معلومة]",
+      "warn" : "[تحذير]",
+      "err" : "[خطأ]",
+      "test" : "[اختبار السرعة]",
+      "net" : "[الاتصال]"
   },
   
   "infoMsg" : {
-      "fetch": "Fetching static data...",
-      "sysInf": "System information collection finished",
-      "load": "Loading Stats...",
-      "send": "Sending Stats -",
-      "accChk": "Checking for account linked to this machine",
-      "authCmp": "Authentication completed"
+      "fetch": "استعادة البيانات الثابتة ...",
+      "sysInf": "انتهى جمع معلومات النظام",
+      "load": "جارٍ تحميل الإحصائيات ...",
+      "send": "إرسال الإحصائيات -",
+      "accChk": "التحقق مما إذا كان هناك حساب مرتبط بهذا الجهاز",
+      "authCmp": "تم إثبات الأصالة"
   },
 
   "warnMsg" : {
-      "svrDn": "Backend server appears to be offline/unavailable",
-      "goToURL": "Go to this URL to add this machine to your account and restart the reporter"
+      "svrDn": "يبدو أن خادم الواجهة الخلفية غير متصل / غير متاح",
+      "goToURL": "انتقل إلى هذا الرابط لإضافة هذا الجهاز إلى حسابك وإعادة تشغيل المراسل"
   },
 
   "errMsg" : {
-      "test": "test"
+      "test": "اختبار"
   },
 
   "testMsg" : { 
-      "winDL": "Downloading SpeedTest binaries for Windows -",
-      "linDL": "Downloading SpeedTest binaries for Linux -",
-      "osxDL": "Downloading SpeedTest binaries for MacOS -",
-      "dlFin": "Download finished",
-      "instChk": "Checking for SpeedTest installation...",
-      "noTest": "Speedtest not installed",
-      "isTest": "Speedtest found",
-      "runTest": "Performing SpeedTest...",
-      "testDone": "Speedtest complete -",
-      "perf": "Performing:",
-      "prog": "Progress:",
-      "spd": "Speed:",
-      "ping": "Ping:",
-      "upL": "Upload:",
-      "dnL": "Download:"
+      "winDL": "تنزيل ثنائيات SpeedTest لنظام التشغيل Windows -",
+      "linDL": "تنزيل ثنائيات SpeedTest لنظام التشغيل Linux -",
+      "osxDL": "تنزيل ثنائيات SpeedTest لنظام التشغيل MacOS -",
+      "dlFin": "انتهى التنزيل",
+      "instChk": "التحقق من تثبيت برنامج SpeedTest ...",
+      "noTest": "Speedtest غير مثبت",
+      "isTest": "تم العثور على Speedtest",
+      "runTest": "جاري اختبار SpeedTest ...",
+      "testDone": "اكتمل اختبار السرعة -",
+      "perf": ":إِجْراء",
+      "prog": ":تقدم",
+      "spd": ":سرعة",
+      "ping": ":بينغ",
+      "upL": ":سرعة الرفع",
+      "dnL": ":سرعة التنزيل"
   },
 
   "netMsg" : {
-      "con" : "Connected to ",
-      "dis" : "Disconnected from "
+      "con" : " متصلا الى",
+      "dis" : " قطع الاتصال من"
   }
 }
