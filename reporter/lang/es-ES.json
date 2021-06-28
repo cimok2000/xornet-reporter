@@ -1,0 +1,50 @@
+{
+  "msgIden" : {
+      "info" : "[INFO]",
+      "warn" : "[ADVERTENCIA]",
+      "err" : "[ERROR]",
+      "test" : "[SPEEDTEST]",
+      "net" : "[CONECCIÓN]"
+  },
+  
+  "infoMsg" : {
+      "fetch": "Obteniendo datos estáticos...",
+      "sysInf": "Recolección de información del sistema terminada",
+      "load": "Cargando Estadísticas...",
+      "send": "Enviando Estadísticas  - ",
+      "accChk": "Buscando una cuenta enlazada a esta maquina",
+      "authCmp": "Autentificación completada"
+  },
+
+  "warnMsg" : {
+      "svrDn": "El servidor backend parece estar no disponible o desconectado",
+      "goToURL": "Ve a esta URL para añadir esta máquina a tu cuenta, y reinicia el reporter."
+  },
+
+  "errMsg" : {
+      "test": "test"
+  },
+
+  "testMsg" : { 
+      "winDL": "Descargando archivos de Speedtest para Windows -",
+      "linDL": "Descargando archivos de Speedtest para Linux -",
+      "osxDL": "Descargando archivos de Speedtest para MacOS -",
+      "dlFin": "Descarga completa",
+      "instChk": "Buscando instalación de Speedtest",
+      "noTest": "Speedtest no encontrado",
+      "isTest": "Speedtest encontrado",
+      "runTest": "Ejecutando SpeedTest...",
+      "testDone": "Speedtest completado -",
+      "perf": "Ejecutando:",
+      "prog": "Progreso:",
+      "spd": "Velocidad:",
+      "ping": "Ping:",
+      "upL": "Carga:",
+      "dnL": "Descarga:"
+  },
+
+  "netMsg" : {
+      "con" : "Conectado a ",
+      "dis" : "Desconectado de "
+  }
+}

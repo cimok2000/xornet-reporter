@@ -26,14 +26,14 @@
     },
 
     "testMsg" : { 
-        "winDL": "Скачивание бинарных файлов speedtest для Windows -",
-        "linDL": "Скачивание бинарных файлов speedtest для Linux -",
-        "osxDL": "Скачивание бинарных файлов speedtest для MacOS -",
+        "winDL": "Скачивание бинарных файлов SpeedTest для Windows -",
+        "linDL": "Скачивание бинарных файлов SpeedTest для Linux -",
+        "osxDL": "Скачивание бинарных файлов SpeedTest для MacOS -",
         "dlFin": "Загрузка завершена",
         "instChk": "Проверка установки SpeedTest...",
         "noTest": "Speedtest не установлен",
         "isTest": "Speedtest найден",
-        "runTest": "Выполняется speedtest...",
+        "runTest": "Выполняется SpeedTest...",
         "testDone": "Speedtest завершён -",
         "perf": "Выпоняется:",
         "prog": "Прогресс:",

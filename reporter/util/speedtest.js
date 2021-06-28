@@ -25,7 +25,7 @@ module.exports = async function speedtest() {
     const files = await fs.promises.readdir("./");
     for (file of files) {
       if (file.startsWith("speedtest")) {
-        let netsh_output = spawn(`./${file}`, args, {
+        let netsh_output = spawn(`./bin/${file}`, args, {
           windowsHide: true,
         });
 
@@ -42,10 +42,8 @@ module.exports = async function speedtest() {
           if (!progress.download?.bytes && !progress.upload?.bytes) return;
           // TODO : Find a way to have "active text" be localizeable
           if (progress.type == "download" || progress.type == "upload") {
-            clearLastLine();
             logger.test(["perf", [progress.type, "yellow"], "prog", [(progress[progress.type].progress * 100).toFixed(2), "yellow"], "%", "spd", [(progress[progress.type].bandwidth / 100000).toFixed(2), "yellow"], "Mbps"]);
           } else {
-            clearLastLine();
             logger.test(["perf", [progress.type, "yellow"], "prog", [(progress[progress.type].progress * 100).toFixed(2), "yellow"], "%", "ping", [progress.ping.jitter.toFixed(2), "yellow"], "ms"]);
           }
         });
@@ -57,7 +55,6 @@ module.exports = async function speedtest() {
         });
 
         netsh_output.on("exit", () => {
-          clearLastLine();
           logger.test(["testDone", "dnL", [(result.download?.bandwidth / 100000).toFixed(2), "yellow"], "Mbps", "upL", [(result.upload?.bandwidth / 100000).toFixed(2), "yellow"], "Mbps", "ping", [result.ping.latency.toFixed(2), "yellow"], "ms"]);
           logger.info("load");
           process.env.PRINT_SENDING_STATS = true;

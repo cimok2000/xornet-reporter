@@ -1,6 +1,7 @@
 // Require child_process
 var exec = require("child_process").exec;
 const ReporterSettings = require("../util/settings");
+const logger = require("../util/logger");
 
 // Create shutdown function
 module.exports = function shutdown() {
@@ -15,7 +16,8 @@ module.exports = function shutdown() {
           var shutdownCommand = "sudo shutdown";
           break;
       }
-
+      logger.info("System shutting down...");
+      console.log("");
       exec(shutdownCommand, (error, stdout, stderr) => resolve(stdout));
     } else resolve();
   });
