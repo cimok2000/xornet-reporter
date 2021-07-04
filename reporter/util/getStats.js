@@ -44,7 +44,7 @@ module.exports = async function getStats(staticData) {
         free: os.freemem(),
       },
       cpu: currentLoad.currentLoad,
-      cores: currentLoad.cpus.map(core => core.load),
+      cores: currentLoad.cpus.map((core) => core.load),
       network: data.networkStats,
       disks: await si.fsSize(),
     };
