@@ -1,0 +1,12 @@
+<service>
+  <id>xornetreporter</id>
+  <name>Xornet Reporter</name>
+  <description>Xornet Reporter service.</description>
+  <executable>C:\Program Files\Xornet\Reporter\xornet-reporter-win.exe</executable>
+  <workingdirectory>C:\Program Files\Xornet\Reporter</workingdirectory>
+  <log mode="roll"></log>
+  <logpath>%BASE%\..\logs</logpath>
+  <serviceaccount>
+    <user>LocalSystem</user>
+  </serviceaccount>
+</service>
