@@ -2,9 +2,9 @@
     "msgIden" : {
         "info" : "[ข้อมูล]",
         "warn" : "[คำเตือน]",
-        "err" : "[ข้อผิดผลาก]",
+        "err" : "[ข้อผิดผลาด]",
         "test" : "[ทดสอบความเร็ว]",
-        "net" : "[เน็ตเวริค์]"
+        "net" : "[เน็ตเวิร์ค]"
     },
     
     "infoMsg" : {
@@ -33,7 +33,7 @@
         "instChk": "กำลังตรวจสอบหา Speedtest...",
         "noTest": "เครืองนี้ยังไม่ได้ติดตั้ง Speedtest",
         "isTest": "ค้นพบ Speedtest",
-        "runTest": "กำลังทำ speedtest...",
+        "runTest": "กำลังทำ SpeedTest...",
         "testDone": "Speedtest สำเร็จ -",
         "perf": "กำลังทำ:",
         "prog": "ควาบคืบหน้า:",

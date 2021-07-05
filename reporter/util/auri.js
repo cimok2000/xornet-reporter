@@ -39,7 +39,7 @@ class Auri {
   }
 
   get cores() {
-    return this.data.cpu;
+    return this.data.cpu.map((core) => core.load);
   }
 
   get ram() {

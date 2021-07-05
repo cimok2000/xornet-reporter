@@ -18,7 +18,7 @@ module.exports = async function checkAccount(staticData, mute) {
     } catch (error) {
       if (!mute) logger.warn("svrDn");
       if (error.response.status == 403) {
-        if (!mute) logger.warn(["goToURL", [`https://xornet.cloud/dashboard/machines?newMachine=${staticData.system.uuid}`, "red"]]);
+        if (!mute) logger.warn(["goToURL", [`https://xornet.cloud/dashboard/machines/all?newMachine=${staticData.system.uuid}`, "red"]]);
         setTimeout(() => {
           process.exit();
         }, 60000);

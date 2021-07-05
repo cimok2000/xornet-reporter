@@ -25,6 +25,7 @@ module.exports = async function getStats(staticData) {
       return {
         ram: auri.ram,
         cpu: auri.cpu,
+        cores: auri.cores,
         network: auri.network,
         disks: auri.disks,
       };
@@ -32,14 +33,18 @@ module.exports = async function getStats(staticData) {
 
     const data = await si.get({
       networkStats: `(*) tx_sec, rx_sec`,
+      cpu: `cores`,
     });
+
+    const currentLoad = await si.currentLoad();
 
     return {
       ram: {
         total: os.totalmem(),
         free: os.freemem(),
       },
-      cpu: (await si.currentLoad()).currentLoad,
+      cpu: currentLoad.currentLoad,
+      cores: currentLoad.cpus.map((core) => core.load),
       network: data.networkStats,
       disks: await si.fsSize(),
     };
