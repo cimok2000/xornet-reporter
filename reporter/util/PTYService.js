@@ -57,6 +57,7 @@ class PTY {
   }
 
   write(data) {
+    console.log(data);
     this.ptyProcess.write(data);
   }
 
