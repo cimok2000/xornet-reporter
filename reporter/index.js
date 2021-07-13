@@ -11,7 +11,9 @@ const speedtest = require("./util/speedtest");
 const logger = require("./util/logger");
 const downloadLanguage = require("./util/downloadLanguage");
 process.env.REFRESH_INTERVAL = 1000;
-process.env.BACKEND_URL = "wss://backend.xornet.cloud";
+process.env.BACKEND_URL = process.env.NODE_ENV.trim() === "development" ? "http://localhost:8080" : "https://backend.xornet.cloud";
+process.env.FRONTEND_URL = process.env.NODE_ENV.trim() === "development" ? "http://localhost:8082" : "https://xornet.cloud";
+process.env.BACKEND_WS_URL = process.env.NODE_ENV.trim() === "development" ? "ws://localhost:8080" : "wss://backend.xornet.cloud";
 process.env.STARTTIME = Date.now();
 process.env.PRINT_SENDING_STATS = true;
 

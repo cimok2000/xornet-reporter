@@ -8,7 +8,7 @@ module.exports = async function connectToXornet(staticData, mute) {
   return new Promise(async (resolve, reject) => {
     await checkAccount(staticData, mute);
 
-    let socket = io.connect(process.env.BACKEND_URL, {
+    let socket = io.connect(process.env.BACKEND_WS_URL, {
       reconnect: true,
       auth: {
         static: staticData,
