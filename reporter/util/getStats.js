@@ -1,3 +1,4 @@
+const settings = require("./settings");
 const os = require("os");
 if (os.platform() === "win32") {
   var auri = require("./auri.js");
@@ -12,13 +13,6 @@ if (os.platform() === "win32") {
 module.exports = async function getStats(staticData) {
   const hostname = os.hostname();
   const platform = os.platform();
-
-  let uuid;
-  if (process.env.TEST_UUID || staticData.system.uuid !== "") {
-    uuid = process.env.TEST_UUID || staticData.system.uuid;
-  } else {
-    uuid = staticData.uuid.os;
-  }
 
   const mainData = async () => {
     if (platform == "win32") {
@@ -51,7 +45,7 @@ module.exports = async function getStats(staticData) {
   };
 
   const stats = {
-    uuid: uuid,
+    uuid: settings.getUUID(),
     isVirtual: staticData.system.virtual,
     hostname,
     platform,
