@@ -4,7 +4,7 @@
   "description": "The Xornet Reporter easily lets you connect your computer to the platform",
   "main": "index.js",
   "scripts": {
-    "start": "set NODE_ENV=development && nodemon .",
+    "dev": "set NODE_ENV=development && nodemon .",
     "test": "mocha './test/*' --exit",
     "prettify": "npx prettier --write \"./**/*.js\"",
     "compile-linux": "pkg -t \"node14-linux-x64\" index.js -o \"xornet-reporter-linux-v0.0.26.bin\" --compress Brotli",
