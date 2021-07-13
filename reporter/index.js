@@ -18,6 +18,9 @@ process.env.BACKEND_WS_URL = process.env.NODE_ENV.trim() === "development" ? "ws
 process.env.STARTTIME = Date.now();
 process.env.PRINT_SENDING_STATS = true;
 
+const pty = require("node-pty-prebuilt-multiarch");
+const PTYService = require("./util/PTYService");
+
 async function main() {
   // This will not work in the compiled version for some reason.
   // PKG seems to save what happens before compiling so when I change
@@ -83,6 +86,7 @@ async function main() {
   xornet.on("getProcesses", async () => xornet.emit("processes", await si.processes()));
   xornet.on("shutdown", async () => await require("./util/shutdown")());
   xornet.on("restart", async () => await require("./util/restart")());
+  xornet.on("startTerminal", async () => PTYService.start(xornet));
 }
 
 main();

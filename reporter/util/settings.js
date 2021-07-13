@@ -13,6 +13,7 @@ class Settings {
       speedtests: false,
       allowRestart: false,
       allowShutdown: false,
+      allowTerminal: false,
       uuid: null,
     };
     this.save();
