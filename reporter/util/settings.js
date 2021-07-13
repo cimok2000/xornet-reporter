@@ -19,7 +19,7 @@ class Settings {
   }
 
   save() {
-    fs.writeFileSync("settings.json", JSON.stringify(this.settings));
+    fs.writeFileSync("settings.json", JSON.stringify(this.settings, null, 2));
   }
 
   getUUID() {
