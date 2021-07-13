@@ -7,7 +7,6 @@ const getStaticData = require("../util/getStaticData");
 const getStats = require("../util/getStats");
 const getSystemExtension = require("../util/getSystemExtension");
 const isSpeedtestInstalled = require("../util/isSpeedtestInstalled");
-const connectToXornet = require("../util/connectToXornet");
 
 process.env.TEST_UUID = "00000000000000000000000000000000";
 
@@ -46,11 +45,5 @@ describe("All reporter functions", () => {
     this.timeout(10000);
     staticData = await getStats(staticData);
     assert.typeOf(staticData, "object");
-  });
-
-  it("Can connect to Xornet", async function () {
-    this.timeout(10000);
-    const xornet = await connectToXornet(staticData, true);
-    assert.instanceOf(xornet, Socket);
   });
 });
