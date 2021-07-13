@@ -1,6 +1,6 @@
 // Require child_process
 var exec = require("child_process").exec;
-const {settings:ReporterSettings} = require("../util/settings");
+const { settings: ReporterSettings } = require("../util/settings");
 const logger = require("../util/logger");
 
 // Create shutdown function

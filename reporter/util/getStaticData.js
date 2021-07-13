@@ -7,7 +7,7 @@ module.exports = async function getStaticData() {
   return new Promise(async (resolve) => {
     const data = await si.getStaticData();
     data.geolocation = await getLocation();
-    if(!uuidRegex.test(ReporterSettings.getUUID())) {
+    if (!uuidRegex.test(ReporterSettings.getUUID())) {
       ReporterSettings.setUUID(data.uuid.hardware.replace(/-/g, "") || data.uuid.os.replace(/-/g, ""));
       if (ReporterSettings.getUUID() == "03000200040005000006000700080009" || !uuidRegex.test(ReporterSettings.getUUID())) {
         ReporterSettings.setUUID(data.uuid.os.replace(/-/g, ""));

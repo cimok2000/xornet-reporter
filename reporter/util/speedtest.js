@@ -3,7 +3,7 @@ const fs = require("fs");
 const isSpeedtestInstalled = require("../util/isSpeedtestInstalled");
 const installSpeedtest = require("../util/installSpeedtest");
 const logger = require("../util/logger");
-const {settings:ReporterSettings} = require("../util/settings");
+const { settings: ReporterSettings } = require("../util/settings");
 
 module.exports = async function speedtest() {
   if (!ReporterSettings.speedtests) return;
