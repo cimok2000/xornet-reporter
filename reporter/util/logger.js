@@ -1,7 +1,7 @@
 const colors = require("colors/safe");
 const locale = require("os-locale");
 const fs = require("fs");
-const ReporterSettings = require("./settings");
+const { settings: ReporterSettings } = require("./settings");
 
 const localeTable = (() => {
   const systemLocale = ReporterSettings.language === "auto" ? locale.sync() : ReporterSettings.language;

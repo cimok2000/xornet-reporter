@@ -1,12 +1,13 @@
 const axios = require("axios");
 const logger = require("./logger");
+const settings = require("./settings");
 
 module.exports = async function checkAccount(staticData, mute) {
   return new Promise(async (resolve) => {
     if (!mute) logger.info("accChk");
     try {
-      let response = await axios.post(`https://backend.xornet.cloud/reporter`, {
-        uuid: process.env.TEST_UUID || staticData.system.uuid,
+      let response = await axios.post(`${process.env.BACKEND_URL}/reporter`, {
+        uuid: process.env.TEST_UUID || settings.getUUID(),
       });
 
       if (!mute) logger.info(response.data.message);
@@ -18,7 +19,7 @@ module.exports = async function checkAccount(staticData, mute) {
     } catch (error) {
       if (!mute) logger.warn("svrDn");
       if (error.response.status == 403) {
-        if (!mute) logger.warn(["goToURL", [`https://xornet.cloud/dashboard/machines/all?newMachine=${staticData.system.uuid}`, "red"]]);
+        if (!mute) logger.warn(["goToURL", [`${process.env.FRONTEND_URL}/dashboard/machines/all?newMachine=${settings.getUUID()}`, "red"]]);
         setTimeout(() => {
           process.exit();
         }, 60000);

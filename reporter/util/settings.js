@@ -13,15 +13,25 @@ class Settings {
       speedtests: false,
       allowRestart: false,
       allowShutdown: false,
+      uuid: null,
     };
     this.save();
   }
 
   save() {
-    fs.writeFileSync("settings.json", JSON.stringify(this.settings));
+    fs.writeFileSync("settings.json", JSON.stringify(this.settings, null, 2));
+  }
+
+  getUUID() {
+    return this.settings.uuid;
+  }
+
+  setUUID(uuid) {
+    this.settings.uuid = uuid;
+    this.save();
   }
 }
 
-const { settings } = new Settings();
+const settings = new Settings();
 
 module.exports = settings;

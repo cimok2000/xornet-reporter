@@ -1,6 +1,6 @@
 const download = require("../util/download");
 const axios = require("axios");
-const ReporterSettings = require("./settings");
+const { settings: ReporterSettings } = require("./settings");
 const locale = require("os-locale");
 const fs = require("fs");
 
