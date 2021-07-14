@@ -8,11 +8,8 @@ module.exports = async function getStaticData() {
     const data = await si.getStaticData();
     data.geolocation = await getLocation();
     if (!uuidRegex.test(ReporterSettings.getUUID())) {
-      ReporterSettings.setUUID(data.uuid.hardware.replace(/-/g, "") || data.uuid.os.replace(/-/g, ""));
-      if (ReporterSettings.getUUID() == "03000200040005000006000700080009" || !uuidRegex.test(ReporterSettings.getUUID())) {
-        ReporterSettings.setUUID(data.uuid.os.replace(/-/g, ""));
-      }
-    }
+      ReporterSettings.setUUID(data.uuid.os.replace(/-/g, ""));
+    };
     resolve(data);
   });
 };
