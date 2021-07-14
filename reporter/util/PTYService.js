@@ -4,23 +4,18 @@ const os = require("os");
 const pty = require("node-pty-prebuilt-multiarch");
 
 class PTY {
-  constructor() {
+  constructor(socket) {
+
     // Setting default terminals based on user os
     this.shell = os.platform() === "win32" ? "powershell.exe" : "bash";
     this.ptyProcess = null;
-    this.socket = null;
-  }
-
-  start(socket){
     this.socket = socket;
+
+    this.startPtyProcess();
 
     // Write text from the client to the terminal
     this.socket.on("input", input => this.write(input));
-    this.socket.on("terminateTerminal", () => this.killProcess());
-
-    // Initialize PTY process.
-    this.startPtyProcess();
-  } 
+  }
 
   /**
    * Spawn an instance of pty with a selected shell.
@@ -49,15 +44,11 @@ class PTY {
 
   killProcess() {
     console.log("Psuedoterminal connection closed");
-    this.ptyProcess?.kill();
+    this.ptyProcess.kill();
     this.ptyProcess = null;
-    console.log(this.ptyProcess);
-    this.socket.off("input");
-    this.socket.off("terminateTerminal");
   }
 
   write(data) {
-    console.log(data);
     this.ptyProcess.write(data);
   }
 
@@ -67,4 +58,4 @@ class PTY {
   }
 }
 
-module.exports = new PTY;
+module.exports = PTY;
