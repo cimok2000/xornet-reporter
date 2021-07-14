@@ -11,7 +11,7 @@ module.exports = class Queue {
   append(item){
     this.queue.push(item);
     if (this.limit && this.size() > this.limit) {
-      this.queue.pop()
+      this.queue.shift()
     }
   }
 
