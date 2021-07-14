@@ -2,6 +2,7 @@
 
 const os = require("os");
 const pty = require("node-pty-prebuilt-multiarch");
+const Queue = require("./queue.js");
 
 class PTY {
   constructor(socket) {
@@ -10,13 +11,13 @@ class PTY {
     this.shell = os.platform() === "win32" ? "powershell.exe" : "bash";
     this.ptyProcess = null;
     this.socket = socket;
+    this.queue = new Queue(50);
 
     this.startPtyProcess();
 
     // Write text from the client to the terminal
     this.socket.on("input", input => this.write(input));
   }
-
   /**
    * Spawn an instance of pty with a selected shell.
    */
@@ -33,7 +34,8 @@ class PTY {
     // Add a "data" event listener.
     this.ptyProcess.onData((data) => {
       // Whenever terminal generates any data, send that output to socket.io client
-      this.sendToClient(data);
+      this.lastPrint = this.queue.append(data);
+      this.socket.emit("output", data);
     });
   }
 
@@ -50,11 +52,6 @@ class PTY {
 
   write(data) {
     this.ptyProcess.write(data);
-  }
-
-  sendToClient(data) {
-    // Emit data to socket.io client in an event "output"
-    this.socket.emit("output", data);
   }
 }
 

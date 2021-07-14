@@ -86,19 +86,13 @@ async function main() {
   xornet.on("getProcesses", async () => xornet.emit("processes", await si.processes()));
   xornet.on("shutdown", async () => await require("./util/shutdown")());
   xornet.on("restart", async () => await require("./util/restart")());
-  xornet.once("startTerminal", async () => {
-    
-    // Check if terminals are enabled in the settings.json
-    if (!ReporterSettings.settings.allowTerminal) return;
 
-    // Start a new instance
-    let pseudoTerminal = new PTYService(xornet);
+  // Check if terminals are enabled in the settings.json
+  if (ReporterSettings.settings.allowTerminal) var pseudoTerminal = new PTYService(xornet);
 
-    // Close the terminal when we disconnect
-    xornet.once("terminateTerminal", async () => {
-      console.log("terminated terminal");
-      delete pseudoTerminal;
-    });
+  xornet.on("startTerminal", async () => {
+    let queue = pseudoTerminal.queue.peek();
+    queue.forEach(line => xornet.emit("output", line));
   });
 }
 
