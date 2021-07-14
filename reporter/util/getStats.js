@@ -55,5 +55,6 @@ module.exports = async function getStats(staticData) {
     reporterUptime: Date.now() - parseInt(process.env.STARTTIME),
     timestamp: Date.now(),
   };
+
   return stats;
 };
