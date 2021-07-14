@@ -16,7 +16,7 @@ module.exports = async function checkAccount(staticData, mute) {
       };
       if (!mute) logger.info("authCmp");
 
-      logger.info("restart")
+      logger.info("restart");
       resolve();
     } catch (error) {
       if (!mute) logger.warn("svrDn");
