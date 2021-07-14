@@ -13,7 +13,9 @@
         "load": "Loading Stats...",
         "send": "Sending Stats -",
         "accChk": "Checking for account linked to this machine",
-        "authCmp": "Authentication completed"
+        "authCmp": "Authentication completed",
+        "restart": "Please restart the reporter",
+        "terminalStarted": "Psuedoterminal started"
     },
 
     "warnMsg" : {

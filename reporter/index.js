@@ -92,7 +92,7 @@ async function main() {
 
   xornet.on("startTerminal", async () => {
     let queue = pseudoTerminal.queue.peek();
-    queue.forEach(line => xornet.emit("output", line));
+    queue.forEach((line) => xornet.emit("output", line));
   });
 }
 

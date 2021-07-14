@@ -1,25 +1,25 @@
 module.exports = class Queue {
-  constructor(limit){
+  constructor(limit) {
     this.queue = [];
     this.limit = limit;
   }
 
-  size(){
+  size() {
     return this.queue.length;
   }
 
-  append(item){
+  append(item) {
     this.queue.push(item);
     if (this.limit && this.size() > this.limit) {
-      this.queue.shift()
+      this.queue.shift();
     }
   }
 
-  peek(){
+  peek() {
     return this.queue;
   }
 
-  clear(){
+  clear() {
     this.queue = [];
   }
-}
+};

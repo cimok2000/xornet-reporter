@@ -15,14 +15,16 @@ module.exports = async function checkAccount(staticData, mute) {
         linked_account: response.data.account_uuid,
       };
       if (!mute) logger.info("authCmp");
+
+      logger.info("restart")
       resolve();
     } catch (error) {
       if (!mute) logger.warn("svrDn");
       if (error.response.status == 403) {
         if (!mute) logger.warn(["goToURL", [`${process.env.FRONTEND_URL}/dashboard/machines/all?newMachine=${settings.getUUID()}`, "red"]]);
-        setTimeout(() => {
-          process.exit();
-        }, 60000);
+
+        // Retry after 10 sec
+        setTimeout(async () => await module.exports(staticData, mute), 10000);
       }
     }
   });
