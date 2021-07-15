@@ -1,4 +1,5 @@
 const fs = require("fs");
+const colors = require("colors/safe");
 
 class Settings {
   constructor() {
@@ -30,6 +31,14 @@ class Settings {
   setUUID(uuid) {
     this.settings.uuid = uuid;
     this.save();
+  }
+
+  displaySettings() {
+    for(let setting in this.settings) {
+      //T his is the most scuffed code ever, fix it someone who knows how to do uppercase stuff
+      let capitalized = setting.charAt(0).toUpperCase() + setting.slice(1);
+      console.log(`${colors.bgYellow(`[SETTINGS]`).black} ${capitalized}: ${this.settings[setting]}`);
+    }
   }
 }
 

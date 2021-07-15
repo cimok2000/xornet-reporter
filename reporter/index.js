@@ -26,6 +26,8 @@ async function main() {
   // before compiling. This is a bad bug because it prevents this
   // from working at all. On uncompiled it works well.
   // await downloadLanguage();
+  ReporterSettings.displaySettings();
+  
   logger.info("fetch");
   const staticData = await getStaticData();
   logger.info("sysInf", "green");
