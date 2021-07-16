@@ -12,7 +12,7 @@ if (-Not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdent
 }
 
 # Iterate me with each release or things will break
-$XornetVersion = "0.0.27"
+$XornetVersion = "0.0.28"
 
 $Logo = '
       ___           ___           ___           ___           ___           ___

@@ -10,7 +10,7 @@ module.exports = async function getStaticData() {
     data.settings = ReporterSettings.settings;
     if (!uuidRegex.test(ReporterSettings.getUUID())) {
       ReporterSettings.setUUID(data.uuid.os.replace(/-/g, ""));
-    };
+    }
     resolve(data);
   });
 };

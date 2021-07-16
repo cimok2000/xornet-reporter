@@ -27,7 +27,7 @@ async function main() {
   // from working at all. On uncompiled it works well.
   // await downloadLanguage();
   ReporterSettings.displaySettings();
-  
+
   logger.info("fetch");
   const staticData = await getStaticData();
   logger.info("sysInf", "green");
