@@ -2,6 +2,7 @@
 node_modules
 dist
 build
+target
 
 # local env files
 .env.local
@@ -13,7 +14,6 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
-# Editor directories and files
 .idea
 .vscode
 *.suo
@@ -21,3 +21,15 @@ pnpm-debug.log*
 *.njsproj
 *.sln
 *.sw?
+
+
+# Added by cargo
+
+/target
+
+
+# Added by cargo
+#
+# already existing elements were commented out
+
+#/target
