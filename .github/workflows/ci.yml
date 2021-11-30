@@ -1,4 +1,4 @@
-name: Build reporter
+name: Build xornet-reporter
 
 on: [push, pull_request, workflow_dispatch]
 
@@ -39,8 +39,8 @@ jobs:
     - name: 💎 Upload artifact
       uses: actions/upload-artifact@v1
       with:
-        name: reporter_compiled_linux_${{matrix.targetPlatform}}
-        path: target/${{matrix.targetPlatform}}-unknown-linux-gnu/release/reporter
+        name: xornet-reporter_compiled_linux_${{matrix.targetPlatform}}
+        path: target/${{matrix.targetPlatform}}-unknown-linux-gnu/release/xornet-reporter
 
   build-windows:
     name: "❄ Compile for Windows"
@@ -55,8 +55,8 @@ jobs:
     - name: 💎 Upload artifact
       uses: actions/upload-artifact@v1
       with:
-        name: reporter_compiled_windows
-        path: target/release/reporter.exe
+        name: xornet-reporter_compiled_windows
+        path: target/release/xornet-reporter.exe
 
   build-macos:
     name: "🍎 Compile for MacOS"
@@ -71,8 +71,8 @@ jobs:
     - name: 💎 Upload artifact
       uses: actions/upload-artifact@v1
       with:
-        name: reporter_compiled_macos
-        path: target/release/reporter
+        name: xornet-reporter_compiled_macos
+        path: target/release/xornet-reporter
     
 
   create-release:
@@ -100,7 +100,7 @@ jobs:
         with:
           draft: false
           prerelease: false
-          release_name: reporter v${{ steps.version.outputs.value }}
+          release_name: xornet-reporter v${{ steps.version.outputs.value }}
           tag_name: v${{ steps.version.outputs.value }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -127,7 +127,7 @@ jobs:
       - name: 💎 Download ${{matrix.targetPlatform}} Binaries
         uses: actions/download-artifact@v2
         with:
-          name: reporter_compiled_${{matrix.targetPlatform}}
+          name: xornet-reporter_compiled_${{matrix.targetPlatform}}
           path: ${{matrix.targetPlatform}}_build
 
       # Upload Release
@@ -138,6 +138,6 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ needs.create-release.outputs.upload_url }}
-          asset_path: ${{matrix.targetPlatform}}_build/${{ matrix.targetPlatform == 'windows' && 'reporter.exe' || 'reporter' }}
-          asset_name: reporter.${{matrix.targetPlatform}}
+          asset_path: ${{matrix.targetPlatform}}_build/${{ matrix.targetPlatform == 'windows' && 'xornet-reporter.exe' || 'xornet-reporter' }}
+          asset_name: xornet-reporter.${{matrix.targetPlatform}}
           asset_content_type: application/octet-stream
