@@ -1,0 +1,50 @@
+{
+    "msgIden" : {
+        "info" : "[Thông tin]",
+        "warn" : "[Cảnh báo]",
+        "err" : "[Lỗi]",
+        "test" : "[SPEEDTEST]",
+        "net" : "[NETWORK]"
+    },
+
+    "infoMsg" : {
+        "fetch": "Fetching static data...",
+        "sysInf": "Thu thập thông tin từ hệ thống hoàn tất",
+        "load": "Đang tải số liệu thống kê...",
+        "send": "Đang gửi số liệu thống kê -",
+        "accChk": "Đang kiểm tra xem tài khoản được đã liên kết với máy hay chưa",
+        "authCmp": "Xác thực đã hoàn thành"
+    },
+
+    "warnMsg" : {
+        "svrDn": "Back-end server dường như đã ngoại tuyến/không khả dụng",
+        "goToURL": "Truy cập vào liên kết này này để thêm máy vào tài khoản của bạn và khởi động lại Reporter"
+    },
+
+    "errMsg" : {
+        "test": "test"
+    },
+
+    "testMsg" : { 
+        "winDL": "Đang tải xuống Speedtest cho Windows -",
+        "linDL": "Đang tải xuống Speedtest cho Linux -",
+        "osxDL": "Đang tải xuống Speedtest cho MacOS -",
+        "dlFin": "Tải xuống hoàn tất",
+        "instChk": "Kiểm tra cài đặt SpeedTest...",
+        "noTest": "Speedtest chưa được cài đặt",
+        "isTest": "Speedtest đã được tìm thấy",
+        "runTest": "Đang chạy Speedtest...",
+        "testDone": "Chạy Speedtest hoàn tất -",
+        "perf": "Performing:",
+        "prog": "Progress:",
+        "spd": "Tốc độ:",
+        "ping": "Ping:",
+        "upL": "Tải lên:",
+        "dnL": "Tải xuống:"
+    },
+
+    "netMsg" : {
+        "con" : "Kết nối tới ",
+        "dis" : "Ngắt kết nối từ "
+    }
+}
