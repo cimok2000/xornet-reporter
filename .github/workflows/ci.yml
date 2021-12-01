@@ -16,7 +16,7 @@ jobs:
           - aarch64
           - mips
           - mipsel
-    name: "🐧 Compile for Linux"
+    name: "🛠 Compile for Linux"
     runs-on: self-hosted
     # runs-on: ubuntu-latest
     steps:
@@ -43,7 +43,7 @@ jobs:
         path: target/${{matrix.targetPlatform}}-unknown-linux-gnu/release/xornet-reporter
 
   build-windows:
-    name: "❄ Compile for Windows"
+    name: "🛠 Compile for Windows"
     runs-on: windows-latest
     steps:
     - name: 🛎 Checkout
@@ -59,7 +59,7 @@ jobs:
         path: target/release/xornet-reporter.exe
 
   build-macos:
-    name: "🍎 Compile for MacOS"
+    name: "🛠 Compile for MacOS"
     runs-on: macos-latest
     steps:
     - name: 🛎 Checkout
