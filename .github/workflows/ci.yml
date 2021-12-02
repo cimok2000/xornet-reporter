@@ -6,7 +6,7 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  get-latest-tag: 
+  latest-tag: 
     name: "Get Latest Tag"
     runs-on: self-hosted 
     outputs:
@@ -89,7 +89,7 @@ jobs:
     name: "📦 Create Release"
     # runs-on: ubuntu-latest
     runs-on: self-hosted
-    needs: [build-linux, build-macos, build-windows, get-latest-tag]
+    needs: [build-linux, build-macos, build-windows, latest-tag]
     outputs:
       upload_url: ${{ steps.create_release.outputs.upload_url }}
     steps:
@@ -103,9 +103,12 @@ jobs:
         run: >
           echo "::set-output name=value::$(cargo pkgid | cut -d# -f2 | cut -d: -f2)"
      
+      - run: >
+          echo "needs.latest-tag.outputs.tag != steps.version.outputs.value"
+
       # The release script that prepares a new Github release
       - name: ⚡ Create Release
-        if: needs.get-latest-tag.outputs.tag != steps.version.outputs.value
+        if: needs.latest-tag.outputs.tag != steps.version.outputs.value
         uses: actions/create-release@v1
         id: create_release
         with:
