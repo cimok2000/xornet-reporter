@@ -41,28 +41,23 @@ jobs:
         targetPlatform: 
           - x86_64
           - i686
-          - aarch64
     name: "🛠 Compile for Windows"
     runs-on: self-hosted
     # runs-on: ubuntu-latest
     steps:
-    - name: "⚙ Install MinGW"
-      uses: egor-tensin/setup-mingw@v2
-      with:
-        platform: x64
     - name: 🛎 Checkout
       uses: actions/checkout@v2
     - name: 🗳 Add Target
-      run: "rustup target add ${{matrix.targetPlatform}}-pc-windows-gnu"
+      run: "rustup target add ${{matrix.targetPlatform}}-pc-windows-msvc"
     - name: 🛠 Build
-      run: cargo build --target ${{matrix.targetPlatform}}-pc-windows-gnu --release
+      run: cargo build --target ${{matrix.targetPlatform}}-pc-windows-msvc --release
     - name: 🧪 Run tests
       run: cargo test --release
     - name: 💎 Upload artifact
       uses: actions/upload-artifact@v1
       with:
         name: xornet-reporter_compiled_win_${{matrix.targetPlatform}}
-        path: target/${{matrix.targetPlatform}}-pc-windows-gnu/release/xornet-reporter
+        path: target/${{matrix.targetPlatform}}-pc-windows-msvc/release/xornet-reporter
 
 
   # build-windows:
