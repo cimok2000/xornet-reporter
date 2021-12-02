@@ -1,3 +1,10 @@
+use core::time;
+use std::{
+    sync::Arc,
+    thread::{self, spawn},
+};
+
+use parking_lot::Mutex;
 use serde_json::{json, Value};
 use sysinfo::{DiskExt, ProcessorExt, System, SystemExt};
 
@@ -25,6 +32,7 @@ struct DataCollector {
 }
 
 impl DataCollector {
+    /// Creates a new data collector
     fn new() -> Self {
         let fetcher = System::new_all();
         return Self { fetcher };
@@ -75,6 +83,7 @@ impl DataCollector {
         return Value::Array(serialized_processors);
     }
 
+    /// Gets the current RAM stats
     pub fn get_ram(&mut self) -> Value {
         self.fetcher.refresh_memory();
 
@@ -86,6 +95,7 @@ impl DataCollector {
         });
     }
 
+    /// Gets the current DISKS stats
     pub fn get_disks(&self) -> Value {
         let mut serialized_disks = Vec::new();
 
@@ -101,16 +111,22 @@ impl DataCollector {
 }
 
 fn main() {
-    let mut reporter: Reporter = Reporter::new();
+    let reporter = Arc::new(Mutex::new(Reporter::new()));
 
     // Get all static shit
-    println!("{}", reporter.data_collector.get_statics());
-
-    println!("\n\n'");
+    println!("{}", reporter.lock().data_collector.get_statics());
 
     // Todo: make these run on a loop with unique intervals for each
     // that the user can set in a config
-    println!("{}", reporter.data_collector.get_disks());
-    println!("{}", reporter.data_collector.get_cpu());
-    println!("{}", reporter.data_collector.get_ram());
+    let reporter = reporter.clone();
+    let data_collection_handle = spawn(move || loop {
+        thread::sleep(time::Duration::from_secs(1));
+        println!("{}", reporter.lock().data_collector.get_disks());
+        println!("{}", reporter.lock().data_collector.get_cpu());
+        println!("{}", reporter.lock().data_collector.get_ram());
+    });
+
+    data_collection_handle
+        .join()
+        .expect("data_collection panicked");
 }
