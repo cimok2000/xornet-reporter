@@ -13,8 +13,8 @@ jobs:
       tag: ${{ steps.previoustag.outputs.tag }}
     steps:
       - name: Get Latest Tag
-        uses: WyriHaximus/github-action-get-previous-tag@v1
         id: previoustag
+        run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
 
   build-linux:
     strategy:
