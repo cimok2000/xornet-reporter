@@ -90,7 +90,6 @@ jobs:
     # runs-on: ubuntu-latest
     runs-on: self-hosted
     needs: [build-linux, build-macos, build-windows, get-latest-tag]
-    if: needs.get-latest-tag.outputs.tag != steps.version.outputs.value
     outputs:
       upload_url: ${{ steps.create_release.outputs.upload_url }}
     steps:
@@ -98,6 +97,7 @@ jobs:
       # Yes we get the repo again but only for the version in the package.json
       - name: 🛎 Checkout
         uses: actions/checkout@v2
+
       - name: ⚡ Set Version Variable
         id: version
         run: >
@@ -105,9 +105,9 @@ jobs:
      
       # The release script that prepares a new Github release
       - name: ⚡ Create Release
+        if: needs.get-latest-tag.outputs.tag != steps.version.outputs.value
         uses: actions/create-release@v1
         id: create_release
-        continue-on-error: true     
         with:
           draft: false
           prerelease: false
@@ -144,7 +144,6 @@ jobs:
       # Upload Release
       - name: 💎 Upload ${{matrix.targetPlatform}} Artifact
         uses: actions/upload-release-asset@v1
-        continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
