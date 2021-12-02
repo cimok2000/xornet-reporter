@@ -15,6 +15,8 @@ jobs:
       - name: Get Latest Tag
         id: previoustag
         run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
+      - run: echo ${{steps.previoustag.outputs.tag}}
+
 
   build-linux:
     strategy:
@@ -103,12 +105,9 @@ jobs:
         run: >
           echo "::set-output name=value::$(cargo pkgid | cut -d# -f2 | cut -d: -f2)"
      
-      - run: >
-          echo "needs.latest-tag.outputs.tag != steps.version.outputs.value"
-
       # The release script that prepares a new Github release
       - name: ⚡ Create Release
-        if: needs.latest-tag.outputs.tag != steps.version.outputs.value
+        if: ${{needs.latest-tag.outputs.tag != steps.version.outputs.value}}
         uses: actions/create-release@v1
         id: create_release
         with:
