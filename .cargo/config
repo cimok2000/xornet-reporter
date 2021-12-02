@@ -8,7 +8,7 @@ linker = "mips-linux-gnu-gcc"
 linker = "mipsel-linux-gnu-gcc"
 
 [target.i686-pc-windows-msvc]
-linker = "./libs/msvc-i686/link.exe"
-# 
+linker = "libs/msvc-i686/link.exe"
+
 [target.x86_64-pc-windows-msvc]
-linker = "./libs/msvc-x86_64/link.exe"
+linker = "libs/msvc-x86_64/link.exe"
