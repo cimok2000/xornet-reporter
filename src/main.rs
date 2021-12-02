@@ -6,7 +6,7 @@ use std::{
 
 use parking_lot::Mutex;
 use serde_json::{json, Value};
-use sysinfo::{DiskExt, ProcessorExt, System, SystemExt};
+use sysinfo::{DiskExt, NetworkExt, ProcessorExt, System, SystemExt};
 
 #[derive(Debug)]
 struct Reporter {
@@ -66,6 +66,24 @@ impl DataCollector {
         });
     }
 
+    /// Gets the current network stats
+    pub fn get_network(&mut self) -> Value {
+        let mut serialized_networks = Vec::new();
+        self.fetcher.refresh_networks();
+
+        for (interface_name, data) in self.fetcher.networks() {
+            let json = json!({
+                "name": interface_name,
+                "tx": data.total_transmitted(),
+                "rx": data.total_received(),
+            });
+
+            serialized_networks.push(json);
+        }
+
+        return Value::Array(serialized_networks);
+    }
+
     /// Gets the current CPU stats
     pub fn get_cpu(&mut self) -> Value {
         let mut serialized_processors = Vec::new();
@@ -120,10 +138,12 @@ fn main() {
     // that the user can set in a config
     let reporter = reporter.clone();
     let data_collection_handle = spawn(move || loop {
-        thread::sleep(time::Duration::from_secs(1));
-        println!("{}", reporter.lock().data_collector.get_disks());
-        println!("{}", reporter.lock().data_collector.get_cpu());
-        println!("{}", reporter.lock().data_collector.get_ram());
+        let mut reporter = reporter.lock();
+        println!("{}", reporter.data_collector.get_disks());
+        println!("{}", reporter.data_collector.get_cpu());
+        println!("{}", reporter.data_collector.get_ram());
+        println!("{}", reporter.data_collector.get_network());
+        thread::sleep(time::Duration::from_millis(1000));
     });
 
     data_collection_handle
