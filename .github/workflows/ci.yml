@@ -53,16 +53,16 @@ jobs:
     - name: 🛎 Checkout
       uses: actions/checkout@v2
     - name: 🗳 Add Target
-      run: "rustup target add ${{matrix.targetPlatform}}-pc-windows-msvc"
+      run: "rustup target add ${{matrix.targetPlatform}}-pc-windows-gnu"
     - name: 🛠 Build
-      run: cargo build --target ${{matrix.targetPlatform}}-pc-windows-msvc --release
+      run: cargo build --target ${{matrix.targetPlatform}}-pc-windows-gnu --release
     - name: 🧪 Run tests
       run: cargo test --release
     - name: 💎 Upload artifact
       uses: actions/upload-artifact@v1
       with:
         name: xornet-reporter_compiled_win_${{matrix.targetPlatform}}
-        path: target/${{matrix.targetPlatform}}-pc-windows-msvc/release/xornet-reporter
+        path: target/${{matrix.targetPlatform}}-pc-windows-gnu/release/xornet-reporter
 
 
   # build-windows:
