@@ -32,32 +32,9 @@ impl DataCollector {
 
     /// Gets all the static information about the system
     /// that can't change in runtime
-    pub fn get_statics(&self) {
-        todo!();
-    }
-
-    /// Gets the current CPU stats
-    pub fn get_cpu(&mut self) -> Vec<Value> {
-        let mut serialized_processors = Vec::new();
-        self.fetcher.refresh_cpu();
-
-        for processor in self.fetcher.processors() {
-            let json = json!({
-              "name": processor.name(),
-              "cpu_usage": processor.cpu_usage(),
-              "vendor_id": processor.vendor_id(),
-              "brand": processor.brand(),
-              "frequency": processor.frequency(),
-            });
-
-            serialized_processors.push(json);
-        }
-
-        return serialized_processors;
-    }
-
-    pub fn get_disks(&self) -> Vec<Value> {
-        let mut serialized_disks = Vec::new();
+    pub fn get_statics(&self) -> Value {
+        let processor_info = self.fetcher.global_processor_info();
+        let mut disks = vec![];
 
         for disk in self.fetcher.disks() {
             let json = json!({
@@ -66,18 +43,74 @@ impl DataCollector {
               "type": format!("{:?}", disk.type_()),
               "mount":format!("{:?}", disk.mount_point()),
               "total": disk.total_space(),
+            });
+
+            disks.push(json);
+        }
+
+        return json!({
+          "cpu": {
+            "name": processor_info.name(),
+            "vendor_id": processor_info.vendor_id(),
+            "brand": processor_info.brand(),
+          },
+          "disks": Value::Array(disks)
+        });
+    }
+
+    /// Gets the current CPU stats
+    pub fn get_cpu(&mut self) -> Value {
+        let mut serialized_processors = Vec::new();
+        self.fetcher.refresh_cpu();
+
+        for processor in self.fetcher.processors() {
+            let json = json!({
+              "cpu_usage": processor.cpu_usage(),
+              "frequency": processor.frequency(),
+            });
+
+            serialized_processors.push(json);
+        }
+
+        return Value::Array(serialized_processors);
+    }
+
+    pub fn get_ram(&mut self) -> Value {
+        self.fetcher.refresh_memory();
+
+        return json!({
+          "free_memory": self.fetcher.free_memory(),
+          "available_memory": self.fetcher.available_memory(),
+          "used_memory": self.fetcher.used_memory(),
+          "total_memory": self.fetcher.total_memory(),
+        });
+    }
+
+    pub fn get_disks(&self) -> Value {
+        let mut serialized_disks = Vec::new();
+
+        for disk in self.fetcher.disks() {
+            let json = json!({
               "free": disk.available_space(),
             });
 
             serialized_disks.push(json);
         }
-
-        return serialized_disks;
+        return Value::Array(serialized_disks);
     }
 }
 
 fn main() {
     let mut reporter: Reporter = Reporter::new();
-    println!("{:?}", reporter.data_collector.get_disks());
-    println!("{:?}", reporter.data_collector.get_cpu());
+
+    // Get all static shit
+    println!("{}", reporter.data_collector.get_statics());
+
+    println!("\n\n'");
+
+    // Todo: make these run on a loop with unique intervals for each
+    // that the user can set in a config
+    println!("{}", reporter.data_collector.get_disks());
+    println!("{}", reporter.data_collector.get_cpu());
+    println!("{}", reporter.data_collector.get_ram());
 }
