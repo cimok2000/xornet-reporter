@@ -47,9 +47,10 @@ jobs:
     # runs-on: ubuntu-latest
     steps:
     - name: "⚙ Install Build Tools"
-      uses: ilammy/msvc-dev-cmd@v1
-      with: 
-        arch: ${{matrix.targetPlatform}}
+    - name: Set up MinGW
+      uses: egor-tensin/setup-mingw@v2
+      with:
+        platform: ${{matrix.targetPlatform}}
     - name: 🛎 Checkout
       uses: actions/checkout@v2
     - name: 🗳 Add Target
