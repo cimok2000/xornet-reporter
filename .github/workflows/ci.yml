@@ -6,18 +6,6 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  latest-tag: 
-    name: "Get Latest Tag"
-    runs-on: self-hosted 
-    outputs:
-      tag: ${{ steps.previoustag.outputs.tag }}
-    steps:
-      - name: Get Latest Tag
-        id: previoustag
-        run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
-      - run: echo ${{steps.previoustag.outputs.tag}}
-
-
   build-linux:
     strategy:
       fail-fast: false
@@ -28,7 +16,7 @@ jobs:
           - aarch64
           - mips
           - mipsel
-    name: "🛠 Compile for Linux" 
+    name: "🛠 Compile for Linux"
     runs-on: self-hosted
     # runs-on: ubuntu-latest
     steps:
@@ -91,11 +79,11 @@ jobs:
     name: "📦 Create Release"
     # runs-on: ubuntu-latest
     runs-on: self-hosted
-    needs: [build-linux, build-macos, build-windows, latest-tag]
+    needs: [build-linux, build-macos, build-windows]
     outputs:
       upload_url: ${{ steps.create_release.outputs.upload_url }}
     steps:
-
+      
       # Yes we get the repo again but only for the version in the package.json
       - name: 🛎 Checkout
         uses: actions/checkout@v2
@@ -110,6 +98,7 @@ jobs:
         if: ${{needs.latest-tag.outputs.tag != steps.version.outputs.value}}
         uses: actions/create-release@v1
         id: create_release
+        continue-on-error: true
         with:
           draft: false
           prerelease: false
@@ -145,6 +134,7 @@ jobs:
 
       # Upload Release
       - name: 💎 Upload ${{matrix.targetPlatform}} Artifact
+        continue-on-error: true
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ github.token }}
