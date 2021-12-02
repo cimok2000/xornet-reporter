@@ -46,10 +46,10 @@ jobs:
     runs-on: self-hosted
     # runs-on: ubuntu-latest
     steps:
-    - name: "⚙ Install Build Tools"
+    - name: "⚙ Install MinGW"
       uses: egor-tensin/setup-mingw@v2
       with:
-        platform: ${{matrix.targetPlatform}}
+        platform: x64
     - name: 🛎 Checkout
       uses: actions/checkout@v2
     - name: 🗳 Add Target
