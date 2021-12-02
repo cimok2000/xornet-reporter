@@ -43,11 +43,11 @@ impl DataCollector {
 
         for processor in self.fetcher.processors() {
             let json = json!({
-              // "name": processor.name(),
-              "cpu_usage": processor.cpu_usage().to_string(),
-              // "vendor_id": processor.vendor_id(),
-              // "brand": processor.brand(),
-              "frequency": processor.frequency().to_string(),
+              "name": processor.name(),
+              "cpu_usage": processor.cpu_usage(),
+              "vendor_id": processor.vendor_id(),
+              "brand": processor.brand(),
+              "frequency": processor.frequency(),
             });
 
             serialized_processors.push(json);
@@ -65,8 +65,8 @@ impl DataCollector {
               "filesystem": format!("{:?}", disk.file_system()),
               "type": format!("{:?}", disk.type_()),
               "mount":format!("{:?}", disk.mount_point()),
-              "total": disk.total_space().to_string(),
-              "free": disk.available_space().to_string(),
+              "total": disk.total_space(),
+              "free": disk.available_space(),
             });
 
             serialized_disks.push(json);
@@ -78,7 +78,6 @@ impl DataCollector {
 
 fn main() {
     let mut reporter: Reporter = Reporter::new();
-
     println!("{:?}", reporter.data_collector.get_disks());
     println!("{:?}", reporter.data_collector.get_cpu());
 }
