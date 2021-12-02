@@ -46,6 +46,8 @@ jobs:
     runs-on: self-hosted
     # runs-on: ubuntu-latest
     steps:
+    - name: "⚙ Install Build Tools"
+      uses: ilammy/msvc-dev-cmd@v1
     - name: 🛎 Checkout
       uses: actions/checkout@v2
     - name: 🗳 Add Target
