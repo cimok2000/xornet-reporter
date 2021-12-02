@@ -34,47 +34,46 @@ jobs:
         name: xornet-reporter_compiled_linux_${{matrix.targetPlatform}}
         path: target/${{matrix.targetPlatform}}-unknown-linux-gnu/release/xornet-reporter
 
-  build-windows:
-    strategy:
-      fail-fast: false
-      matrix:
-        targetPlatform: 
-          - x86_64
-          - i686
-    name: "🛠 Compile for Windows"
-    runs-on: self-hosted
-    # runs-on: ubuntu-latest
-    steps:
-    - name: 🛎 Checkout
-      uses: actions/checkout@v2
-    - name: 🗳 Add Target
-      run: "rustup target add ${{matrix.targetPlatform}}-pc-windows-msvc"
-    - name: 🛠 Build
-      run: cargo build --target ${{matrix.targetPlatform}}-pc-windows-msvc --release
-    - name: 🧪 Run tests
-      run: cargo test --release
-    - name: 💎 Upload artifact
-      uses: actions/upload-artifact@v1
-      with:
-        name: xornet-reporter_compiled_win_${{matrix.targetPlatform}}
-        path: target/${{matrix.targetPlatform}}-pc-windows-msvc/release/xornet-reporter
-
-
   # build-windows:
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       targetPlatform: 
+  #         - x86_64
+  #         - i686
   #   name: "🛠 Compile for Windows"
-  #   runs-on: windows-latest
+  #   runs-on: self-hosted
+  #   # runs-on: ubuntu-latest
   #   steps:
   #   - name: 🛎 Checkout
   #     uses: actions/checkout@v2
+  #   - name: 🗳 Add Target
+  #     run: "rustup target add ${{matrix.targetPlatform}}-pc-windows-msvc"
   #   - name: 🛠 Build
-  #     run: cargo build --release
+  #     run: cargo build --target ${{matrix.targetPlatform}}-pc-windows-msvc --release
   #   - name: 🧪 Run tests
   #     run: cargo test --release
   #   - name: 💎 Upload artifact
   #     uses: actions/upload-artifact@v1
   #     with:
-  #       name: xornet-reporter_compiled_windows
-  #       path: target/release/xornet-reporter.exe
+  #       name: xornet-reporter_compiled_win_${{matrix.targetPlatform}}
+  #       path: target/${{matrix.targetPlatform}}-pc-windows-msvc/release/xornet-reporter
+
+  build-windows:
+    name: "🛠 Compile for Windows"
+    runs-on: windows-latest
+    steps:
+    - name: 🛎 Checkout
+      uses: actions/checkout@v2
+    - name: 🛠 Build
+      run: cargo build --release
+    - name: 🧪 Run tests
+      run: cargo test --release
+    - name: 💎 Upload artifact
+      uses: actions/upload-artifact@v1
+      with:
+        name: xornet-reporter_compiled_windows
+        path: target/release/xornet-reporter.exe
 
   build-macos:
     name: "🛠 Compile for MacOS"
