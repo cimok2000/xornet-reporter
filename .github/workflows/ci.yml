@@ -90,7 +90,7 @@ jobs:
     # runs-on: ubuntu-latest
     runs-on: self-hosted
     needs: [build-linux, build-macos, build-windows, get-latest-tag]
-    if: ${{ needs.get-latest-tag.outputs.tag != steps.version.outputs.value }}
+    if: needs.get-latest-tag.outputs.tag != steps.version.outputs.value
     outputs:
       upload_url: ${{ steps.create_release.outputs.upload_url }}
     steps:
