@@ -47,7 +47,6 @@ jobs:
     # runs-on: ubuntu-latest
     steps:
     - name: "⚙ Install Build Tools"
-    - name: Set up MinGW
       uses: egor-tensin/setup-mingw@v2
       with:
         platform: ${{matrix.targetPlatform}}
