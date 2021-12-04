@@ -2,3 +2,5 @@
 
 # Reporter
 This is the data collector that gets your system's state and sends it to the backend
+
+![Reporter Running](https://cdn.discordapp.com/attachments/911762334979084368/916783048090087424/unknown.png)
