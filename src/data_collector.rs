@@ -23,18 +23,6 @@ impl DataCollector {
     /// that can't change in runtime
     pub fn get_statics(&self) -> Value {
         let processor_info = self.fetcher.global_processor_info();
-        let mut disks = vec![];
-
-        for disk in self.fetcher.disks() {
-            let json = json!({
-              "name": format!("{:?}", disk.name()),
-              "filesystem": format!("{:?}", disk.file_system()),
-              "type": format!("{:?}", disk.type_()),
-              "mount":format!("{:?}", disk.mount_point().to_string_lossy().replace('\\', "")),
-            });
-
-            disks.push(json);
-        }
 
         return json!({
           "cpu": {
@@ -42,16 +30,20 @@ impl DataCollector {
             "vendor_id": processor_info.vendor_id(),
             "brand": processor_info.brand(),
           },
-          "disks": Value::Array(disks)
         });
     }
 
     /// Gets the current network stats
-    pub fn get_network(&mut self) -> Value {
+    pub fn get_network(&mut self) -> Vec<Value> {
         let mut serialized_networks = Vec::new();
         self.fetcher.refresh_networks();
 
         for (interface_name, data) in self.fetcher.networks() {
+            // Ignore bullshit loopback interfaces, no one cares
+            if interface_name.contains("NPCAP") {
+                continue;
+            };
+
             let json = json!({
                 "name": interface_name,
                 "tx": data.transmitted(),
@@ -61,7 +53,7 @@ impl DataCollector {
             serialized_networks.push(json);
         }
 
-        return Value::Array(serialized_networks);
+        return serialized_networks;
     }
 
     /// Gets the current CPU stats
@@ -94,18 +86,22 @@ impl DataCollector {
     }
 
     /// Gets the current DISKS stats
-    pub fn get_disks(&self) -> Value {
+    pub fn get_disks(&self) -> Vec<Value> {
         let mut serialized_disks = Vec::new();
 
         for disk in self.fetcher.disks() {
             let json = json!({
-              "free": disk.available_space(),
-              "total": disk.total_space(),
-              "used": disk.total_space() - disk.available_space(),
+                "name": format!("{}", disk.name().to_string_lossy()),
+                "mount":format!("{}", disk.mount_point().to_string_lossy()),
+                "filesystem": format!("{:?}", disk.file_system()),
+                "type": format!("{:?}", disk.type_()),
+                "free": disk.available_space(),
+                "total": disk.total_space(),
+                "used": disk.total_space() - disk.available_space(),
             });
 
             serialized_disks.push(json);
         }
-        return Value::Array(serialized_disks);
+        return serialized_disks;
     }
 }

@@ -1,6 +1,10 @@
 use colored::Colorize;
 use core::time;
-use std::thread::{self, spawn};
+use serde_json::Value;
+use std::{
+    str::FromStr,
+    thread::{self, spawn},
+};
 use util::{arcmutex, LaunchParams};
 
 mod data_collector;
@@ -58,7 +62,7 @@ fn main() {
                 .expect("Error in getting cpu")
         );
 
-        let cpu_info = format!(" {} CPU       {:.2}% ", prefix, cpu);
+        let cpu_info = format!(" {} CPU       {:.2}% ", prefix.clone(), cpu);
         let cpu_info_colored = format!(
             " {} {}       {:.2}{} ",
             prefix.red(),
@@ -125,68 +129,72 @@ fn main() {
 
         info.push(&mem_info_colored, mem_info.chars().count());
 
-        // Network
-        let rx = format!(
-            "{}",
-            reporter.data_collector.get_network()[0]
-                .get("rx")
-                .expect("Error in getting network")
-        );
-        let tx = format!(
-            "{}",
-            reporter.data_collector.get_network()[0]
-                .get("tx")
-                .expect("Error in getting network")
-        );
+        // Print ● NICs
+        let net_info_header = format!(" {} {}", prefix, "NICs");
+        let net_info_header_colored = format!(" {} {}", prefix.blue(), "NICs".bright_black());
+        info.push(&net_info_header_colored, net_info_header.chars().count());
 
-        let net_info = format!(
-            " {} {}   {} {} {} {}",
-            prefix, "Network", rx, "rx", tx, "tx"
-        );
-        let net_info_colored = format!(
-            " {} {}   {} {} {} {}",
-            prefix.blue(),
-            "Network".bright_black(),
-            rx.blue(),
-            "rx".bright_black(),
-            tx.blue(),
-            "tx".bright_black(),
-        );
+        let nics = reporter.data_collector.get_network();
+        for i in 0..nics.len() {
+            let nic = &nics[i];
 
-        info.push(&net_info_colored, net_info.chars().count());
+            // Network
+            let rx = format!("{}", nic.get("rx").expect("Error in getting network"));
+            let tx = format!("{}", nic.get("tx").expect("Error in getting network"));
+            let name = nic
+                .get("name")
+                .unwrap_or(&Value::String("NIC".to_string()))
+                .to_string();
 
-        // Disk
-        let used_disk = format!(
-            "{}",
-            bytes_to_gb(
-                reporter.data_collector.get_disks()[0]
-                    .get("used")
-                    .expect("Error in getting disk")
-            )
-        );
-        let total_disk = format!(
-            "{}",
-            bytes_to_gb(
-                reporter.data_collector.get_disks()[0]
-                    .get("total")
-                    .expect("Error in getting total disk")
-            )
-        );
+            let net_info = format!("    {}  {} {} {} {}", name, rx, "rx", tx, "tx");
+            let net_info_colored = format!(
+                "    {}  {} {} {} {}",
+                name.bright_black(),
+                rx.blue(),
+                "rx".bright_black(),
+                tx.blue(),
+                "tx".bright_black(),
+            );
 
-        let disk_info = format!(
-            " {} {}     {} / {} GB ",
-            prefix, "Disks", used_disk, total_disk
-        );
-        let disk_info_colored = format!(
-            " {} {}     {} {} {} {} ",
-            prefix.magenta(),
-            "Disks".bright_black(),
-            used_disk.magenta(),
-            "/".bright_black(),
-            total_disk.magenta(),
-            "GB".bright_black()
-        );
-        info.push(&disk_info_colored, disk_info.chars().count());
+            info.push(&net_info_colored, net_info.chars().count());
+        }
+
+        // Print ● Disks
+        let disk_info_header = format!(" {} {}", prefix, "Disks");
+        let disk_info_header_colored = format!(" {} {}", prefix.magenta(), "Disks".bright_black());
+        info.push(&disk_info_header_colored, disk_info_header.chars().count());
+
+        let disks = reporter.data_collector.get_disks();
+        for disk in disks {
+            let disk_name = disk
+                .get("mount")
+                .unwrap_or(disk.get("name").expect("Couldn't get disk mount/name"));
+
+            // Disk
+            let used_disk = format!(
+                "{}",
+                bytes_to_gb(disk.get("used").expect("Error in getting disk"))
+            );
+            let total_disk = format!(
+                "{}",
+                bytes_to_gb(disk.get("total").expect("Error in getting total disk"))
+            );
+            let disk_info = format!("    {}   {} / {} GB ", disk_name, used_disk, total_disk);
+            let disk_info_colored = format!(
+                "    {}   {} {} {} {} ",
+                disk_name.to_owned().to_string().bright_black(),
+                used_disk.magenta(),
+                "/".bright_black(),
+                total_disk.magenta(),
+                "GB".bright_black()
+            );
+
+            info.push(&disk_info_colored, disk_info.chars().count());
+        }
+
+        // ● Disks
+        //     C: 378 / 465 GB
+        //     D: 378 / 465 GB
 
         info.push(&" ".to_owned(), " ".len());
 
