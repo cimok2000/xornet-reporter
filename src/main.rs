@@ -1,7 +1,7 @@
 use colored::Colorize;
 use util::clear_terminal;
 use core::time;
-use crossterm::{cursor, execute};
+use crossterm::{cursor, execute, terminal::{EnterAlternateScreen, LeaveAlternateScreen}};
 use parking_lot::Mutex;
 use std::{
     io::stdout,
@@ -17,12 +17,15 @@ use crate::{reporter::Reporter, util::bytes_to_gb, util::bytes_to_kb};
 
 fn main() {
     
-    clear_terminal();
+    // "Clear" the terminal
+    execute!(stdout(), EnterAlternateScreen).unwrap();
     
     // Hide the cursor
     execute!(stdout(), cursor::Hide).unwrap();
     // Create the CTRL + C handler
     ctrlc::set_handler(move || {
+        // Go back to normal terminal
+        execute!(stdout(), LeaveAlternateScreen).unwrap();
         // Show the cursor
         execute!(stdout(), cursor::Show).unwrap();
         // Exit the program
