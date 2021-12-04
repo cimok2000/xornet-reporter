@@ -1,6 +1,6 @@
 name: Build xornet-reporter
 
-on: [push, workflow_dispatch]
+on: pull_request
 
 env:
   CARGO_TERM_COLOR: always
@@ -90,73 +90,3 @@ jobs:
       with:
         name: xornet-reporter_compiled_macos
         path: target/release/xornet-reporter
-    
-
-  create-release:
-    name: "📦 Create Release"
-    # runs-on: ubuntu-latest
-    runs-on: self-hosted
-    needs: [build-linux, build-macos, build-windows]
-    outputs:
-      upload_url: ${{ steps.create_release.outputs.upload_url }}
-    steps:
-      
-      # Yes we get the repo again but only for the version in the package.json
-      - name: 🛎 Checkout
-        uses: actions/checkout@v2
-
-      - name: ⚡ Set Version Variable
-        id: version
-        run: >
-          echo "::set-output name=value::$(cargo pkgid | cut -d# -f2 | cut -d: -f2)"
-     
-      # The release script that prepares a new Github release
-      - name: ⚡ Create Release
-        if: ${{needs.latest-tag.outputs.tag != steps.version.outputs.value}}
-        uses: actions/create-release@v1
-        id: create_release
-        continue-on-error: true
-        with:
-          draft: false
-          prerelease: false
-          release_name: xornet-reporter v${{ steps.version.outputs.value }}
-          tag_name: v${{ steps.version.outputs.value }}
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-
-  upload: 
-    name: "📤 Upload Builds"
-    # runs-on: ubuntu-latest
-    runs-on: self-hosted
-    needs: create-release
-    strategy:
-      matrix: 
-       targetPlatform:
-          - linux_aarch64
-          - linux_i686
-          - linux_x86_64
-          - linux_mips
-          - linux_mipsel
-          - windows
-          - macos
-      fail-fast: false
-    steps:
-
-      # Download the artifacts
-      - name: 💎 Download ${{matrix.targetPlatform}} Binaries
-        uses: actions/download-artifact@v2
-        with:
-          name: xornet-reporter_compiled_${{matrix.targetPlatform}}
-          path: ${{matrix.targetPlatform}}_build
-
-      # Upload Release
-      - name: 💎 Upload ${{matrix.targetPlatform}} Artifact
-        continue-on-error: true
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ needs.create-release.outputs.upload_url }}
-          asset_path: ${{matrix.targetPlatform}}_build/${{ matrix.targetPlatform == 'windows' && 'xornet-reporter.exe' || 'xornet-reporter' }}
-          asset_name: xornet-reporter.${{matrix.targetPlatform}}
-          asset_content_type: application/octet-stream
