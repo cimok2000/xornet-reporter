@@ -17,4 +17,5 @@ parking_lot = "0.11.2"
 # User interface
 colored = "2.0.0"
 crossterm = "0.22.1"
+ctrlc = "3.2.1"
  
