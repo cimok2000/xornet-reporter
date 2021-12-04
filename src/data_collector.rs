@@ -49,8 +49,8 @@ impl DataCollector {
         for (interface_name, data) in self.fetcher.networks() {
             let json = json!({
                 "name": interface_name,
-                "tx": data.total_transmitted(),
-                "rx": data.total_received(),
+                "tx": data.transmitted(),
+                "rx": data.received(),
             });
 
             serialized_networks.push(json);

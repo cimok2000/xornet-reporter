@@ -1,4 +1,5 @@
 use colored::Colorize;
+use util::clear_terminal;
 use core::time;
 use crossterm::{cursor, execute};
 use parking_lot::Mutex;
@@ -12,12 +13,12 @@ mod data_collector;
 mod info_box;
 mod reporter;
 mod util;
-use crate::{reporter::Reporter, util::bytes_to_gb, util::mb_to_gb};
+use crate::{reporter::Reporter, util::bytes_to_gb, util::bytes_to_kb};
 
 fn main() {
-    // Clear terminal
-    print!("{esc}[2J{esc}[1;1H", esc = 27 as char);
-
+    
+    clear_terminal();
+    
     // Hide the cursor
     execute!(stdout(), cursor::Hide).unwrap();
     // Create the CTRL + C handler
@@ -45,6 +46,7 @@ fn main() {
     // that the user can set in a config
     let reporter = reporter.clone();
     let data_collection_handle = spawn(move || loop {
+
         let mut reporter = reporter.lock();
         let mut stdout = stdout();
 
@@ -84,7 +86,7 @@ fn main() {
         // Memory
         let used_memory = format!(
             "{}",
-            mb_to_gb(
+            bytes_to_kb(
                 reporter
                     .data_collector
                     .get_ram()
@@ -94,7 +96,7 @@ fn main() {
         );
         let total_memory = format!(
             "{}",
-            mb_to_gb(
+            bytes_to_kb(
                 reporter
                     .data_collector
                     .get_ram()
@@ -120,20 +122,28 @@ fn main() {
         info.push(&mem_info_colored, mem_info.chars().count());
 
         // Network
-        let net = format!(
+        let rx = format!(
             "{}",
             reporter.data_collector.get_network()[0]
                 .get("rx")
                 .expect("Error in getting network")
         );
+        let tx = format!(
+            "{}",
+            reporter.data_collector.get_network()[0]
+                .get("tx")
+                .expect("Error in getting network")
+        );
 
-        let net_info = format!(" {} {} {} {}", prefix, "Network", net, "rx");
+        let net_info = format!(" {} {} {} {} {} {}", prefix, "Network", rx, "rx", tx, "tx");
         let net_info_colored = format!(
-            " {} {} {} {}",
+            " {} {} {} {} {} {}",
             prefix.blue(),
             "Network".bright_black(),
-            net.blue(),
-            "rx".bright_black()
+            rx.blue(),
+            "rx".bright_black(),
+            tx.blue(),
+            "tx".bright_black(),
         );
 
         info.push(&net_info_colored, net_info.chars().count());
