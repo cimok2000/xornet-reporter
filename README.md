@@ -6,4 +6,4 @@ This is the data collector that gets your system's state and sends it to the bac
 ![Reporter Running](https://cdn.discordapp.com/attachments/911762334979084368/916836449884721192/unknown.png)
 
 # Usage
-![Help](https://cdn.discordapp.com/attachments/911762334979084368/916835474658717706/unknown.png)
+![Help](https://cdn.discordapp.com/attachments/911762334979084368/916836900248109086/unknown.png)
