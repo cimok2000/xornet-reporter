@@ -13,6 +13,7 @@ impl DataCollector {
         return Self { fetcher };
     }
 
+    /// Gets the total amount of processes running
     pub fn get_total_process_count(&mut self) -> usize {
         self.fetcher.refresh_processes();
         return self.fetcher.processes().len();
@@ -30,7 +31,6 @@ impl DataCollector {
               "filesystem": format!("{:?}", disk.file_system()),
               "type": format!("{:?}", disk.type_()),
               "mount":format!("{:?}", disk.mount_point().to_string_lossy().replace('\\', "")),
-              "total": disk.total_space(),
             });
 
             disks.push(json);
@@ -100,6 +100,8 @@ impl DataCollector {
         for disk in self.fetcher.disks() {
             let json = json!({
               "free": disk.available_space(),
+              "total": disk.total_space(),
+              "used": disk.total_space() - disk.available_space(),
             });
 
             serialized_disks.push(json);

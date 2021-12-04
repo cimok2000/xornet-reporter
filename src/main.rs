@@ -1,11 +1,7 @@
 use colored::Colorize;
 use core::time;
-use crossterm::execute;
-use std::{
-    io::stdout,
-    thread::{self, spawn},
-};
-use util::{arcmutex, reset_cursor, LaunchParams};
+use std::thread::{self, spawn};
+use util::{arcmutex, LaunchParams};
 
 mod data_collector;
 mod info_box;
@@ -39,7 +35,6 @@ fn main() {
     let reporter = reporter.clone();
     let data_collection_handle = spawn(move || loop {
         let mut reporter = reporter.lock();
-        let mut stdout = stdout();
 
         let mut info = info_box::InfoBox {
             pushed_lines: Vec::new(),
@@ -63,9 +58,9 @@ fn main() {
                 .expect("Error in getting cpu")
         );
 
-        let cpu_info = format!(" {} CPU {:.2}% ", prefix, cpu);
+        let cpu_info = format!(" {} CPU       {:.2}% ", prefix, cpu);
         let cpu_info_colored = format!(
-            " {} {} {:.2}{} ",
+            " {} {}       {:.2}{} ",
             prefix.red(),
             "CPU".bright_black(),
             cpu.red(),
@@ -115,11 +110,11 @@ fn main() {
         );
 
         let mem_info = format!(
-            " {} {} {} / {} MB ",
+            " {} {}    {} / {} MB ",
             prefix, "Memory", used_memory, total_memory
         );
         let mem_info_colored = format!(
-            " {} {} {} {} {} {} ",
+            " {} {}    {} {} {} {} ",
             prefix.green(),
             "Memory".bright_black(),
             used_memory.green(),
@@ -144,9 +139,12 @@ fn main() {
                 .expect("Error in getting network")
         );
 
-        let net_info = format!(" {} {} {} {} {} {}", prefix, "Network", rx, "rx", tx, "tx");
+        let net_info = format!(
+            " {} {}   {} {} {} {}",
+            prefix, "Network", rx, "rx", tx, "tx"
+        );
         let net_info_colored = format!(
-            " {} {} {} {} {} {}",
+            " {} {}   {} {} {} {}",
             prefix.blue(),
             "Network".bright_black(),
             rx.blue(),
@@ -158,29 +156,32 @@ fn main() {
         info.push(&net_info_colored, net_info.chars().count());
 
         // Disk
-        let free_disk = format!(
+        let used_disk = format!(
             "{}",
             bytes_to_gb(
                 reporter.data_collector.get_disks()[0]
-                    .get("free")
+                    .get("used")
                     .expect("Error in getting disk")
             )
         );
         let total_disk = format!(
             "{}",
             bytes_to_gb(
-                reporter.data_collector.get_statics().get("disks").unwrap()[0]
+                reporter.data_collector.get_disks()[0]
                     .get("total")
                     .expect("Error in getting total disk")
             )
         );
 
-        let disk_info = format!(" {} {} {} / {} GB ", prefix, "Disks", free_disk, total_disk);
+        let disk_info = format!(
+            " {} {}     {} / {} GB ",
+            prefix, "Disks", used_disk, total_disk
+        );
         let disk_info_colored = format!(
-            " {} {} {} {} {} {} ",
+            " {} {}     {} {} {} {} ",
             prefix.magenta(),
             "Disks".bright_black(),
-            free_disk.magenta(),
+            used_disk.magenta(),
             "/".bright_black(),
             total_disk.magenta(),
             "GB".bright_black()
@@ -196,9 +197,9 @@ fn main() {
         // }
         // Status Ratted 💀
         let connection_status = format!("{}", "Disconnected");
-        let con_info = format!(" {} Status {} ", prefix, connection_status);
+        let con_info = format!(" {} Status    {} ", prefix, connection_status);
         let con_info_colored = format!(
-            " {} {} {} ",
+            " {} {}    {} ",
             prefix.bright_black(),
             "Status".bright_black(),
             connection_status.red()
