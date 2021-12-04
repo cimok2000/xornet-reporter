@@ -63,6 +63,7 @@ impl LaunchParams {
                     println!("    $ xornet-reporter");
                     println!("    $ xornet-reporter -b ");
                     println!("    $ xornet-reporter -p \">\"");
+                    println!();
                     std::process::exit(0);
                 }
                 "-b" | "--borderless" => {
