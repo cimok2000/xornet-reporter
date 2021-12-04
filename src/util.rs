@@ -13,6 +13,7 @@ pub struct LaunchParams {
     pub prefix: String,
     pub colorless: bool,
     pub interval: f64,
+    pub no_clear: bool,
 }
 
 impl LaunchParams {
@@ -32,6 +33,7 @@ impl LaunchParams {
             prefix: "●".to_string(),
             interval: 1.0,
             colorless: false,
+            no_clear: false,
         };
         let args: Vec<String> = std::env::args().collect();
         let mut index: usize = 0;
@@ -43,30 +45,35 @@ impl LaunchParams {
                     println!("    xornet-reporter {}", "[options]".bright_black());
                     println!("\n{} Options:", "●".blue());
                     println!(
-                        "    -h, --help                         : {}",
+                        "    -h,  --help                         : {}",
                         "Show this help".white()
                     );
                     println!(
-                        "    -v, --version                      : {}",
+                        "    -v,  --version                      : {}",
                         "Show version and exit".white()
                     );
                     println!(
-                        "    -i, --interval    {}     : {}",
+                        "    -i,  --interval    {}     : {}",
                         "(default: 1)".bright_black(),
                         "Data collection interval in seconds".white()
                     );
                     println!(
-                        "    -b, --borderless  {} : {}",
+                        "    -b,  --borderless  {} : {}",
                         "(default: false)".bright_black(),
                         "Borderless style".white()
                     );
                     println!(
-                        "    -p, --prefix      {}   : {}",
+                        "    -p,  --prefix      {}   : {}",
                         "(default: \"●\")".bright_black(),
                         "Prefix that is shown at the beginning of each field".white()
                     );
                     println!(
-                        "    -c, --colorless   {} : {}",
+                        "    -nc, --no-clear    {} : {}",
+                        "(default: false)".bright_black(),
+                        "Disables the terminal clearing on each interval".white()
+                    );
+                    println!(
+                        "    -c,  --colorless   {} : {}",
                         "(default: false)".bright_black(),
                         "Colorless style".white()
                     );
@@ -80,7 +87,12 @@ impl LaunchParams {
                 "-b" | "--borderless" => {
                     launch_params.borderless = true;
                 }
+                "-nc" | "--no-clear" => {
+                    launch_params.no_clear = true;
+                }
                 "-c" | "--colorless" => {
+                    println!("{}", "Colorless parameter isn't implemented".red());
+                    std::process::exit(1);
                     launch_params.colorless = true;
                 }
                 "-v" | "--version" => {
@@ -119,6 +131,10 @@ impl LaunchParams {
         }
         return launch_params;
     }
+}
+
+pub fn trim_one_character(string: &str) -> String {
+    return string[1..string.len() - 1].to_string();
 }
 
 pub fn bytes_to_kb(bytes: &Value) -> String {

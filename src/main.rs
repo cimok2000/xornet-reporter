@@ -11,7 +11,11 @@ mod data_collector;
 mod info_box;
 mod reporter;
 mod util;
-use crate::{reporter::Reporter, util::bytes_to_gb, util::bytes_to_kb};
+use crate::{
+    reporter::Reporter,
+    util::bytes_to_kb,
+    util::{bytes_to_gb, trim_one_character},
+};
 
 fn main() {
     // Get arguments from launch
@@ -141,14 +145,15 @@ fn main() {
             // Network
             let rx = format!("{}", nic.get("rx").expect("Error in getting network"));
             let tx = format!("{}", nic.get("tx").expect("Error in getting network"));
-            let name = nic
-                .get("name")
-                .unwrap_or(&Value::String("NIC".to_string()))
-                .to_string();
+            let name = trim_one_character(
+                &nic.get("name")
+                    .unwrap_or(&Value::String("NIC".to_string()))
+                    .to_string(),
+            );
 
-            let net_info = format!("    {}  {} {} {} {}", name, rx, "rx", tx, "tx");
+            let net_info = format!("     {}  {} {} {} {}", name, rx, "rx", tx, "tx");
             let net_info_colored = format!(
-                "    {}  {} {} {} {}",
+                "     {}  {} {} {} {}",
                 name.bright_black(),
                 rx.blue(),
                 "rx".bright_black(),
@@ -166,10 +171,14 @@ fn main() {
 
         let disks = reporter.data_collector.get_disks();
         for disk in disks {
-            let disk_name = disk
-                .get("mount")
-                .unwrap_or(disk.get("name").expect("Couldn't get disk mount/name"));
-
+            let disk_name = trim_one_character(
+                &disk
+                    .get("mount")
+                    .unwrap_or(disk.get("name").expect("Couldn't get disk mount/name"))
+                    .to_string()
+                    .as_str()
+                    .replace("\\", ""),
+            );
             // Disk
             let used_disk = format!(
                 "{}",
@@ -179,10 +188,10 @@ fn main() {
                 "{}",
                 bytes_to_gb(disk.get("total").expect("Error in getting total disk"))
             );
-            let disk_info = format!("    {}   {} / {} GB ", disk_name, used_disk, total_disk);
+            let disk_info = format!("     {}   {} / {} GB ", disk_name, used_disk, total_disk);
             let disk_info_colored = format!(
-                "    {}   {} {} {} {} ",
-                disk_name.to_owned().to_string().bright_black(),
+                "     {}   {} {} {} {} ",
+                disk_name.bright_black(),
                 used_disk.magenta(),
                 "/".bright_black(),
                 total_disk.magenta(),
@@ -217,7 +226,9 @@ fn main() {
         println!("{}", info.to_string().trim_end());
 
         // Reset the cursor back to 0, 0
-        util::reset_cursor();
+        if !args.no_clear {
+            util::reset_cursor()
+        };
 
         // Wait for interval
         thread::sleep(time::Duration::from_secs_f64(args.interval));

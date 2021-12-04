@@ -1,6 +1,6 @@
 [package]
 name = "xornet-reporter"
-version = "0.2.6"
+version = "0.2.7"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -13,6 +13,7 @@ run = "cargo watch -x run"
 serde_json = "1.0.72"
 sysinfo = "0.21.1"
 parking_lot = "0.11.2"
+cascade = "1.0.0"
 
 # User interface
 colored = "2.0.0"
