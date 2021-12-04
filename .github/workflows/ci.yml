@@ -1,4 +1,4 @@
-name: Build xornet-reporter
+name: Check on Push
 
 on: [push, workflow_dispatch]
 
