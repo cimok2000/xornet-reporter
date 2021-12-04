@@ -1,18 +1,18 @@
 use colored::Colorize;
 use core::time;
+use crossterm::{cursor, execute};
 use parking_lot::Mutex;
 use std::{
-    io::{stdout},
+    io::stdout,
     sync::Arc,
     thread::{self, spawn},
 };
-use crossterm::{execute, cursor};
 
 mod data_collector;
-mod reporter;
 mod info_box;
+mod reporter;
 mod util;
-use crate::{reporter::Reporter, util::mb_to_gb, util::mb_to_tb};
+use crate::{reporter::Reporter, util::bytes_to_gb, util::mb_to_gb};
 
 fn main() {
     // Prefix of the display thing (can also be in config)
@@ -49,37 +49,109 @@ fn main() {
         info.push(&header.bright_black().to_string(), header.len());
 
         // CPU
-        let cpu = format!("{}", reporter.data_collector.get_cpu()[0].get("cpu_usage").expect("Error in getting cpu"));
+        let cpu = format!(
+            "{}",
+            reporter.data_collector.get_cpu()[0]
+                .get("cpu_usage")
+                .expect("Error in getting cpu")
+        );
 
         let cpu_info = format!(" {} CPU {:.2}% ", prefix, cpu);
-        let cpu_info_colored = format!(" {} {} {:.2}{} ", prefix.red(), "CPU".bright_black(), cpu.red(), "%".bright_black());
+        let cpu_info_colored = format!(
+            " {} {} {:.2}{} ",
+            prefix.red(),
+            "CPU".bright_black(),
+            cpu.red(),
+            "%".bright_black()
+        );
 
         info.push(&cpu_info_colored, cpu_info.chars().count());
 
         // Memory
-        let used_memory = format!("{}", mb_to_gb(reporter.data_collector.get_ram().get("used_memory").expect("Error in getting memory")));
-        let total_memory = format!("{}", mb_to_gb(reporter.data_collector.get_ram().get("total_memory").expect("Error in getting memory")));
+        let used_memory = format!(
+            "{}",
+            mb_to_gb(
+                reporter
+                    .data_collector
+                    .get_ram()
+                    .get("used_memory")
+                    .expect("Error in getting memory")
+            )
+        );
+        let total_memory = format!(
+            "{}",
+            mb_to_gb(
+                reporter
+                    .data_collector
+                    .get_ram()
+                    .get("total_memory")
+                    .expect("Error in getting memory")
+            )
+        );
 
-        let mem_info = format!(" {} {} {} / {} MB ", prefix, "Memory", used_memory, total_memory);
-        let mem_info_colored = format!(" {} {} {} {} {} {} ", prefix.green(), "Memory".bright_black(), used_memory.green(), "/".bright_black(), total_memory.green(), "MB".bright_black());
+        let mem_info = format!(
+            " {} {} {} / {} MB ",
+            prefix, "Memory", used_memory, total_memory
+        );
+        let mem_info_colored = format!(
+            " {} {} {} {} {} {} ",
+            prefix.green(),
+            "Memory".bright_black(),
+            used_memory.green(),
+            "/".bright_black(),
+            total_memory.green(),
+            "MB".bright_black()
+        );
 
         info.push(&mem_info_colored, mem_info.chars().count());
 
         // Network
-        let net = format!("{}", reporter.data_collector.get_network()[0].get("rx").expect("Error in getting network"));
+        let net = format!(
+            "{}",
+            reporter.data_collector.get_network()[0]
+                .get("rx")
+                .expect("Error in getting network")
+        );
 
         let net_info = format!(" {} {} {} ", prefix, "Network", net);
-        let net_info_colored = format!(" {} {} {} ", prefix.blue(), "Network".bright_black(), net.blue());
+        let net_info_colored = format!(
+            " {} {} {} ",
+            prefix.blue(),
+            "Network".bright_black(),
+            net.blue()
+        );
 
         info.push(&net_info_colored, net_info.chars().count());
 
         // Disk
-        let free_disk = format!("{}", mb_to_tb(reporter.data_collector.get_disks()[0].get("free").expect("Error in getting disk")));
-        let total_disk = format!("{}", mb_to_tb(reporter.data_collector.get_statics().get("disks").unwrap()[0].get("total").expect("Error in getting total disk")));
+        let free_disk = format!(
+            "{}",
+            bytes_to_gb(
+                reporter.data_collector.get_disks()[0]
+                    .get("free")
+                    .expect("Error in getting disk")
+            )
+        );
+        let total_disk = format!(
+            "{}",
+            bytes_to_gb(
+                reporter.data_collector.get_statics().get("disks").unwrap()[0]
+                    .get("total")
+                    .expect("Error in getting total disk")
+            )
+        );
 
         let disk_info = format!(" {} {} {} / {} GB ", prefix, "Disk", free_disk, total_disk);
-        let disk_info_colored = format!(" {} {} {} {} {} {} ", prefix.magenta(), "Disk".bright_black(), free_disk.magenta(), "/".bright_black(), total_disk.magenta(), "TB".bright_black());
-        
+        let disk_info_colored = format!(
+            " {} {} {} {} {} {} ",
+            prefix.magenta(),
+            "Disk".bright_black(),
+            free_disk.magenta(),
+            "/".bright_black(),
+            total_disk.magenta(),
+            "GB".bright_black()
+        );
+
         info.push(&disk_info_colored, disk_info.chars().count());
 
         println!("{}", info.to_string().trim_end());
