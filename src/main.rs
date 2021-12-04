@@ -1,12 +1,14 @@
 use colored::Colorize;
 use core::time;
-use crossterm::{cursor, execute, terminal::{EnterAlternateScreen, LeaveAlternateScreen}};
-use parking_lot::Mutex;
+use crossterm::{
+    cursor, execute,
+    terminal::{EnterAlternateScreen, LeaveAlternateScreen},
+};
 use std::{
     io::stdout,
-    sync::Arc,
     thread::{self, spawn},
 };
+use util::{arcmutex, LaunchParams};
 
 mod data_collector;
 mod info_box;
@@ -15,10 +17,12 @@ mod util;
 use crate::{reporter::Reporter, util::bytes_to_gb, util::bytes_to_kb};
 
 fn main() {
-    
+    // Get arguments from launch
+    let args = LaunchParams::new();
+
     // "Clear" the terminal
     execute!(stdout(), EnterAlternateScreen).unwrap();
-    
+
     // Hide the cursor
     execute!(stdout(), cursor::Hide).unwrap();
     // Create the CTRL + C handler
@@ -32,12 +36,13 @@ fn main() {
     })
     .expect("Ctrl + C handler failed to be set");
 
-    // Prefix of the display thing (can also be in config)
-    let prefix = "●";
+    // Cosmetic display configuration
+    let prefix = args.prefix;
+    let show_border = !args.borderless;
 
-    let reporter = Arc::new(Mutex::new(Reporter::new()));
+    let reporter = arcmutex(Reporter::new());
 
-    // // Get all static shit
+    // Get all static shit
     // println!(
     //     "{} Info: {}",
     //     prefix.white(),
@@ -48,7 +53,6 @@ fn main() {
     // that the user can set in a config
     let reporter = reporter.clone();
     let data_collection_handle = spawn(move || loop {
-
         let mut reporter = reporter.lock();
         let mut stdout = stdout();
 
@@ -56,15 +60,16 @@ fn main() {
             pushed_lines: Vec::new(),
             pushed_len: Vec::new(),
             longest_line: 0,
+            border: show_border,
         };
 
         execute!(stdout, cursor::SavePosition).ok();
 
-        // who wrote this code lol - azur
-
         // Header
         let header = format!(" Xornet Reporter v{} ", env!("CARGO_PKG_VERSION"));
-        info.push(&header.bright_black().to_string(), header.len());
+        if (show_border) {
+            info.push(&header.bright_black().to_string(), header.len())
+        };
 
         // CPU
         let cpu = format!(
@@ -167,11 +172,11 @@ fn main() {
             )
         );
 
-        let disk_info = format!(" {} {} {} / {} GB ", prefix, "Disk", free_disk, total_disk);
+        let disk_info = format!(" {} {} {} / {} GB ", prefix, "Disks", free_disk, total_disk);
         let disk_info_colored = format!(
             " {} {} {} {} {} {} ",
             prefix.magenta(),
-            "Disk".bright_black(),
+            "Disks".bright_black(),
             free_disk.magenta(),
             "/".bright_black(),
             total_disk.magenta(),
