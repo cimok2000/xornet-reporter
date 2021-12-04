@@ -15,17 +15,22 @@ mod util;
 use crate::{reporter::Reporter, util::mb_to_gb, util::bytes_to_gb};
 
 fn main() {
+
+    // Clear terminal
+    print!("{esc}[2J{esc}[1;1H", esc = 27 as char);
+
+
     // Prefix of the display thing (can also be in config)
     let prefix = "●";
 
     let reporter = Arc::new(Mutex::new(Reporter::new()));
 
-    // Get all static shit
-    println!(
-        "{} Info: {}",
-        prefix.white(),
-        reporter.lock().data_collector.get_statics()
-    );
+    // // Get all static shit
+    // println!(
+    //     "{} Info: {}",
+    //     prefix.white(),
+    //     reporter.lock().data_collector.get_statics()
+    // );
 
     // Todo: make these run on a loop with unique intervals for each
     // that the user can set in a config
@@ -68,11 +73,11 @@ fn main() {
         // Network
         let net = format!("{}", reporter.data_collector.get_network()[0].get("rx").expect("Error in getting network"));
 
-        let net_info = format!(" {} {} {} ", prefix, "Network", net);
-        let net_info_colored = format!(" {} {} {} ", prefix.blue(), "Network".bright_black(), net.blue());
+        let net_info = format!(" {} {} {} {}", prefix, "Network", net, "rx");
+        let net_info_colored = format!(" {} {} {} {}", prefix.blue(), "Network".bright_black(), net.blue(), "rx".bright_black());
 
         info.push(&net_info_colored, net_info.chars().count());
-
+ 
         // Disk
         let free_disk = format!("{}", bytes_to_gb(reporter.data_collector.get_disks()[0].get("free").expect("Error in getting disk")));
         let total_disk = format!("{}", bytes_to_gb(reporter.data_collector.get_statics().get("disks").unwrap()[0].get("total").expect("Error in getting total disk")));
