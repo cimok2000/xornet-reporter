@@ -23,14 +23,17 @@ fn main() {
     // "Clear" the terminal
     execute!(stdout(), EnterAlternateScreen).unwrap();
 
+    // Pos the cursor at the start
+    execute!(stdout(), cursor::MoveTo(0, 0)).unwrap();
+
     // Hide the cursor
     execute!(stdout(), cursor::Hide).unwrap();
     // Create the CTRL + C handler
     ctrlc::set_handler(move || {
-        // Go back to normal terminal
-        execute!(stdout(), LeaveAlternateScreen).unwrap();
         // Show the cursor
         execute!(stdout(), cursor::Show).unwrap();
+        // Go back to normal terminal
+        execute!(stdout(), LeaveAlternateScreen).unwrap();
         // Exit the program
         std::process::exit(0);
     })
@@ -63,11 +66,9 @@ fn main() {
             border: show_border,
         };
 
-        execute!(stdout, cursor::SavePosition).ok();
-
         // Header
         let header = format!(" Xornet Reporter v{} ", env!("CARGO_PKG_VERSION"));
-        if (show_border) {
+        if show_border {
             info.push(&header.bright_black().to_string(), header.len())
         };
 

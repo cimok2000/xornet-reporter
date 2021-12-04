@@ -24,7 +24,7 @@ impl LaunchParams {
     pub fn new() -> LaunchParams {
         let mut launch_params = LaunchParams {
             borderless: false,
-            prefix: "".to_string(),
+            prefix: "●".to_string(),
             colorless: false,
         };
         let args: Vec<String> = std::env::args().collect();
