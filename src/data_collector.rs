@@ -13,6 +13,11 @@ impl DataCollector {
         return Self { fetcher };
     }
 
+    pub fn get_total_process_count(&mut self) -> usize {
+        self.fetcher.refresh_processes();
+        return self.fetcher.processes().len();
+    }
+
     /// Gets all the static information about the system
     /// that can't change in runtime
     pub fn get_statics(&self) -> Value {

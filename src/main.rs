@@ -51,7 +51,8 @@ fn main() {
         // Header
         let header = format!(" Xornet Reporter v{} ", env!("CARGO_PKG_VERSION"));
         if show_border {
-            info.push(&header.bright_black().to_string(), header.len())
+            info.push(&header.bright_black().to_string(), header.len());
+            info.push(&" ".to_owned(), " ".len());
         };
 
         // CPU
@@ -72,6 +73,24 @@ fn main() {
         );
 
         info.push(&cpu_info_colored, cpu_info.chars().count());
+
+        // Process Count
+        let proc_count = format!(
+            "{}",
+            reporter
+                .data_collector
+                .get_total_process_count()
+                .to_string()
+        );
+        let process_count = format!(" {} Processes {} ", prefix, proc_count);
+        let process_count_colored = format!(
+            " {} {} {} ",
+            prefix.yellow(),
+            "Processes".bright_black(),
+            proc_count.yellow()
+        );
+
+        info.push(&process_count_colored, process_count.chars().count());
 
         // Memory
         let used_memory = format!(
@@ -137,6 +156,7 @@ fn main() {
         );
 
         info.push(&net_info_colored, net_info.chars().count());
+
         // Disk
         let free_disk = format!(
             "{}",
@@ -166,6 +186,24 @@ fn main() {
             "GB".bright_black()
         );
         info.push(&disk_info_colored, disk_info.chars().count());
+
+        info.push(&" ".to_owned(), " ".len());
+
+        // if (connected) {
+        // con = "coneted".gren()
+        // } else {
+        // con = "not cenod".black()
+        // }
+        // Status Ratted 💀
+        let connection_status = format!("{}", "Disconnected");
+        let con_info = format!(" {} Status {} ", prefix, connection_status);
+        let con_info_colored = format!(
+            " {} {} {} ",
+            prefix.bright_black(),
+            "Status".bright_black(),
+            connection_status.red()
+        );
+        info.push(&con_info_colored, con_info.chars().count());
 
         println!("{}", info.to_string().trim_end());
 
