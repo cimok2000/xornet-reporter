@@ -78,9 +78,9 @@ impl LaunchParams {
                         "Colorless style".white()
                     );
                     println!("\n{} Examples:", "●".magenta());
-                    println!("    $ xornet-reporter");
-                    println!("    $ xornet-reporter -b ");
-                    println!("    $ xornet-reporter -p \">\"");
+                    println!("    {} xornet-reporter", "$".bright_black());
+                    println!("    {} xornet-reporter -b ", "$".bright_black());
+                    println!("    {} xornet-reporter -p \">\"", "$".bright_black());
                     println!();
                     std::process::exit(0);
                 }
