@@ -1,13 +1,18 @@
 use colored::Colorize;
+use crossterm::{
+    cursor, execute,
+    terminal::{EnterAlternateScreen, LeaveAlternateScreen},
+};
 use parking_lot::Mutex;
 use serde_json::Value;
-use std::sync::Arc;
+use std::{io::stdout, sync::Arc};
 
 /// The structure of the launch parameters.
 pub struct LaunchParams {
     pub borderless: bool,
     pub prefix: String,
     pub colorless: bool,
+    pub interval: f64,
 }
 
 impl LaunchParams {
@@ -25,6 +30,7 @@ impl LaunchParams {
         let mut launch_params = LaunchParams {
             borderless: false,
             prefix: "●".to_string(),
+            interval: 1.0,
             colorless: false,
         };
         let args: Vec<String> = std::env::args().collect();
@@ -43,6 +49,11 @@ impl LaunchParams {
                     println!(
                         "    -v, --version                      : {}",
                         "Show version and exit".white()
+                    );
+                    println!(
+                        "    -i, --interval    {}     : {}",
+                        "(default: 1)".bright_black(),
+                        "Data collection interval in seconds".white()
                     );
                     println!(
                         "    -b, --borderless  {} : {}",
@@ -88,6 +99,20 @@ impl LaunchParams {
                         std::process::exit(1);
                     }
                 }
+                "-i" | "--interval" => {
+                    if args.len() > index + 1 {
+                        index += 1;
+                        launch_params.interval = args[index]
+                            .parse::<f64>()
+                            .expect("Could not parse interval as integer");
+                    } else {
+                        println!(
+                            "{}",
+                            "Missing argument for option -i <interval>, use -h for help".red()
+                        );
+                        std::process::exit(1);
+                    }
+                }
                 _ => {}
             }
             index += 1;
@@ -110,4 +135,28 @@ pub fn bytes_to_gb(bytes: &Value) -> String {
 
 pub fn arcmutex<T>(item: T) -> Arc<Mutex<T>> {
     return Arc::new(Mutex::new(item));
+}
+
+pub fn setup_terminal() {
+    // Enter alternate screen, move to 0, 0 and hide the cursor
+    execute!(
+        stdout(),
+        EnterAlternateScreen,
+        cursor::MoveTo(0, 0),
+        cursor::Hide
+    )
+    .unwrap();
+
+    // Create the CTRL + C handler
+    ctrlc::set_handler(move || {
+        // Restore the cursor and leave alternate screen
+        execute!(stdout(), cursor::Show, LeaveAlternateScreen).unwrap();
+        // Exit the program
+        std::process::exit(0);
+    })
+    .expect("Ctrl + C handler failed to be set");
+}
+
+pub fn reset_cursor() {
+    execute!(stdout(), cursor::MoveTo(0, 0)).unwrap();
 }

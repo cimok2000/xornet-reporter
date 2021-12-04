@@ -1,14 +1,11 @@
 use colored::Colorize;
 use core::time;
-use crossterm::{
-    cursor, execute,
-    terminal::{EnterAlternateScreen, LeaveAlternateScreen},
-};
+use crossterm::execute;
 use std::{
     io::stdout,
     thread::{self, spawn},
 };
-use util::{arcmutex, LaunchParams};
+use util::{arcmutex, reset_cursor, LaunchParams};
 
 mod data_collector;
 mod info_box;
@@ -20,29 +17,14 @@ fn main() {
     // Get arguments from launch
     let args = LaunchParams::new();
 
-    // "Clear" the terminal
-    execute!(stdout(), EnterAlternateScreen).unwrap();
-
-    // Pos the cursor at the start
-    execute!(stdout(), cursor::MoveTo(0, 0)).unwrap();
-
-    // Hide the cursor
-    execute!(stdout(), cursor::Hide).unwrap();
-    // Create the CTRL + C handler
-    ctrlc::set_handler(move || {
-        // Show the cursor
-        execute!(stdout(), cursor::Show).unwrap();
-        // Go back to normal terminal
-        execute!(stdout(), LeaveAlternateScreen).unwrap();
-        // Exit the program
-        std::process::exit(0);
-    })
-    .expect("Ctrl + C handler failed to be set");
+    // Setup the terminal
+    util::setup_terminal();
 
     // Cosmetic display configuration
     let prefix = args.prefix;
     let show_border = !args.borderless;
 
+    // Start the reporter
     let reporter = arcmutex(Reporter::new());
 
     // Get all static shit
@@ -187,9 +169,11 @@ fn main() {
 
         println!("{}", info.to_string().trim_end());
 
-        execute!(stdout, cursor::RestorePosition).ok();
+        // Reset the cursor back to 0, 0
+        util::reset_cursor();
 
-        thread::sleep(time::Duration::from_millis(1000));
+        // Wait for interval
+        thread::sleep(time::Duration::from_secs_f64(args.interval));
     });
 
     data_collection_handle
