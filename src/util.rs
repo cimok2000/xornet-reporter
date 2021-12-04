@@ -60,9 +60,9 @@ impl LaunchParams {
                         "Colorless style".white()
                     );
                     println!("\n{} Examples:", "●".magenta());
-                    println!("    xornet-reporter");
-                    println!("    xornet-reporter -b ");
-                    println!("    xornet-reporter -p \">\"");
+                    println!("    $ xornet-reporter");
+                    println!("    $ xornet-reporter -b ");
+                    println!("    $ xornet-reporter -p \">\"");
                     std::process::exit(0);
                 }
                 "-b" | "--borderless" => {
