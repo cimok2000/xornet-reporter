@@ -50,7 +50,7 @@ fn main() {
         // who wrote this code lol - azur
 
         // Header
-        let header = format!(" Xornet v{} ", env!("CARGO_PKG_VERSION"));
+        let header = format!(" Xornet Reporter v{} ", env!("CARGO_PKG_VERSION"));
         info.push(&header.bright_black().to_string(), header.len());
 
         // CPU
