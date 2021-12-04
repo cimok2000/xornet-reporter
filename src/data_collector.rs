@@ -40,7 +40,10 @@ impl DataCollector {
 
         for (interface_name, data) in self.fetcher.networks() {
             // Ignore bullshit loopback interfaces, no one cares
-            if interface_name.contains("NPCAP") {
+            if interface_name.contains("NPCAP")
+                || interface_name.starts_with("lo")
+                || interface_name.starts_with("loopback")
+            {
                 continue;
             };
 
