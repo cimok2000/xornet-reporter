@@ -2,12 +2,15 @@ use colored::Colorize;
 use core::time;
 use parking_lot::Mutex;
 use std::{
+    io::{stdout},
     sync::Arc,
     thread::{self, spawn},
 };
+use crossterm::{execute, cursor};
 
 mod data_collector;
 mod reporter;
+mod info_box;
 mod util;
 use crate::{reporter::Reporter, util::mb_to_gb, util::mb_to_tb};
 
@@ -29,56 +32,59 @@ fn main() {
     let reporter = reporter.clone();
     let data_collection_handle = spawn(move || loop {
         let mut reporter = reporter.lock();
+        let mut stdout = stdout();
 
-        println!("\n");
+        let mut info = info_box::InfoBox {
+            pushed_lines: Vec::new(),
+            pushed_len: Vec::new(),
+            longest_line: 0,
+        };
 
-        println!(
-            "{} Disks: {} {} / {} GB",
-            prefix.red(),
-            reporter.data_collector.get_statics().get("disks").unwrap()[0]
-                .get("mount")
-                .expect("Couldn't get disk"),
-            mb_to_tb(
-                reporter.data_collector.get_disks()[0]
-                    .get("free")
-                    .expect("Error in CPU displaying.")
-            ),
-            mb_to_tb(
-                reporter.data_collector.get_statics().get("disks").unwrap()[0]
-                    .get("total")
-                    .expect("Error in CPU displaying.")
-            ),
-        );
-        println!(
-            "{} Ram: {} / {} MB",
-            prefix.green(),
-            mb_to_gb(
-                reporter
-                    .data_collector
-                    .get_ram()
-                    .get("used_memory")
-                    .expect("Erorr in RAM displaying.")
-            ),
-            mb_to_gb(
-                reporter
-                    .data_collector
-                    .get_ram()
-                    .get("total_memory")
-                    .expect("Error in RAM displaying.")
-            )
-        );
-        println!(
-            "{} Network: {}",
-            prefix.blue(),
-            reporter.data_collector.get_network()[0]
-        );
-        println!(
-            "{} CPU: {:.2}%",
-            prefix.magenta(),
-            reporter.data_collector.get_cpu()[0]
-                .get("cpu_usage")
-                .expect("Error In CPU displaying.")
-        );
+        execute!(stdout, cursor::SavePosition).ok();
+
+        // who wrote this code lol - azur
+
+        // Header
+        let header = format!(" Xornet v{} ", env!("CARGO_PKG_VERSION"));
+        info.push(&header.bright_black().to_string(), header.len());
+
+        // CPU
+        let cpu = format!("{}", reporter.data_collector.get_cpu()[0].get("cpu_usage").expect("Error in getting cpu"));
+
+        let cpu_info = format!(" {} CPU {:.2}% ", prefix, cpu);
+        let cpu_info_colored = format!(" {} {} {:.2}{} ", prefix.red(), "CPU".bright_black(), cpu.red(), "%".bright_black());
+
+        info.push(&cpu_info_colored, cpu_info.chars().count());
+
+        // Memory
+        let used_memory = format!("{}", mb_to_gb(reporter.data_collector.get_ram().get("used_memory").expect("Error in getting memory")));
+        let total_memory = format!("{}", mb_to_gb(reporter.data_collector.get_ram().get("total_memory").expect("Error in getting memory")));
+
+        let mem_info = format!(" {} {} {} / {} MB ", prefix, "Memory", used_memory, total_memory);
+        let mem_info_colored = format!(" {} {} {} {} {} {} ", prefix.green(), "Memory".bright_black(), used_memory.green(), "/".bright_black(), total_memory.green(), "MB".bright_black());
+
+        info.push(&mem_info_colored, mem_info.chars().count());
+
+        // Network
+        let net = format!("{}", reporter.data_collector.get_network()[0].get("rx").expect("Error in getting network"));
+
+        let net_info = format!(" {} {} {} ", prefix, "Network", net);
+        let net_info_colored = format!(" {} {} {} ", prefix.blue(), "Network".bright_black(), net.blue());
+
+        info.push(&net_info_colored, net_info.chars().count());
+
+        // Disk
+        let free_disk = format!("{}", mb_to_tb(reporter.data_collector.get_disks()[0].get("free").expect("Error in getting disk")));
+        let total_disk = format!("{}", mb_to_tb(reporter.data_collector.get_statics().get("disks").unwrap()[0].get("total").expect("Error in getting total disk")));
+
+        let disk_info = format!(" {} {} {} / {} GB ", prefix, "Disk", free_disk, total_disk);
+        let disk_info_colored = format!(" {} {} {} {} {} {} ", prefix.magenta(), "Disk".bright_black(), free_disk.magenta(), "/".bright_black(), total_disk.magenta(), "TB".bright_black());
+        
+        info.push(&disk_info_colored, disk_info.chars().count());
+
+        println!("{}", info.to_string().trim_end());
+
+        execute!(stdout, cursor::RestorePosition).ok();
 
         thread::sleep(time::Duration::from_millis(1000));
     });
