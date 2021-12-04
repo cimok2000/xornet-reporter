@@ -24,7 +24,7 @@ impl DataCollector {
               "name": format!("{:?}", disk.name()),
               "filesystem": format!("{:?}", disk.file_system()),
               "type": format!("{:?}", disk.type_()),
-              "mount":format!("{:?}", disk.mount_point()),
+              "mount":format!("{:?}", disk.mount_point().to_string_lossy().replace('\\', "")),
               "total": disk.total_space(),
             });
 
