@@ -1,5 +1,4 @@
 use colored::Colorize;
-use util::clear_terminal;
 use core::time;
 use crossterm::{cursor, execute, terminal::{EnterAlternateScreen, LeaveAlternateScreen}};
 use parking_lot::Mutex;
