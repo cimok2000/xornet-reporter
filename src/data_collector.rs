@@ -93,10 +93,14 @@ impl DataCollector {
         let mut serialized_disks = Vec::new();
 
         for disk in self.fetcher.disks() {
+            let name = disk.name().to_string_lossy();
+            let mount = disk.mount_point().to_string_lossy();
+
             // Ignore docker disks because they are the same as their host's disk
-            if disk.name().to_string_lossy().contains("docker") {
+            if name.contains("docker") || mount.contains("docker") {
                 continue;
             }
+
             let json = json!({
                 "name": format!("{}", disk.name().to_string_lossy()),
                 "mount":format!("{}", disk.mount_point().to_string_lossy()),
