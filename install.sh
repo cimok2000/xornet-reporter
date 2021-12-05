@@ -34,12 +34,12 @@ function delete_old () {
 }
 
 function install () {
-  curl --silent "https://api.github.com/repos/xornet-cloud/Reporter/releases/latest"  \
-  | grep xornet-reporter.linux_x86_64  \
-  | grep browser_download_url  \
-  | cut -d '"' -f 4  \
-  | sudo wget -i - -o /usr/local/bin/xornet  \
-  | sudo chmod a+x /usr/local/bin/xornet
+  curl --silent "https://api.github.com/repos/xornet-cloud/Reporter/releases/latest" \
+  | grep xornet-reporter.linux_x86_64 \
+  | grep browser_download_url \
+  | cut -d '"' -f 4 \
+  | sudo wget -O /usr/local/bin/xornet -i - \
+  && sudo chmod +x /usr/local/bin/xornet
 
   echo "Finished installing new version"
 }
