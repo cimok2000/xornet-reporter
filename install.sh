@@ -31,7 +31,7 @@ function wget_check () {
 
 
 function delete_old() {
-  sudo rm -f /bin/xornet
+  sudo rm -f /usr/bin/xornet
   echo "Deleted old xornet installation"
 }
 
@@ -41,7 +41,7 @@ function install() {
   | grep xornet-reporter.linux_x86_64  \
   | grep browser_download_url  \
   | cut -d '"' -f 4  \
-  | sudo wget -i - -o /bin/xornet  \
+  | sudo wget -i - -o /usr/bin/xornet  \
 
   echo "Finished installing new version"
 }
