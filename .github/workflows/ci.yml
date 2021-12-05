@@ -119,7 +119,7 @@ jobs:
         with:
           draft: false
           prerelease: false
-          release_name: xornet-reporter v${{ steps.version.outputs.value }}
+          release_name: Xornet Reporter v${{ steps.version.outputs.value }}
           tag_name: v${{ steps.version.outputs.value }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
