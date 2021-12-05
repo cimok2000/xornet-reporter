@@ -87,7 +87,7 @@ impl ArgParser {
                         "xornet-reporter".yellow(),
                     );
                     println!(
-                        "    {} {} --borderless -p * -i 0.5",
+                        "    {} {} -p * -i 0.5",
                         "$".bright_black(),
                         "xornet-reporter".yellow(),
                     );
