@@ -29,7 +29,7 @@ jobs:
     - name: 🧪 Run tests
       run: cargo test --release
     - name: 🗜 Compress with UPX
-      run: target/${{matrix.targetPlatform}}-unknown-linux-gnu/release/xornet-reporter
+      run: upx target/${{matrix.targetPlatform}}-unknown-linux-gnu/release/xornet-reporter
     - name: 💎 Upload artifact
       uses: actions/upload-artifact@v1
       with:
