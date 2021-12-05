@@ -1,6 +1,5 @@
 use arg_parser::ArgParser;
 use core::time;
-use parking_lot::Mutex;
 use std::thread::{self, spawn};
 use ui::Ui;
 use util::arcmutex;
