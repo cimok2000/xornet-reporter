@@ -1,9 +1,10 @@
+use arg_parser::ArgParser;
 use core::time;
-use crossterm::style::Print;
 use std::thread::{self, spawn};
 use ui::Ui;
-use util::{arcmutex, LaunchParams};
+use util::arcmutex;
 
+mod arg_parser;
 mod data_collector;
 mod info_box;
 mod reporter;
@@ -13,7 +14,7 @@ use crate::reporter::Reporter;
 
 fn main() {
     // Get arguments from launch
-    let args = LaunchParams::new();
+    let args = ArgParser::new();
 
     // Setup the terminal
     util::setup_terminal();
