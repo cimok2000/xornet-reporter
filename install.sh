@@ -1,5 +1,5 @@
 
-curl_check () {
+function curl_check () {
   echo "Checking for curl..."
   if command -v curl > /dev/null; then
     echo "Detected curl..."
@@ -14,7 +14,7 @@ curl_check () {
   fi
 }
 
-wget_check () {
+function wget_check () {
   echo "Checking for wget..."
   if command -v wget > /dev/null; then
     echo "Detected wget..."
@@ -30,13 +30,13 @@ wget_check () {
 }
 
 
-delete_old() {
+function delete_old() {
   sudo rm -f /bin/xornet
   echo "Deleted old xornet installation"
 }
 
 
-install(){
+function install() {
   curl --silent "https://api.github.com/repos/xornet-cloud/Reporter/releases/latest"  \
   | grep xornet-reporter.linux_x86_64  \
   | grep browser_download_url  \
@@ -47,11 +47,11 @@ install(){
 }
 
 
-main() {
-  curl_check
-  wget_check
-  delete_old
-  install
+function main() {
+  curl_check();
+  wget_check();
+  delete_old();
+  install();
   echo "Installtion finished"
 }
 
