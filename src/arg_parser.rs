@@ -91,6 +91,11 @@ impl ArgParser {
                         "$".bright_black(),
                         "xornet-reporter".yellow(),
                     );
+                    println!(
+                        "\n    {}",
+                        "More info at https://github.com/xornet-cloud/Reporter".bright_black()
+                    );
+
                     println!();
                     std::process::exit(0);
                 }
