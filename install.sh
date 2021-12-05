@@ -42,7 +42,7 @@ function install() {
   | grep browser_download_url  \
   | cut -d '"' -f 4  \
   | sudo wget -i - -o /usr/bin/xornet  \
-  | chmod +x /usr/bin/xornet
+  | sudo chmod +x /usr/bin/xornet
 
   echo "Finished installing new version"
 }
