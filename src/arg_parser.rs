@@ -37,7 +37,11 @@ impl ArgParser {
             match arg {
                 "-h" | "--help" => {
                     println!("\n{} Usage:", "●".green());
-                    println!("    xornet-reporter {}", "[options]".bright_black());
+                    println!(
+                        "    {} {}",
+                        "xornet-reporter".yellow(),
+                        "[options]".bright_black()
+                    );
                     println!("\n{} Options:", "●".blue());
                     println!(
                         "    -h,  --help                         : {}",
@@ -78,9 +82,22 @@ impl ArgParser {
                         "Colorless style".white()
                     );
                     println!("\n{} Examples:", "●".magenta());
-                    println!("    {} xornet-reporter", "$".bright_black());
-                    println!("    {} xornet-reporter -b ", "$".bright_black());
-                    println!("    {} xornet-reporter -p \">\"", "$".bright_black());
+                    println!("    {} {}", "$".bright_black(), "xornet-reporter".yellow());
+                    println!(
+                        "    {} {} -i 0.25",
+                        "$".bright_black(),
+                        "xornet-reporter".yellow(),
+                    );
+                    println!(
+                        "    {} {} -p \">\"",
+                        "$".bright_black(),
+                        "xornet-reporter".yellow(),
+                    );
+                    println!(
+                        "    {} {} --borderless -p * -i 0.5",
+                        "$".bright_black(),
+                        "xornet-reporter".yellow(),
+                    );
                     println!();
                     std::process::exit(0);
                 }
