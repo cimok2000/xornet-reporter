@@ -1,5 +1,10 @@
 ![Xornet Logo](https://cdn.discordapp.com/attachments/851974319370010655/854669456793534494/unknown.png)
 
+# ⚡ Installation
+```bash
+curl -s https://raw.githubusercontent.com/xornet-cloud/Reporter/main/install.sh | sudo bash
+```
+
 # Reporter
 This is the data collector that gets your system's state and sends it to the backend, it can also be used as a pure system stat inspector without needing to connect it to Xornet
 
