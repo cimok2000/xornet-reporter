@@ -51,7 +51,6 @@ main() {
   curl_check
   delete_old
   install
-  clear
   echo "Installtion finished"
 }
 
