@@ -1,11 +1,10 @@
-use std::sync::Arc;
+use std::{io::Write, sync::Arc};
 
 use colored::Colorize;
-use parking_lot::{Mutex, MutexGuard};
+use parking_lot::Mutex;
 use serde_json::Value;
 
 use crate::{
-    info_box,
     reporter::Reporter,
     util::{self, bytes_to_gb, bytes_to_kb, trim_one_character},
 };
@@ -13,68 +12,45 @@ use crate::{
 pub struct Ui {}
 
 impl Ui {
-    pub fn new(
-        prefix: &str,
-        show_border: bool,
-        no_clear: bool,
-        mut reporter: MutexGuard<Reporter>,
-    ) -> Self {
-        let mut info = info_box::InfoBox {
-            pushed_lines: Vec::new(),
-            pushed_len: Vec::new(),
-            longest_line: 0,
-            border: show_border,
-        };
-
-        // Header
-        let header = format!(" Xornet Reporter v{} ", env!("CARGO_PKG_VERSION"));
-        if show_border {
-            info.push(&header.bright_black().to_string(), header.len());
-            info.push(&" ".to_owned(), " ".len());
-        };
-
-        // CPU
+    pub fn get_cpu(prefix: &str, reporter: Arc<Mutex<Reporter>>) -> String {
         let cpu = format!(
             "{}",
-            reporter.data_collector.get_cpu()[0]
+            reporter.lock().data_collector.get_cpu()[0]
                 .get("cpu_usage")
                 .expect("Error in getting cpu")
         );
-
-        let cpu_info = format!(" {} CPU       {:.2}% ", prefix.clone(), cpu);
-        let cpu_info_colored = format!(
-            " {} {}       {:.2}{} ",
+        return format!(
+            " {} {}       {:.5}{} ",
             prefix.red(),
             "CPU".bright_black(),
             cpu.red(),
             "%".bright_black()
         );
+    }
 
-        info.push(&cpu_info_colored, cpu_info.chars().count());
-
-        // Process Count
+    pub fn get_process(prefix: &str, reporter: Arc<Mutex<Reporter>>) -> String {
         let proc_count = format!(
             "{}",
             reporter
+                .lock()
                 .data_collector
                 .get_total_process_count()
                 .to_string()
         );
-        let process_count = format!(" {} Processes {} ", prefix, proc_count);
-        let process_count_colored = format!(
+        return format!(
             " {} {} {} ",
             prefix.yellow(),
             "Processes".bright_black(),
             proc_count.yellow()
         );
+    }
 
-        info.push(&process_count_colored, process_count.chars().count());
-
-        // Memory
+    pub fn get_memory(prefix: &str, reporter: Arc<Mutex<Reporter>>) -> String {
         let used_memory = format!(
             "{}",
             bytes_to_kb(
                 reporter
+                    .lock()
                     .data_collector
                     .get_ram()
                     .get("used_memory")
@@ -85,6 +61,7 @@ impl Ui {
             "{}",
             bytes_to_kb(
                 reporter
+                    .lock()
                     .data_collector
                     .get_ram()
                     .get("total_memory")
@@ -92,11 +69,7 @@ impl Ui {
             )
         );
 
-        let mem_info = format!(
-            " {} {}    {} / {} MB ",
-            prefix, "Memory", used_memory, total_memory
-        );
-        let mem_info_colored = format!(
+        return format!(
             " {} {}    {} {} {} {} ",
             prefix.green(),
             "Memory".bright_black(),
@@ -105,15 +78,14 @@ impl Ui {
             total_memory.green(),
             "MB".bright_black()
         );
+    }
 
-        info.push(&mem_info_colored, mem_info.chars().count());
+    pub fn get_nics(prefix: &str, reporter: Arc<Mutex<Reporter>>) -> String {
+        let nics_header = format!(" {} {} \n", prefix.cyan(), "NICs".bright_black());
+        let nics = reporter.lock().data_collector.get_network();
 
-        // Print ● NICs
-        let net_info_header = format!(" {} {}", prefix, "NICs");
-        let net_info_header_colored = format!(" {} {}", prefix.blue(), "NICs".bright_black());
-        info.push(&net_info_header_colored, net_info_header.chars().count());
-
-        let nics = reporter.data_collector.get_network();
+        let mut nics_info = String::new();
+        nics_info.push_str(&nics_header);
         for i in 0..nics.len() {
             let nic = &nics[i];
 
@@ -126,25 +98,25 @@ impl Ui {
                     .to_string(),
             );
 
-            let net_info = format!("     {}  {} {} {} {}", name, rx, "rx", tx, "tx");
-            let net_info_colored = format!(
-                "     {}  {} {} {} {}",
+            nics_info.push_str(&format!(
+                "     {}  {} {} {} {}\n",
                 name.bright_black(),
                 rx.blue(),
                 "rx".bright_black(),
                 tx.blue(),
                 "tx".bright_black(),
-            );
-
-            info.push(&net_info_colored, net_info.chars().count());
+            ));
         }
 
-        // Print ● Disks
-        let disk_info_header = format!(" {} {}", prefix, "Disks");
-        let disk_info_header_colored = format!(" {} {}", prefix.magenta(), "Disks".bright_black());
-        info.push(&disk_info_header_colored, disk_info_header.chars().count());
+        return nics_info.trim_end().to_string();
+    }
 
-        let disks = reporter.data_collector.get_disks();
+    pub fn get_disk(prefix: &str, reporter: Arc<Mutex<Reporter>>) -> String {
+        let disks_header = format!(" {} {} \n", prefix.magenta(), "Disks".bright_black());
+        let disks = reporter.lock().data_collector.get_disks();
+
+        let mut disks_list = String::new();
+        disks_list.push_str(&disks_header);
         for disk in disks {
             let disk_name = trim_one_character(
                 &disk
@@ -163,46 +135,57 @@ impl Ui {
                 "{}",
                 bytes_to_gb(disk.get("total").expect("Error in getting total disk"))
             );
-            let disk_info = format!("     {}   {} / {} GB ", disk_name, used_disk, total_disk);
-            let disk_info_colored = format!(
-                "     {}   {} {} {} {} ",
+            let disk_info = format!(
+                "     {}   {} {} {} {}\n",
                 disk_name.bright_black(),
                 used_disk.magenta(),
                 "/".bright_black(),
                 total_disk.magenta(),
                 "GB".bright_black()
             );
-
-            info.push(&disk_info_colored, disk_info.chars().count());
+            disks_list.push_str(&disk_info);
         }
 
-        // ● Disks
-        //     C: 378 / 465 GB
-        //     D: 378 / 465 GB
+        return disks_list.trim_end().to_string();
+    }
 
-        info.push(&" ".to_owned(), " ".len());
-
-        // if (connected) {
-        // con = "coneted".gren()
-        // } else {
-        // con = "not cenod".black()
-        // }
-        // Status Ratted 💀
+    pub fn get_connection(prefix: &str, reporter: Arc<Mutex<Reporter>>) -> String {
         let connection_status = format!("{}", "Disconnected");
-        let con_info = format!(" {} Status    {} ", prefix, connection_status);
-        let con_info_colored = format!(
+        let con_info = format!(
             " {} {}    {} ",
             prefix.bright_black(),
             "Status".bright_black(),
             connection_status.red()
         );
-        info.push(&con_info_colored, con_info.chars().count());
 
-        println!("{}", info.to_string().trim_end());
+        return con_info;
+    }
+
+    pub fn header() -> String {
+        return format!(" Xornet Reporter v{} ", env!("CARGO_PKG_VERSION"))
+            .bright_black()
+            .to_string();
+    }
+
+    pub fn new(prefix: &str, no_clear: bool, reporter: Arc<Mutex<Reporter>>) -> Self {
+        let info = [
+            Ui::header(),
+            Ui::get_cpu(prefix, reporter.clone()),
+            Ui::get_memory(prefix, reporter.clone()),
+            Ui::get_process(prefix, reporter.clone()),
+            Ui::get_nics(prefix, reporter.clone()),
+            Ui::get_disk(prefix, reporter.clone()),
+            "".to_string(),
+            Ui::get_connection(prefix, reporter.clone()),
+        ];
+
+        println!("{}", info.join("\n"));
+
+        std::io::stdout().flush().expect("Couldn't flush stdout");
 
         // Reset the cursor back to 0, 0
         if !no_clear {
-            util::reset_cursor()
+            util::reset_cursor();
         };
 
         return Self {};

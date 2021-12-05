@@ -1,12 +1,12 @@
 use arg_parser::ArgParser;
 use core::time;
+use parking_lot::Mutex;
 use std::thread::{self, spawn};
 use ui::Ui;
 use util::arcmutex;
 
 mod arg_parser;
 mod data_collector;
-mod info_box;
 mod reporter;
 mod ui;
 mod util;
@@ -18,10 +18,6 @@ fn main() {
 
     // Setup the terminal
     util::setup_terminal();
-
-    // Cosmetic display configuration
-    let prefix = args.prefix;
-    let show_border = !args.borderless;
 
     // Start the reporter
     let reporter = arcmutex(Reporter::new());
@@ -35,15 +31,11 @@ fn main() {
     //     "{} Info: {}",
     //     prefix.white(),
     //     reporter.lock().data_collector.get_statics()
-    // );
+    // ); nooo :()
 
-    // Todo: make these run on a loop with unique intervals for each
-    // that the user can set in a config
-    let reporter = reporter.clone();
     let data_collection_handle = spawn(move || loop {
-        let reporter = reporter.lock();
         if !args.silent {
-            let ui = Ui::new(&prefix, show_border, args.no_clear, reporter);
+            let ui = Ui::new(&args.prefix, args.no_clear, reporter.clone());
         }
         // Wait for interval
         thread::sleep(time::Duration::from_secs_f64(args.interval));

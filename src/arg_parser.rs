@@ -2,7 +2,6 @@ use colored::Colorize;
 
 /// The structure of the launch parameters.
 pub struct ArgParser {
-    pub borderless: bool,
     pub prefix: String,
     pub colorless: bool,
     pub interval: f64,
@@ -23,7 +22,6 @@ impl ArgParser {
     /// * `std::env::VarError` - If the environment variable is not set
     pub fn new() -> ArgParser {
         let mut arg_parser = ArgParser {
-            borderless: false,
             prefix: "●".to_string(),
             interval: 1.0,
             colorless: false,
@@ -55,11 +53,6 @@ impl ArgParser {
                         "    -i,  --interval    {}     : {}",
                         "(default: 1)".bright_black(),
                         "Data collection interval in seconds".white()
-                    );
-                    println!(
-                        "    -b,  --borderless  {} : {}",
-                        "(default: false)".bright_black(),
-                        "Borderless style".white()
                     );
                     println!(
                         "    -p,  --prefix      {}   : {}",
@@ -100,9 +93,6 @@ impl ArgParser {
                     );
                     println!();
                     std::process::exit(0);
-                }
-                "-b" | "--borderless" => {
-                    arg_parser.borderless = true;
                 }
                 "-nc" | "--no-clear" => {
                     arg_parser.no_clear = true;
