@@ -14,6 +14,7 @@ pub struct LaunchParams {
     pub colorless: bool,
     pub interval: f64,
     pub no_clear: bool,
+    pub silent: bool,
 }
 
 impl LaunchParams {
@@ -33,6 +34,7 @@ impl LaunchParams {
             prefix: "●".to_string(),
             interval: 1.0,
             colorless: false,
+            silent: false,
             no_clear: false,
         };
         let args: Vec<String> = std::env::args().collect();
@@ -73,6 +75,11 @@ impl LaunchParams {
                         "Disables the terminal clearing on each interval".white()
                     );
                     println!(
+                        "    -s,  --silent   {} : {}",
+                        "(default: false)".bright_black(),
+                        "Enables simple terminal output".white()
+                    );
+                    println!(
                         "    -c,  --colorless   {} : {}",
                         "(default: false)".bright_black(),
                         "Colorless style".white()
@@ -89,6 +96,9 @@ impl LaunchParams {
                 }
                 "-nc" | "--no-clear" => {
                     launch_params.no_clear = true;
+                }
+                "-s" | "--silent" => {
+                    launch_params.silent = true;
                 }
                 "-c" | "--colorless" => {
                     println!("{}", "Colorless parameter isn't implemented".red());
