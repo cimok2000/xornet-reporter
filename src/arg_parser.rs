@@ -68,7 +68,7 @@ impl ArgParser {
                         "Disables the terminal clearing on each interval".white()
                     );
                     println!(
-                        "    -s,  --silent   {} : {}",
+                        "    -s,  --silent      {} : {}",
                         "(default: false)".bright_black(),
                         "Enables simple terminal output".white()
                     );
