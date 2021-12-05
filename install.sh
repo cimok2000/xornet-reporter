@@ -49,6 +49,7 @@ install(){
 
 main() {
   curl_check
+  wget_check
   delete_old
   install
   echo "Installtion finished"
