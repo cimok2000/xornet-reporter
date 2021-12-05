@@ -31,7 +31,7 @@ wget_check () {
 
 
 delete_old() {
-  rm -f /bin/xornet
+  sudo rm -f /bin/xornet
   echo "Deleted old xornet installation"
 }
 
