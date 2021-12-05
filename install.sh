@@ -48,10 +48,10 @@ function install() {
 
 
 function main() {
-  curl_check();
-  wget_check();
-  delete_old();
-  install();
+  curl_check
+  wget_check
+  delete_old
+  install
   echo "Installtion finished"
 }
 
