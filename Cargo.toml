@@ -1,6 +1,6 @@
 [package]
 name = "xornet-reporter"
-version = "0.2.13"
+version = "0.2.14"
 edition = "2021"
 
 # Optimize for size
