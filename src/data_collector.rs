@@ -1,16 +1,22 @@
+use nvml::NVML;
 use serde_json::{json, Value};
 use sysinfo::{DiskExt, NetworkExt, ProcessorExt, System, SystemExt};
 
 #[derive(Debug)]
 pub struct DataCollector {
+    pub gpu_fetcher: NVML,
     pub fetcher: System,
 }
 
 impl DataCollector {
     /// Creates a new data collector
     pub fn new() -> Self {
+        let gpu_fetcher = NVML::init().unwrap();
         let fetcher = System::new_all();
-        return Self { fetcher };
+        return Self {
+            gpu_fetcher,
+            fetcher,
+        };
     }
 
     /// Gets the total amount of processes running
@@ -85,6 +91,26 @@ impl DataCollector {
           "available_memory": self.fetcher.available_memory(),
           "used_memory": self.fetcher.used_memory(),
           "total_memory": self.fetcher.total_memory(),
+        });
+    }
+
+    pub fn get_gpu(&mut self) -> Value {
+        // Get the first `Device` (GPU) in the system
+        let device = self.gpu_fetcher.device_by_index(0).unwrap();
+
+        let brand = format!("{:?}", device.brand().unwrap()); // GeForce on my system
+        let util = device.encoder_utilization().unwrap(); // Currently 0 on my system; Not encoding anything
+        let memory_info = device.memory_info().unwrap(); // Currently 1.63/6.37 GB used on my system
+
+        return json!({
+            "brand": brand,
+            "gpu_usage": util.utilization,
+            "power_usage": device.power_usage().unwrap(),
+            "vram": {
+                "free": memory_info.free,
+                "used": memory_info.used,
+                "total": memory_info.total
+            }
         });
     }
 

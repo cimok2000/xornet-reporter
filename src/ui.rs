@@ -6,7 +6,7 @@ use serde_json::Value;
 
 use crate::{
     reporter::Reporter,
-    util::{self, bytes_to_gb, bytes_to_kb, trim_one_character},
+    util::{self, bytes_to_gb, bytes_to_kb, bytes_to_mb, trim_one_character},
 };
 
 pub struct Ui {}
@@ -25,6 +25,31 @@ impl Ui {
             "CPU".bright_black(),
             cpu.red(),
             "%".bright_black()
+        );
+    }
+
+    pub fn get_gpu(prefix: &str, reporter: Arc<Mutex<Reporter>>) -> String {
+        let gpu = reporter.lock().data_collector.get_gpu();
+
+        let gpu_usage = format!("{}", gpu.get("gpu_usage").unwrap());
+        let gpu_power_usage = format!("{}", gpu.get("power_usage").unwrap());
+
+        let gpu_vram = gpu.get("vram").unwrap();
+        let gpu_vram_used = format!("{}", bytes_to_mb(gpu_vram.get("used").unwrap()));
+        let gpu_vram_total = format!("{}", bytes_to_mb(gpu_vram.get("total").unwrap()));
+
+        return format!(
+            " {} {}       {:.5}{} {}{} {} {} {} {}",
+            prefix.cyan(),
+            "GPU".bright_black(),
+            gpu_usage.cyan(),
+            "%".bright_black(),
+            gpu_power_usage.cyan(),
+            "mW".bright_black(),
+            gpu_vram_used.cyan(),
+            "/".bright_black(),
+            gpu_vram_total.cyan(),
+            "MB".bright_black(),
         );
     }
 
@@ -173,6 +198,7 @@ impl Ui {
             Ui::get_cpu(prefix, reporter.clone()),
             Ui::get_memory(prefix, reporter.clone()),
             Ui::get_process(prefix, reporter.clone()),
+            Ui::get_gpu(prefix, reporter.clone()),
             Ui::get_nics(prefix, reporter.clone()),
             Ui::get_disk(prefix, reporter.clone()),
             "".to_string(),

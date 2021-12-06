@@ -4,6 +4,8 @@ use std::thread::{self, spawn};
 use ui::Ui;
 use util::arcmutex;
 
+extern crate nvml_wrapper as nvml;
+
 mod arg_parser;
 mod data_collector;
 mod reporter;
