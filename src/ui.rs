@@ -64,9 +64,9 @@ impl Ui {
         );
         return format!(
             " {} {} {} ",
-            prefix.yellow(),
+            prefix.green(),
             "Processes".bright_black(),
-            proc_count.yellow()
+            proc_count.green()
         );
     }
 
@@ -96,11 +96,11 @@ impl Ui {
 
         return format!(
             " {} {}    {} {} {} {} ",
-            prefix.green(),
+            prefix.yellow(),
             "Memory".bright_black(),
-            used_memory.green(),
+            used_memory.yellow(),
             "/".bright_black(),
-            total_memory.green(),
+            total_memory.yellow(),
             "MB".bright_black()
         );
     }
