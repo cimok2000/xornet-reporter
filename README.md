@@ -1,8 +1,14 @@
 ![Xornet Logo](https://cdn.discordapp.com/attachments/851974319370010655/854669456793534494/unknown.png)
 
 # ⚡ Installation
+## 🐧 Linux
 ```bash
 curl -s https://raw.githubusercontent.com/xornet-cloud/Reporter/main/install.sh | sudo bash
+```
+
+## 🌬 Windows
+```powershell
+Invoke-Command -ScriptBlock ([Scriptblock]::Create((Invoke-WebRequest -UseBasicParsing 'https://raw.githubusercontent.com/xornet-cloud/Reporter/main/install.ps1').Content))
 ```
 
 # Reporter
