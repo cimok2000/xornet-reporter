@@ -29,11 +29,9 @@ fn main() {
     }
 
     let data_collection_handle = spawn(move || loop {
-        if args.silent {
-            return;
+        if !args.silent {
+            let _ui = Ui::new(&args.prefix, args.no_clear, reporter.clone());
         }
-
-        let _ui = Ui::new(&args.prefix, args.no_clear, reporter.clone());
 
         thread::sleep(time::Duration::from_secs_f64(args.interval));
     });
