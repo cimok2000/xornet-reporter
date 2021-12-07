@@ -2,14 +2,21 @@ use anyhow::Result;
 use nvml::NVML;
 use sysinfo::System;
 use sysinfo::{DiskExt, NetworkExt, ProcessorExt, SystemExt};
+use thiserror::Error;
 
 use crate::types::{
     CPUStats, DiskStats, GPUStats, NetworkInterfaceStats, RAMStats, StaticCPUData, StaticData,
 };
 
+#[derive(Error, Debug)]
+pub enum DataCollectorError {
+    #[error("GPU usage unavailable")]
+    NoGPU,
+}
+
 #[derive(Debug)]
 pub struct DataCollector {
-    pub gpu_fetcher: NVML,
+    pub gpu_fetcher: Option<NVML>,
     pub fetcher: System,
 }
 impl DataCollector {
@@ -17,9 +24,8 @@ impl DataCollector {
     pub fn new() -> Result<Self> {
         let fetcher = System::new_all();
 
-        // How to fix @Bluskript
-        // This guy panics :whysphere:
-        let gpu_fetcher = NVML::init()?;
+        // This guy panics on systems without nvidia
+        let gpu_fetcher = NVML::init().ok();
 
         return Ok(Self {
             gpu_fetcher,
@@ -106,8 +112,10 @@ impl DataCollector {
     }
 
     pub fn get_gpu(&mut self) -> Result<GPUStats> {
+        let gpu_fetcher = self.gpu_fetcher.as_ref().ok_or(DataCollectorError::NoGPU)?;
+
         // Get the first `Device` (GPU) in the system
-        let device = self.gpu_fetcher.device_by_index(0)?;
+        let device = gpu_fetcher.device_by_index(0)?;
 
         let brand = format!("{:?}", device.brand()?); // GeForce on my system
         let util = device.encoder_utilization()?; // Currently 0 on my system; Not encoding anything

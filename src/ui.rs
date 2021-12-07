@@ -166,6 +166,7 @@ impl Ui {
 
         let mut string = "".to_string();
 
+        // Handle errors from the data collector here
         for attempt in attempts {
             match attempt {
                 Ok(data) => string.push_str(&(data + "\n")),
