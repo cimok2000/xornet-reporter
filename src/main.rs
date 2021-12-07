@@ -9,6 +9,7 @@ extern crate nvml_wrapper as nvml;
 mod arg_parser;
 mod data_collector;
 mod reporter;
+mod types;
 mod ui;
 mod util;
 use crate::reporter::Reporter;

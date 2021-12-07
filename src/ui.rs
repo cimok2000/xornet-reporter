@@ -1,26 +1,12 @@
 use anyhow::Result;
 use colored::Colorize;
 use parking_lot::Mutex;
-use serde_json::Value;
 use std::{io::Write, sync::Arc};
-use thiserror::Error;
 
 use crate::{
     reporter::Reporter,
     util::{self, bytes_to_gb, bytes_to_kb, bytes_to_mb, trim_one_character},
 };
-
-#[derive(Error, Debug)]
-pub enum UiError {
-    #[error("CPU usage unavailable")]
-    NoCPU,
-    #[error("GPU usage unavailable")]
-    NoGPU,
-    #[error("Disk information unavailable")]
-    NoDisk,
-    #[error("RAM information unavailable")]
-    NoRAM,
-}
 
 pub struct Ui {}
 

@@ -1,68 +1,17 @@
 use anyhow::Result;
 use nvml::NVML;
-use serde::Serialize;
-use sysinfo::{DiskExt, NetworkExt, ProcessorExt, System, SystemExt};
+use sysinfo::System;
+use sysinfo::{DiskExt, NetworkExt, ProcessorExt, SystemExt};
+
+use crate::types::{
+    CPUStats, DiskStats, GPUStats, NetworkInterfaceStats, RAMStats, StaticCPUData, StaticData,
+};
 
 #[derive(Debug)]
 pub struct DataCollector {
     pub gpu_fetcher: NVML,
     pub fetcher: System,
 }
-
-#[derive(Serialize)]
-pub struct StaticData {
-    pub cpu: StaticCPUData,
-}
-
-#[derive(Serialize)]
-pub struct NetworkInterfaceStats {
-    pub name: String,
-    pub tx: u64,
-    pub rx: u64,
-}
-
-#[derive(Serialize)]
-pub struct CPUStats {
-    pub cpu_usage: f32,
-    pub frequency: u64,
-}
-
-#[derive(Serialize)]
-pub struct RAMStats {
-    pub free_memory: u64,
-    pub available_memory: u64,
-    pub used_memory: u64,
-    pub total_memory: u64,
-}
-
-#[derive(Serialize)]
-pub struct GPUStats {
-    pub brand: String,
-    pub gpu_usage: u32,
-    pub power_usage: u32,
-    pub memory_free: u64,
-    pub memory_used: u64,
-    pub memory_total: u64,
-}
-
-#[derive(Serialize)]
-pub struct DiskStats {
-    pub name: String,
-    pub mount: String,
-    pub filesystem: String,
-    pub disk_type: String,
-    pub free: u64,
-    pub total: u64,
-    pub used: u64,
-}
-
-#[derive(Serialize)]
-pub struct StaticCPUData {
-    pub name: String,
-    pub vendor_id: String,
-    pub brand: String,
-}
-
 impl DataCollector {
     /// Creates a new data collector
     pub fn new() -> Result<Self> {
@@ -84,8 +33,10 @@ impl DataCollector {
         return Ok(self.fetcher.processes().len());
     }
 
-    /// Gets all the static information about the system
-    /// that can't change in runtime
+    /**
+    Gets all the static information about the system
+    that can't change in runtime
+    */
     pub fn _get_statics(&self) -> Result<StaticData> {
         let processor_info = self.fetcher.global_processor_info();
 
