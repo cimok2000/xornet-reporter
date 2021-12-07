@@ -107,8 +107,8 @@ impl ArgParser {
                 }
                 "-c" | "--colorless" => {
                     println!("{}", "Colorless parameter isn't implemented".red());
-                    std::process::exit(1);
                     arg_parser.colorless = true;
+                    std::process::exit(1);
                 }
                 "-v" | "--version" => {
                     println!("xornet-reporter v{}", env!("CARGO_PKG_VERSION"));

@@ -36,7 +36,7 @@ fn main() {
 
     let data_collection_handle = spawn(move || loop {
         if !args.silent {
-            let ui = Ui::new(&args.prefix, args.no_clear, reporter.clone());
+            let _ui = Ui::new(&args.prefix, args.no_clear, reporter.clone());
         }
         // Wait for interval
         thread::sleep(time::Duration::from_secs_f64(args.interval));

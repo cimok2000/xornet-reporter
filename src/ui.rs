@@ -1,4 +1,4 @@
-use anyhow::{Error, Result};
+use anyhow::Result;
 use colored::Colorize;
 use parking_lot::Mutex;
 use serde_json::Value;
@@ -171,7 +171,7 @@ impl Ui {
         return Ok(disks_list.trim_end().to_string());
     }
 
-    pub fn get_connection(prefix: &str, reporter: Arc<Mutex<Reporter>>) -> Result<String> {
+    pub fn get_connection(prefix: &str, _reporter: Arc<Mutex<Reporter>>) -> Result<String> {
         let connection_status = format!("{}", "Disconnected");
         let con_info = format!(
             " {} {}    {} ",
