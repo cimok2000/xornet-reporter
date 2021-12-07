@@ -3,23 +3,22 @@ use crossterm::{
     terminal::{EnterAlternateScreen, LeaveAlternateScreen},
 };
 use parking_lot::Mutex;
-use serde_json::Value;
 use std::{io::stdout, sync::Arc};
 
 pub fn trim_one_character(string: &str) -> String {
     return string[1..string.len() - 1].to_string();
 }
 
-pub fn bytes_to_kb(bytes: &Value) -> String {
-    return (bytes.as_i64().unwrap() / 1024).to_string();
+pub fn bytes_to_kb(bytes: u64) -> u64 {
+    return bytes / 1024;
 }
 
-pub fn bytes_to_mb(bytes: &Value) -> String {
-    return (bytes.as_i64().unwrap() / 1024 / 1024).to_string();
+pub fn bytes_to_mb(bytes: u64) -> u64 {
+    return bytes / 1024 / 1024;
 }
 
-pub fn bytes_to_gb(bytes: &Value) -> String {
-    return (bytes.as_i64().unwrap() / 1024 / 1024 / 1024).to_string();
+pub fn bytes_to_gb(bytes: u64) -> u64 {
+    return bytes / 1024 / 1024 / 1024;
 }
 
 pub fn arcmutex<T>(item: T) -> Arc<Mutex<T>> {

@@ -21,24 +21,19 @@ fn main() {
     util::setup_terminal();
 
     // Start the reporter
-    let reporter = arcmutex(Reporter::new());
+    let reporter = arcmutex(Reporter::new().unwrap());
 
     if args.silent {
         println!("Xornet Reporter Started");
     }
 
-    // Get all static shit
-    // println!(
-    //     "{} Info: {}",
-    //     prefix.white(),
-    //     reporter.lock().data_collector.get_statics()
-    // ); nooo :()
-
     let data_collection_handle = spawn(move || loop {
-        if !args.silent {
-            let _ui = Ui::new(&args.prefix, args.no_clear, reporter.clone());
+        if args.silent {
+            return;
         }
-        // Wait for interval
+
+        let _ui = Ui::new(&args.prefix, args.no_clear, reporter.clone());
+
         thread::sleep(time::Duration::from_secs_f64(args.interval));
     });
 

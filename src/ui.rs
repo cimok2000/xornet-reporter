@@ -16,36 +16,33 @@ pub enum UiError {
     NoCPU,
     #[error("GPU usage unavailable")]
     NoGPU,
+    #[error("Disk information unavailable")]
+    NoDisk,
+    #[error("RAM information unavailable")]
+    NoRAM,
 }
 
 pub struct Ui {}
 
 impl Ui {
     pub fn get_cpu(prefix: &str, reporter: Arc<Mutex<Reporter>>) -> Result<String> {
-        let result = reporter.lock().data_collector.get_cpu();
+        let result = reporter.lock().data_collector.get_cpu()?;
+        let cpu_usage = result[0].cpu_usage;
 
-        match result {
-            Ok(result) => {
-                return Ok(format!(
-                    " {} {}       {:.5}{} ",
-                    prefix.red(),
-                    "CPU".bright_black(),
-                    format!("{}", result[0].get("cpu_usage").ok_or(|| UiError::NoCPU)?).red(),
-                    "%".bright_black()
-                ));
-            }
-            Err(error) => return Ok(format!("{}", UiError::NoCPU)),
-        };
+        Ok(format!(
+            " {} {}       {:.5}{} ",
+            prefix.red(),
+            "CPU".bright_black(),
+            format!("{}", cpu_usage).red(),
+            "%".bright_black()
+        ))
     }
 
     pub fn get_gpu(prefix: &str, reporter: Arc<Mutex<Reporter>>) -> Result<String> {
-        let gpu = reporter.lock().data_collector.get_gpu();
-
-        let gpu_power_usage = format!("{}", gpu.get("power_usage").unwrap());
-
-        let gpu_vram = gpu.get("vram").unwrap();
-        let gpu_vram_used = format!("{}", bytes_to_mb(gpu_vram.get("used").unwrap()));
-        let gpu_vram_total = format!("{}", bytes_to_mb(gpu_vram.get("total").unwrap()));
+        let gpu = reporter.lock().data_collector.get_gpu()?;
+        let gpu_power_usage = format!("{}", gpu.power_usage);
+        let gpu_vram_used = format!("{}", bytes_to_mb(gpu.memory_used));
+        let gpu_vram_total = format!("{}", bytes_to_mb(gpu.memory_total));
 
         return Ok(format!(
             " {} {}       {:.5}{} {} {} {} {}",
@@ -66,7 +63,7 @@ impl Ui {
             reporter
                 .lock()
                 .data_collector
-                .get_total_process_count()
+                .get_total_process_count()?
                 .to_string()
         );
         return Ok(format!(
@@ -80,25 +77,11 @@ impl Ui {
     pub fn get_memory(prefix: &str, reporter: Arc<Mutex<Reporter>>) -> Result<String> {
         let used_memory = format!(
             "{}",
-            bytes_to_kb(
-                reporter
-                    .lock()
-                    .data_collector
-                    .get_ram()
-                    .get("used_memory")
-                    .expect("Error in getting memory")
-            )
+            bytes_to_kb(reporter.lock().data_collector.get_ram()?.used_memory)
         );
         let total_memory = format!(
             "{}",
-            bytes_to_kb(
-                reporter
-                    .lock()
-                    .data_collector
-                    .get_ram()
-                    .get("total_memory")
-                    .expect("Error in getting memory")
-            )
+            bytes_to_kb(reporter.lock().data_collector.get_ram()?.total_memory),
         );
 
         return Ok(format!(
@@ -114,7 +97,7 @@ impl Ui {
 
     pub fn get_nics(prefix: &str, reporter: Arc<Mutex<Reporter>>) -> Result<String> {
         let nics_header = format!(" {} {} \n", prefix.cyan(), "NICs".bright_black());
-        let nics = reporter.lock().data_collector.get_network();
+        let nics = reporter.lock().data_collector.get_network()?;
 
         let mut nics_info = String::new();
         nics_info.push_str(&nics_header);
@@ -122,13 +105,9 @@ impl Ui {
             let nic = &nics[i];
 
             // Network
-            let rx = format!("{}", nic.get("rx").expect("Error in getting network"));
-            let tx = format!("{}", nic.get("tx").expect("Error in getting network"));
-            let name = trim_one_character(
-                &nic.get("name")
-                    .unwrap_or(&Value::String("NIC".to_string()))
-                    .to_string(),
-            );
+            let rx = format!("{}", nic.rx);
+            let tx = format!("{}", nic.tx);
+            let name = trim_one_character(&nic.name);
 
             nics_info.push_str(&format!(
                 "     {}  {} {} {} {}\n",
@@ -145,28 +124,15 @@ impl Ui {
 
     pub fn get_disks(prefix: &str, reporter: Arc<Mutex<Reporter>>) -> Result<String> {
         let disks_header = format!(" {} {} \n", prefix.magenta(), "Disks".bright_black());
-        let disks = reporter.lock().data_collector.get_disks();
+        let disks = reporter.lock().data_collector.get_disks()?;
 
         let mut disks_list = String::new();
         disks_list.push_str(&disks_header);
         for disk in disks {
-            let disk_name = trim_one_character(
-                &disk
-                    .get("mount")
-                    .unwrap_or(disk.get("name").expect("Couldn't get disk mount/name"))
-                    .to_string()
-                    .as_str()
-                    .replace("\\", ""),
-            );
+            let disk_name = trim_one_character(&disk.mount.replace("\\", ""));
             // Disk
-            let used_disk = format!(
-                "{}",
-                bytes_to_gb(disk.get("used").expect("Error in getting disk"))
-            );
-            let total_disk = format!(
-                "{}",
-                bytes_to_gb(disk.get("total").expect("Error in getting total disk"))
-            );
+            let used_disk = format!("{}", bytes_to_gb(disk.used));
+            let total_disk = format!("{}", bytes_to_gb(disk.total));
             let disk_info = format!(
                 "     {}   {} {} {} {}\n",
                 disk_name.bright_black(),
