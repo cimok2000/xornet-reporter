@@ -63,13 +63,13 @@ impl DataCollector {
                 continue;
             };
 
-            let json = NetworkInterfaceStats {
+            let nic = NetworkInterfaceStats {
                 name: interface_name.to_string(),
                 tx: data.transmitted(),
                 rx: data.received(),
             };
 
-            nics.push(json);
+            nics.push(nic);
         }
 
         return Ok(nics);
@@ -82,12 +82,12 @@ impl DataCollector {
         self.fetcher.refresh_cpu();
 
         for processor in self.fetcher.processors() {
-            let json = CPUStats {
+            let processor = CPUStats {
                 cpu_usage: processor.cpu_usage(),
                 frequency: processor.frequency(),
             };
 
-            processors.push(json);
+            processors.push(processor);
         }
 
         return Ok(processors);
