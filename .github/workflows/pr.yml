@@ -26,8 +26,8 @@ jobs:
       run: "rustup target add ${{matrix.targetPlatform}}-unknown-linux-gnu"
     - name: 🛠 Build
       run: cargo build --target ${{matrix.targetPlatform}}-unknown-linux-gnu --release
-    - name: 🧪 Run tests
-      run: cargo test --release
+    # - name: 🧪 Run tests
+    #   run: cargo test --release
     - name: 🗜 Compress with UPX
       if: ${{matrix.targetPlatform != 'i686'}}
       run: upx target/${{matrix.targetPlatform}}-unknown-linux-gnu/release/xornet-reporter
@@ -70,8 +70,8 @@ jobs:
       uses: actions/checkout@v2
     - name: 🛠 Build
       run: cargo build --release
-    - name: 🧪 Run tests
-      run: cargo test --release
+    # - name: 🧪 Run tests
+    #   run: cargo test --release
     - name: 💎 Upload artifact
       uses: actions/upload-artifact@v1
       with:
@@ -86,8 +86,8 @@ jobs:
       uses: actions/checkout@v2
     - name: 🛠 Build
       run: cargo build --release
-    - name: 🧪 Run tests
-      run: cargo test --release
+    # - name: 🧪 Run tests
+    #   run: cargo test --release
     - name: 💎 Upload artifact
       uses: actions/upload-artifact@v1
       with:
