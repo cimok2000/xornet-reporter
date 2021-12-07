@@ -693,4 +693,5 @@ dependencies = [
  "parking_lot",
  "serde_json",
  "sysinfo",
+ "thiserror",
 ]

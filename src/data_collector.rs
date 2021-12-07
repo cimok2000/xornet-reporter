@@ -1,46 +1,60 @@
+use anyhow::Result;
 use nvml::NVML;
 use serde_json::{json, Value};
 use sysinfo::{DiskExt, NetworkExt, ProcessorExt, System, SystemExt};
 
 #[derive(Debug)]
 pub struct DataCollector {
-    pub gpu_fetcher: NVML,
+    pub gpu_fetcher: Option<NVML>,
     pub fetcher: System,
 }
 
 impl DataCollector {
     /// Creates a new data collector
     pub fn new() -> Self {
-        let gpu_fetcher = NVML::init().unwrap();
         let fetcher = System::new_all();
-        return Self {
-            gpu_fetcher,
-            fetcher,
-        };
+
+        let check_nvidia = NVML::init();
+
+        match check_nvidia {
+            Ok(gpu_fetcher) => {
+                return Self {
+                    gpu_fetcher: Some(gpu_fetcher),
+                    fetcher,
+                }
+            }
+            Err(err) => {
+                println!("{:?}", err);
+                return Self {
+                    fetcher,
+                    gpu_fetcher: None,
+                };
+            }
+        }
     }
 
     /// Gets the total amount of processes running
-    pub fn get_total_process_count(&mut self) -> usize {
+    pub fn get_total_process_count(&mut self) -> Result<usize> {
         self.fetcher.refresh_processes();
-        return self.fetcher.processes().len();
+        return Ok(self.fetcher.processes().len());
     }
 
     /// Gets all the static information about the system
     /// that can't change in runtime
-    pub fn _get_statics(&self) -> Value {
+    pub fn _get_statics(&self) -> Result<Value> {
         let processor_info = self.fetcher.global_processor_info();
 
-        return json!({
+        return Ok(json!({
           "cpu": {
             "name": processor_info.name(),
             "vendor_id": processor_info.vendor_id(),
             "brand": processor_info.brand(),
           },
-        });
+        }));
     }
 
     /// Gets the current network stats
-    pub fn get_network(&mut self) -> Vec<Value> {
+    pub fn get_network(&mut self) -> Result<Vec<Value>> {
         let mut serialized_networks = Vec::new();
         self.fetcher.refresh_networks();
 
@@ -62,11 +76,11 @@ impl DataCollector {
             serialized_networks.push(json);
         }
 
-        return serialized_networks;
+        return Ok(serialized_networks);
     }
 
     /// Gets the current CPU stats
-    pub fn get_cpu(&mut self) -> Value {
+    pub fn get_cpu(&mut self) -> Result<Value> {
         let mut serialized_processors = Vec::new();
         self.fetcher.refresh_cpu();
 
@@ -79,43 +93,48 @@ impl DataCollector {
             serialized_processors.push(json);
         }
 
-        return Value::Array(serialized_processors);
+        return Ok(Value::Array(serialized_processors));
     }
 
     /// Gets the current RAM stats
-    pub fn get_ram(&mut self) -> Value {
+    pub fn get_ram(&mut self) -> Result<Value> {
         self.fetcher.refresh_memory();
 
-        return json!({
+        return Ok(json!({
           "free_memory": self.fetcher.free_memory(),
           "available_memory": self.fetcher.available_memory(),
           "used_memory": self.fetcher.used_memory(),
           "total_memory": self.fetcher.total_memory(),
-        });
+        }));
     }
 
-    pub fn get_gpu(&mut self) -> Value {
-        // Get the first `Device` (GPU) in the system
-        let device = self.gpu_fetcher.device_by_index(0).unwrap();
+    pub fn get_gpu(&mut self) -> Result<Value> {
+        match &self.gpu_fetcher {
+            Some(gpu_fetcher) => {
+                // Get the first `Device` (GPU) in the system
+                let device = gpu_fetcher.device_by_index(0)?;
 
-        let brand = format!("{:?}", device.brand().unwrap()); // GeForce on my system
-        let util = device.encoder_utilization().unwrap(); // Currently 0 on my system; Not encoding anything
-        let memory_info = device.memory_info().unwrap(); // Currently 1.63/6.37 GB used on my system
+                let brand = format!("{:?}", device.brand()?); // GeForce on my system
+                let util = device.encoder_utilization()?; // Currently 0 on my system; Not encoding anything
+                let memory_info = device.memory_info()?; // Currently 1.63/6.37 GB used on my system
 
-        return json!({
-            "brand": brand,
-            "gpu_usage": util.utilization,
-            "power_usage": device.power_usage().unwrap(),
-            "vram": {
-                "free": memory_info.free,
-                "used": memory_info.used,
-                "total": memory_info.total
+                return Ok(json!({
+                    "brand": brand,
+                    "gpu_usage": util.utilization,
+                    "power_usage": device.power_usage()?,
+                    "vram": {
+                        "free": memory_info.free,
+                        "used": memory_info.used,
+                        "total": memory_info.total
+                    }
+                }));
             }
-        });
+            None => todo!(),
+        }
     }
 
     /// Gets the current DISKS stats
-    pub fn get_disks(&self) -> Vec<Value> {
+    pub fn get_disks(&self) -> Result<Vec<Value>> {
         let mut serialized_disks = Vec::new();
 
         for disk in self.fetcher.disks() {
@@ -139,6 +158,6 @@ impl DataCollector {
 
             serialized_disks.push(json);
         }
-        return serialized_disks;
+        return Ok(serialized_disks);
     }
 }

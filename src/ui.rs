@@ -3,29 +3,39 @@ use colored::Colorize;
 use parking_lot::Mutex;
 use serde_json::Value;
 use std::{io::Write, sync::Arc};
+use thiserror::Error;
 
 use crate::{
     reporter::Reporter,
     util::{self, bytes_to_gb, bytes_to_kb, bytes_to_mb, trim_one_character},
 };
 
+#[derive(Error, Debug)]
+pub enum UiError {
+    #[error("CPU usage unavailable")]
+    NoCPU,
+    #[error("GPU usage unavailable")]
+    NoGPU,
+}
+
 pub struct Ui {}
 
 impl Ui {
     pub fn get_cpu(prefix: &str, reporter: Arc<Mutex<Reporter>>) -> Result<String> {
-        let cpu = format!(
-            "{}",
-            reporter.lock().data_collector.get_cpu()[0]
-                .get("cpu_usage")
-                .expect("Error in getting cpu")
-        );
-        return Ok(format!(
-            " {} {}       {:.5}{} ",
-            prefix.red(),
-            "CPU".bright_black(),
-            cpu.red(),
-            "%".bright_black()
-        ));
+        let result = reporter.lock().data_collector.get_cpu();
+
+        match result {
+            Ok(result) => {
+                return Ok(format!(
+                    " {} {}       {:.5}{} ",
+                    prefix.red(),
+                    "CPU".bright_black(),
+                    format!("{}", result[0].get("cpu_usage").ok_or(|| UiError::NoCPU)?).red(),
+                    "%".bright_black()
+                ));
+            }
+            Err(error) => return Ok(format!("{}", UiError::NoCPU)),
+        };
     }
 
     pub fn get_gpu(prefix: &str, reporter: Arc<Mutex<Reporter>>) -> Result<String> {

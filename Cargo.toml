@@ -22,6 +22,7 @@ nvml-wrapper = "0.7.0"
 parking_lot = "0.11.2"
 cascade = "1.0.0"
 anyhow = "1.0.51"
+thiserror = "1.0.30"
 
 # User interface
 colored = "2.0.0"
