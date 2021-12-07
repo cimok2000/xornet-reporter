@@ -1,6 +1,6 @@
 [package]
 name = "xornet-reporter"
-version = "0.3.1"
+version = "0.3.2"
 edition = "2021"
 
 # Optimize for size
@@ -21,6 +21,7 @@ battery = "0.7.8"
 nvml-wrapper = "0.7.0"
 parking_lot = "0.11.2"
 cascade = "1.0.0"
+anyhow = "1.0.51"
 
 # User interface
 colored = "2.0.0"

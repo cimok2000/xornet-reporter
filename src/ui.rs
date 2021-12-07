@@ -1,8 +1,8 @@
-use std::{io::Write, sync::Arc};
-
+use anyhow::{Error, Result};
 use colored::Colorize;
 use parking_lot::Mutex;
 use serde_json::Value;
+use std::{io::Write, sync::Arc};
 
 use crate::{
     reporter::Reporter,
@@ -12,48 +12,45 @@ use crate::{
 pub struct Ui {}
 
 impl Ui {
-    pub fn get_cpu(prefix: &str, reporter: Arc<Mutex<Reporter>>) -> String {
+    pub fn get_cpu(prefix: &str, reporter: Arc<Mutex<Reporter>>) -> Result<String> {
         let cpu = format!(
             "{}",
             reporter.lock().data_collector.get_cpu()[0]
                 .get("cpu_usage")
                 .expect("Error in getting cpu")
         );
-        return format!(
+        return Ok(format!(
             " {} {}       {:.5}{} ",
             prefix.red(),
             "CPU".bright_black(),
             cpu.red(),
             "%".bright_black()
-        );
+        ));
     }
 
-    pub fn get_gpu(prefix: &str, reporter: Arc<Mutex<Reporter>>) -> String {
+    pub fn get_gpu(prefix: &str, reporter: Arc<Mutex<Reporter>>) -> Result<String> {
         let gpu = reporter.lock().data_collector.get_gpu();
 
-        let gpu_usage = format!("{}", gpu.get("gpu_usage").unwrap());
         let gpu_power_usage = format!("{}", gpu.get("power_usage").unwrap());
 
         let gpu_vram = gpu.get("vram").unwrap();
         let gpu_vram_used = format!("{}", bytes_to_mb(gpu_vram.get("used").unwrap()));
         let gpu_vram_total = format!("{}", bytes_to_mb(gpu_vram.get("total").unwrap()));
 
-        return format!(
-            " {} {}       {:.5}{} {}{} {} {} {} {}",
+        return Ok(format!(
+            " {} {}       {:.5}{} {} {} {} {}",
             prefix.cyan(),
             "GPU".bright_black(),
-            gpu_usage.cyan(),
-            "%".bright_black(),
             gpu_power_usage.cyan(),
             "mW".bright_black(),
             gpu_vram_used.cyan(),
             "/".bright_black(),
             gpu_vram_total.cyan(),
             "MB".bright_black(),
-        );
+        ));
     }
 
-    pub fn get_process(prefix: &str, reporter: Arc<Mutex<Reporter>>) -> String {
+    pub fn get_process(prefix: &str, reporter: Arc<Mutex<Reporter>>) -> Result<String> {
         let proc_count = format!(
             "{}",
             reporter
@@ -62,15 +59,15 @@ impl Ui {
                 .get_total_process_count()
                 .to_string()
         );
-        return format!(
+        return Ok(format!(
             " {} {} {} ",
             prefix.green(),
             "Processes".bright_black(),
             proc_count.green()
-        );
+        ));
     }
 
-    pub fn get_memory(prefix: &str, reporter: Arc<Mutex<Reporter>>) -> String {
+    pub fn get_memory(prefix: &str, reporter: Arc<Mutex<Reporter>>) -> Result<String> {
         let used_memory = format!(
             "{}",
             bytes_to_kb(
@@ -94,7 +91,7 @@ impl Ui {
             )
         );
 
-        return format!(
+        return Ok(format!(
             " {} {}    {} {} {} {} ",
             prefix.yellow(),
             "Memory".bright_black(),
@@ -102,10 +99,10 @@ impl Ui {
             "/".bright_black(),
             total_memory.yellow(),
             "MB".bright_black()
-        );
+        ));
     }
 
-    pub fn get_nics(prefix: &str, reporter: Arc<Mutex<Reporter>>) -> String {
+    pub fn get_nics(prefix: &str, reporter: Arc<Mutex<Reporter>>) -> Result<String> {
         let nics_header = format!(" {} {} \n", prefix.cyan(), "NICs".bright_black());
         let nics = reporter.lock().data_collector.get_network();
 
@@ -133,10 +130,10 @@ impl Ui {
             ));
         }
 
-        return nics_info.trim_end().to_string();
+        return Ok(nics_info.trim_end().to_string());
     }
 
-    pub fn get_disk(prefix: &str, reporter: Arc<Mutex<Reporter>>) -> String {
+    pub fn get_disk(prefix: &str, reporter: Arc<Mutex<Reporter>>) -> Result<String> {
         let disks_header = format!(" {} {} \n", prefix.magenta(), "Disks".bright_black());
         let disks = reporter.lock().data_collector.get_disks();
 
@@ -171,10 +168,10 @@ impl Ui {
             disks_list.push_str(&disk_info);
         }
 
-        return disks_list.trim_end().to_string();
+        return Ok(disks_list.trim_end().to_string());
     }
 
-    pub fn get_connection(prefix: &str, reporter: Arc<Mutex<Reporter>>) -> String {
+    pub fn get_connection(prefix: &str, reporter: Arc<Mutex<Reporter>>) -> Result<String> {
         let connection_status = format!("{}", "Disconnected");
         let con_info = format!(
             " {} {}    {} ",
@@ -183,17 +180,17 @@ impl Ui {
             connection_status.red()
         );
 
-        return con_info;
+        return Ok(con_info);
     }
 
-    pub fn header() -> String {
-        return format!(" Xornet Reporter v{} ", env!("CARGO_PKG_VERSION"))
+    pub fn header() -> Result<String> {
+        return Ok(format!(" Xornet Reporter v{} ", env!("CARGO_PKG_VERSION"))
             .bright_black()
-            .to_string();
+            .to_string());
     }
 
     pub fn new(prefix: &str, no_clear: bool, reporter: Arc<Mutex<Reporter>>) -> Self {
-        let info = [
+        let attempts = [
             Ui::header(),
             Ui::get_cpu(prefix, reporter.clone()),
             Ui::get_memory(prefix, reporter.clone()),
@@ -201,11 +198,20 @@ impl Ui {
             Ui::get_gpu(prefix, reporter.clone()),
             Ui::get_nics(prefix, reporter.clone()),
             Ui::get_disk(prefix, reporter.clone()),
-            "".to_string(),
+            Ok("".to_string()),
             Ui::get_connection(prefix, reporter.clone()),
         ];
 
-        println!("{}", info.join("\n"));
+        let mut string = "".to_string();
+
+        for attempt in attempts {
+            match attempt {
+                Ok(data) => string.push_str(&(data + "\n")),
+                Err(err) => println!("{:?}", err),
+            }
+        }
+
+        println!("{}", string);
 
         std::io::stdout().flush().expect("Couldn't flush stdout");
 
