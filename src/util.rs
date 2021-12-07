@@ -5,10 +5,6 @@ use crossterm::{
 use parking_lot::Mutex;
 use std::{io::stdout, sync::Arc};
 
-pub fn trim_one_character(string: &str) -> String {
-    return string[1..string.len() - 1].to_string();
-}
-
 pub fn bytes_to_kb(bytes: u64) -> u64 {
     return bytes / 1024;
 }

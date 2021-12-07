@@ -5,7 +5,7 @@ use std::{io::Write, sync::Arc};
 
 use crate::{
     reporter::Reporter,
-    util::{self, bytes_to_gb, bytes_to_kb, bytes_to_mb, trim_one_character},
+    util::{self, bytes_to_gb, bytes_to_kb, bytes_to_mb},
 };
 
 pub struct Ui {}
@@ -93,7 +93,7 @@ impl Ui {
             // Network
             let rx = format!("{}", nic.rx);
             let tx = format!("{}", nic.tx);
-            let name = trim_one_character(&nic.name);
+            let name = &nic.name;
 
             nics_info.push_str(&format!(
                 "     {}  {} {} {} {}\n",
@@ -115,7 +115,7 @@ impl Ui {
         let mut disks_list = String::new();
         disks_list.push_str(&disks_header);
         for disk in disks {
-            let disk_name = trim_one_character(&disk.mount.replace("\\", ""));
+            let disk_name = &disk.mount.replace("\\", "");
             // Disk
             let used_disk = format!("{}", bytes_to_gb(disk.used));
             let total_disk = format!("{}", bytes_to_gb(disk.total));
