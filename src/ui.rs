@@ -50,7 +50,7 @@ impl Ui {
         ));
     }
 
-    pub fn get_process(prefix: &str, reporter: Arc<Mutex<Reporter>>) -> Result<String> {
+    pub fn get_process_count(prefix: &str, reporter: Arc<Mutex<Reporter>>) -> Result<String> {
         let proc_count = format!(
             "{}",
             reporter
@@ -133,7 +133,7 @@ impl Ui {
         return Ok(nics_info.trim_end().to_string());
     }
 
-    pub fn get_disk(prefix: &str, reporter: Arc<Mutex<Reporter>>) -> Result<String> {
+    pub fn get_disks(prefix: &str, reporter: Arc<Mutex<Reporter>>) -> Result<String> {
         let disks_header = format!(" {} {} \n", prefix.magenta(), "Disks".bright_black());
         let disks = reporter.lock().data_collector.get_disks();
 
@@ -194,10 +194,10 @@ impl Ui {
             Ui::header(),
             Ui::get_cpu(prefix, reporter.clone()),
             Ui::get_memory(prefix, reporter.clone()),
-            Ui::get_process(prefix, reporter.clone()),
+            Ui::get_process_count(prefix, reporter.clone()),
             Ui::get_gpu(prefix, reporter.clone()),
             Ui::get_nics(prefix, reporter.clone()),
-            Ui::get_disk(prefix, reporter.clone()),
+            Ui::get_disks(prefix, reporter.clone()),
             Ok("".to_string()),
             Ui::get_connection(prefix, reporter.clone()),
         ];
