@@ -13,7 +13,7 @@ pub struct StaticData {
     // pub cpu_base_frequency: String,
     pub cpu_cores: Option<usize>,
     pub cpu_threads: usize,
-    pub total_memory: u64,
+    pub total_mem: u64,
 }
 
 #[derive(Serialize)]
@@ -25,16 +25,14 @@ pub struct NetworkInterfaceStats {
 
 #[derive(Serialize)]
 pub struct CPUStats {
-    pub cpu_usage: f32,
-    pub frequency: u64,
+    pub usage: usize,
+    pub freq: u64,
 }
 
 #[derive(Serialize)]
 pub struct RAMStats {
-    pub free_memory: u64,
-    pub available_memory: u64,
-    pub used_memory: u64,
-    pub total_memory: u64,
+    pub used: u64,
+    pub total: u64,
 }
 
 #[derive(Serialize)]
@@ -42,18 +40,16 @@ pub struct GPUStats {
     pub brand: String,
     pub gpu_usage: u32,
     pub power_usage: u32,
-    pub memory_free: u64,
-    pub memory_used: u64,
-    pub memory_total: u64,
+    pub mem_used: u64,
+    pub mem_total: u64,
 }
 
 #[derive(Serialize)]
 pub struct DiskStats {
     pub name: String,
     pub mount: String,
-    pub filesystem: String,
-    pub disk_type: String,
-    pub free: u64,
+    pub fs: String,
+    pub r#type: String,
     pub total: u64,
     pub used: u64,
 }

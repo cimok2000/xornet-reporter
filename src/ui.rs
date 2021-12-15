@@ -12,8 +12,12 @@ pub struct Ui {}
 
 impl Ui {
     pub fn get_cpu(prefix: &str, reporter: Arc<Mutex<Reporter>>) -> Result<String> {
-        let result = reporter.lock().data_collector.get_cpu()?;
-        let cpu_usage = result[0].cpu_usage;
+        let cpus = reporter.lock().data_collector.get_cpu()?;
+        let mut cpu_usage = 0;
+        for i in 1..cpus.len() {
+            cpu_usage = cpu_usage + cpus[i].usage;
+        }
+        let cpu_usage = cpu_usage / cpus.len();
 
         Ok(format!(
             " {} {}       {:.5}{} ",
@@ -27,8 +31,8 @@ impl Ui {
     pub fn get_gpu(prefix: &str, reporter: Arc<Mutex<Reporter>>) -> Result<String> {
         let gpu = reporter.lock().data_collector.get_gpu()?;
         let gpu_power_usage = format!("{}", gpu.power_usage);
-        let gpu_vram_used = format!("{}", bytes_to_mb(gpu.memory_used));
-        let gpu_vram_total = format!("{}", bytes_to_mb(gpu.memory_total));
+        let gpu_vram_used = format!("{}", bytes_to_mb(gpu.mem_used));
+        let gpu_vram_total = format!("{}", bytes_to_mb(gpu.mem_total));
 
         return Ok(format!(
             " {} {}       {:.5}{} {} {} {} {}",
@@ -63,11 +67,11 @@ impl Ui {
     pub fn get_memory(prefix: &str, reporter: Arc<Mutex<Reporter>>) -> Result<String> {
         let used_memory = format!(
             "{}",
-            bytes_to_kb(reporter.lock().data_collector.get_ram()?.used_memory)
+            bytes_to_kb(reporter.lock().data_collector.get_ram()?.used)
         );
         let total_memory = format!(
             "{}",
-            bytes_to_kb(reporter.lock().data_collector.get_ram()?.total_memory),
+            bytes_to_kb(reporter.lock().data_collector.get_ram()?.total),
         );
 
         return Ok(format!(

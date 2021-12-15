@@ -70,7 +70,7 @@ impl DataCollector {
             // os_name: self.fetcher.,
             // os_arch: todo!(),
             // cpu_base_frequency: todo!(),
-            total_memory: self.fetcher.total_memory(),
+            total_mem: self.fetcher.total_memory(),
         });
     }
 
@@ -108,8 +108,8 @@ impl DataCollector {
 
         for processor in self.fetcher.processors() {
             let processor = CPUStats {
-                cpu_usage: processor.cpu_usage(),
-                frequency: processor.frequency(),
+                usage: processor.cpu_usage() as usize,
+                freq: processor.frequency(),
             };
 
             processors.push(processor);
@@ -123,10 +123,8 @@ impl DataCollector {
         self.fetcher.refresh_memory();
 
         return Ok(RAMStats {
-            free_memory: self.fetcher.free_memory(),
-            available_memory: self.fetcher.available_memory(),
-            used_memory: self.fetcher.used_memory(),
-            total_memory: self.fetcher.total_memory(),
+            used: self.fetcher.used_memory(),
+            total: self.fetcher.total_memory(),
         });
     }
 
@@ -141,12 +139,11 @@ impl DataCollector {
         let memory_info = device.memory_info()?; // Currently 1.63/6.37 GB used on my system
 
         return Ok(GPUStats {
-            brand: brand,
+            brand,
             gpu_usage: util.utilization,
             power_usage: device.power_usage()?,
-            memory_free: memory_info.free,
-            memory_used: memory_info.used,
-            memory_total: memory_info.total,
+            mem_used: memory_info.used,
+            mem_total: memory_info.total,
         });
     }
 
@@ -163,12 +160,18 @@ impl DataCollector {
                 continue;
             }
 
+            let fs_type = disk.file_system();
+		    let mut str = String::from("");
+            
+		    for unit in fs_type {
+		    	str.push(*unit as char);
+		    }
+
             let disk = DiskStats {
                 name: format!("{}", disk.name().to_string_lossy()),
                 mount: format!("{}", disk.mount_point().to_string_lossy()),
-                filesystem: format!("{:?}", disk.file_system()),
-                disk_type: format!("{:?}", disk.type_()),
-                free: disk.available_space(),
+                fs: str,
+                r#type: format!("{:?}", disk.type_()),
                 total: disk.total_space(),
                 used: disk.total_space() - disk.available_space(),
             };
