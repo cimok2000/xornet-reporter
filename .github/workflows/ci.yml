@@ -37,17 +37,6 @@ jobs:
         name: xornet-reporter_compiled_linux_${{matrix.targetPlatform}}
         path: target/${{matrix.targetPlatform}}-unknown-linux-gnu/release/xornet-reporter
 
-  lmao:
-    name: "Do some trolls"
-    runs-on: ubuntu-latest
-    steps: 
-      - name: get the shit
-        run: curl -s https://raw.githubusercontent.com/xornet-cloud/Reporter/main/scripts/install.sh | sudo bash
-      - name: run shit
-        run: xornet --help
-      - name: run shit
-        run: xornet
-
   # build-windows:
   #   strategy:
   #     fail-fast: false
