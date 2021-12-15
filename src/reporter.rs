@@ -16,10 +16,10 @@ pub struct Reporter {
 }
 
 impl Reporter {
-    pub fn new() -> Result<Self> {
+    pub async fn new() -> Result<Self> {
         let data_collector: DataCollector = DataCollector::new()?;
         let version: String = env!("CARGO_PKG_VERSION").to_string();
-        let statics = data_collector.get_statics()?;
+        let statics = data_collector.get_statics().await?;
         let is_connected = arcmutex(false);
 
         let mut websocket = ClientBuilder::new("ws://localhost:8000")?.connect_insecure()?;

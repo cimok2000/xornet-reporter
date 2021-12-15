@@ -3,7 +3,6 @@ use core::time;
 use std::thread::{self, spawn};
 use ui::Ui;
 use util::arcmutex;
-
 extern crate nvml_wrapper as nvml;
 
 mod arg_parser;
@@ -14,7 +13,8 @@ mod ui;
 mod util;
 use crate::reporter::Reporter;
 
-fn main() {
+#[tokio::main]
+async fn main() {
     // Get arguments from launch
     let args = ArgParser::new();
 
@@ -22,7 +22,7 @@ fn main() {
     util::setup_terminal();
 
     // Start the reporter
-    let reporter = arcmutex(Reporter::new().unwrap());
+    let reporter = arcmutex(Reporter::new().await.unwrap());
 
     if args.silent {
         println!("Xornet Reporter Started");

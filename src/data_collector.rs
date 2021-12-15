@@ -1,9 +1,12 @@
 use crate::types::{CPUStats, DiskStats, GPUStats, NetworkInterfaceStats, RAMStats, StaticData};
 use anyhow::Result;
 use nvml::NVML;
+use serde::{Deserialize, Serialize};
 use sysinfo::System;
 use sysinfo::{DiskExt, NetworkExt, ProcessorExt, SystemExt};
 use thiserror::Error;
+
+const IP_ADDRESS_URL: &str = "https://api.ipify.org?format=json";
 
 #[derive(Error, Debug)]
 pub enum DataCollectorError {
@@ -16,6 +19,12 @@ pub struct DataCollector {
     pub gpu_fetcher: Option<NVML>,
     pub fetcher: System,
 }
+
+#[derive(Serialize, Deserialize)]
+pub struct CurrentIP {
+    pub ip: String,
+}
+
 impl DataCollector {
     /// Creates a new data collector
     pub fn new() -> Result<Self> {
@@ -36,25 +45,32 @@ impl DataCollector {
         return Ok(self.fetcher.processes().len());
     }
 
+    /// Gets the current public IP address
+    pub async fn get_current_ip() -> Result<String, reqwest::Error> {
+        let response = reqwest::get(IP_ADDRESS_URL).await?;
+        let cur_ip: CurrentIP = response.json().await?;
+        Ok(cur_ip.ip)
+    }
+
     /**
     Gets all the static information about the system
     that can't change in runtime
     */
-    pub fn get_statics(&self) -> Result<StaticData> {
+    pub async fn get_statics(&self) -> Result<StaticData> {
         let processor_info = self.fetcher.global_processor_info();
 
         return Ok(StaticData {
             cpu_model: processor_info.brand().trim().to_string(),
-            // hostname: todo!(),
-            // public_ip: todo!(),
-            // kernel_version: todo!(),
-            // os_name: todo!(),
+            public_ip: DataCollector::get_current_ip().await?,
+            hostname: self.fetcher.host_name(),
+            os_version: self.fetcher.os_version(),
+            cpu_cores: self.fetcher.physical_core_count(),
+            cpu_threads: self.fetcher.processors().len(),
+            // kernel_version: .,
+            // os_name: self.fetcher.,
             // os_arch: todo!(),
-            // os_version: todo!(),
             // cpu_base_frequency: todo!(),
-            // cpu_cores: todo!(),
-            // cpu_threads: todo!(),
-            // total_memory: todo!(),
+            total_memory: self.fetcher.total_memory(),
         });
     }
 

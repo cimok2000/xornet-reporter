@@ -2,17 +2,18 @@ use serde::Serialize;
 
 #[derive(Serialize)]
 pub struct StaticData {
-    // pub hostname: String,
-    // pub public_ip: String,
+    pub hostname: Option<String>,
+    pub public_ip: String,
     // pub kernel_version: String,
     // pub os_name: String,
     // pub os_arch: String,
     // pub os_version: String,
     pub cpu_model: String,
+    pub os_version: Option<String>,
     // pub cpu_base_frequency: String,
-    // pub cpu_cores: u64,
-    // pub cpu_threads: u64,
-    // pub total_memory: u64,
+    pub cpu_cores: Option<usize>,
+    pub cpu_threads: usize,
+    pub total_memory: u64,
 }
 
 #[derive(Serialize)]
