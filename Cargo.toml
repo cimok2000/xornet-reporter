@@ -24,6 +24,7 @@ parking_lot = "0.11.2"
 cascade = "1.0.0"
 anyhow = "1.0.51"
 thiserror = "1.0.30"
+websocket = "0.26.2"
 
 # User interface
 colored = "2.0.0"

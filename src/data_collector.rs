@@ -43,7 +43,7 @@ impl DataCollector {
     Gets all the static information about the system
     that can't change in runtime
     */
-    pub fn _get_statics(&self) -> Result<StaticData> {
+    pub fn get_statics(&self) -> Result<StaticData> {
         let processor_info = self.fetcher.global_processor_info();
 
         return Ok(StaticData {
