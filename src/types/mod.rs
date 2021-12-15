@@ -2,7 +2,17 @@ use serde::Serialize;
 
 #[derive(Serialize)]
 pub struct StaticData {
-    pub cpu: StaticCPUData,
+    // pub hostname: String,
+    // pub public_ip: String,
+    // pub kernel_version: String,
+    // pub os_name: String,
+    // pub os_arch: String,
+    // pub os_version: String,
+    pub cpu_model: String,
+    // pub cpu_base_frequency: String,
+    // pub cpu_cores: u64,
+    // pub cpu_threads: u64,
+    // pub total_memory: u64,
 }
 
 #[derive(Serialize)]
@@ -45,11 +55,4 @@ pub struct DiskStats {
     pub free: u64,
     pub total: u64,
     pub used: u64,
-}
-
-#[derive(Serialize)]
-pub struct StaticCPUData {
-    pub name: String,
-    pub vendor_id: String,
-    pub brand: String,
 }

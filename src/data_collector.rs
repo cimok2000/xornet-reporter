@@ -1,12 +1,9 @@
+use crate::types::{CPUStats, DiskStats, GPUStats, NetworkInterfaceStats, RAMStats, StaticData};
 use anyhow::Result;
 use nvml::NVML;
 use sysinfo::System;
 use sysinfo::{DiskExt, NetworkExt, ProcessorExt, SystemExt};
 use thiserror::Error;
-
-use crate::types::{
-    CPUStats, DiskStats, GPUStats, NetworkInterfaceStats, RAMStats, StaticCPUData, StaticData,
-};
 
 #[derive(Error, Debug)]
 pub enum DataCollectorError {
@@ -47,11 +44,17 @@ impl DataCollector {
         let processor_info = self.fetcher.global_processor_info();
 
         return Ok(StaticData {
-            cpu: StaticCPUData {
-                name: processor_info.name().to_string(),
-                vendor_id: processor_info.vendor_id().to_string(),
-                brand: processor_info.brand().to_string(),
-            },
+            cpu_model: processor_info.brand().trim().to_string(),
+            // hostname: todo!(),
+            // public_ip: todo!(),
+            // kernel_version: todo!(),
+            // os_name: todo!(),
+            // os_arch: todo!(),
+            // os_version: todo!(),
+            // cpu_base_frequency: todo!(),
+            // cpu_cores: todo!(),
+            // cpu_threads: todo!(),
+            // total_memory: todo!(),
         });
     }
 
