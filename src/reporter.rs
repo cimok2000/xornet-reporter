@@ -1,7 +1,10 @@
 use crate::data_collector::DataCollector;
+use crate::util::arcmutex;
 use anyhow::Result;
+use parking_lot::Mutex;
 use serde_json::json;
 use std::net::TcpStream;
+use std::sync::Arc;
 use websocket::sync::Client;
 use websocket::{ClientBuilder, Message};
 
@@ -9,6 +12,7 @@ pub struct Reporter {
     pub data_collector: DataCollector,
     pub version: String,
     pub websocket: Client<TcpStream>,
+    pub is_connected: Arc<Mutex<bool>>,
 }
 
 impl Reporter {
@@ -16,8 +20,10 @@ impl Reporter {
         let data_collector: DataCollector = DataCollector::new()?;
         let version: String = env!("CARGO_PKG_VERSION").to_string();
         let statics = data_collector.get_statics()?;
+        let is_connected = arcmutex(false);
 
         let mut websocket = ClientBuilder::new("ws://localhost:8000")?.connect_insecure()?;
+        *is_connected.lock() = true;
         websocket.send_message(&Message::text(
             &json!({
                 "version": &version,
@@ -31,6 +37,7 @@ impl Reporter {
             data_collector,
             version,
             websocket,
+            is_connected,
         });
     }
 }

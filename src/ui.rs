@@ -133,13 +133,17 @@ impl Ui {
         return Ok(disks_list.trim_end().to_string());
     }
 
-    pub fn get_connection(prefix: &str, _reporter: Arc<Mutex<Reporter>>) -> Result<String> {
-        let connection_status = format!("{}", "Disconnected");
+    pub fn get_connection(prefix: &str, reporter: Arc<Mutex<Reporter>>) -> Result<String> {
+        let connection_status = if *reporter.lock().is_connected.lock() {
+            "Connected".green()
+        } else {
+            "Disconnected".red()
+        };
         let con_info = format!(
             " {} {}    {} ",
             prefix.bright_black(),
             "Status".bright_black(),
-            connection_status.red()
+            connection_status
         );
 
         return Ok(con_info);
