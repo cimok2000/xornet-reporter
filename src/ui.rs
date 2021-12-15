@@ -13,11 +13,11 @@ pub struct Ui {}
 impl Ui {
     pub fn get_cpu(prefix: &str, reporter: Arc<Mutex<Reporter>>) -> Result<String> {
         let cpus = reporter.lock().data_collector.get_cpu()?;
-        let mut cpu_usage = 0;
-        for i in 1..cpus.len() {
-            cpu_usage = cpu_usage + cpus[i].usage;
+        let mut cpu_usage: u16 = 0;
+        for i in 1..cpus.usage.len() {
+            cpu_usage = cpu_usage + cpus.usage[i] as u16;
         }
-        let cpu_usage = cpu_usage / cpus.len();
+        cpu_usage = cpu_usage / cpus.usage.len() as u16;
 
         Ok(format!(
             " {} {}       {:.5}{} ",

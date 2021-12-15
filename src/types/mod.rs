@@ -25,8 +25,8 @@ pub struct NetworkInterfaceStats {
 
 #[derive(Serialize)]
 pub struct CPUStats {
-    pub usage: usize,
-    pub freq: u64,
+    pub usage: Vec<u16>,
+    pub freq: Vec<u16>,
 }
 
 #[derive(Serialize)]

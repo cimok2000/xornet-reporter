@@ -102,20 +102,22 @@ impl DataCollector {
 
     /// Gets the current CPU stats
     /// wait what the fuck this is an array of cores?
-    pub fn get_cpu(&mut self) -> Result<Vec<CPUStats>> {
+    pub fn get_cpu(&mut self) -> Result<CPUStats> {
         let mut processors = Vec::<CPUStats>::new();
         self.fetcher.refresh_cpu();
 
-        for processor in self.fetcher.processors() {
-            let processor = CPUStats {
-                usage: processor.cpu_usage() as usize,
-                freq: processor.frequency(),
-            };
+        let mut usage = vec![];
+        let mut freq = vec![];
 
-            processors.push(processor);
+        for processor in self.fetcher.processors() {
+            usage.push(processor.cpu_usage().floor() as u16);
+            freq.push(processor.frequency() as u16);
         }
 
-        return Ok(processors);
+        return Ok(CPUStats {
+            usage, 
+            freq,
+        });
     }
 
     /// Gets the current RAM stats
