@@ -3,6 +3,7 @@ use core::time;
 use std::thread::{self, spawn};
 use ui::Ui;
 use util::arcmutex;
+
 extern crate nvml_wrapper as nvml;
 
 mod arg_parser;
@@ -32,6 +33,7 @@ async fn main() {
         if !args.silent {
             let _ui = Ui::new(&args.prefix, args.no_clear, reporter.clone());
         }
+        reporter.lock().send_stats();
 
         thread::sleep(time::Duration::from_secs_f64(args.interval));
     });

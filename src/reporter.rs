@@ -40,4 +40,18 @@ impl Reporter {
             is_connected,
         });
     }
+
+    pub fn send_stats(&mut self) -> Result<()> {
+        if *self.is_connected.lock() {
+            self.websocket.send_message(&Message::text(&json!({
+                "cpu": self.data_collector.get_cpu()?,
+                "ram": self.data_collector.get_ram()?,
+                "gpu": self.data_collector.get_gpu()?,
+                "processes": self.data_collector.get_total_process_count()?.to_string(),
+                "disks": self.data_collector.get_disks()?,
+            }).to_string()))?;
+        }
+
+        return Ok(());
+    }
 }
