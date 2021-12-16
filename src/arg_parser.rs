@@ -37,11 +37,7 @@ impl ArgParser {
             match arg {
                 "-h" | "--help" => {
                     println!("\n{} Usage:", "●".green());
-                    println!(
-                        "    {} {}",
-                        "xornet-reporter".yellow(),
-                        "[options]".bright_black()
-                    );
+                    println!("    {} {}", "xornet".yellow(), "[options]".bright_black());
                     println!("\n{} Options:", "●".blue());
                     println!(
                         "    -h,  --help                         : {}",
@@ -82,21 +78,13 @@ impl ArgParser {
                         "Disables sending data to Xornet's backend".white()
                     );
                     println!("\n{} Examples:", "●".magenta());
-                    println!("    {} {}", "$".bright_black(), "xornet-reporter".yellow());
-                    println!(
-                        "    {} {} -i 0.25",
-                        "$".bright_black(),
-                        "xornet-reporter".yellow(),
-                    );
-                    println!(
-                        "    {} {} -p \">\"",
-                        "$".bright_black(),
-                        "xornet-reporter".yellow(),
-                    );
+                    println!("    {} {}", "$".bright_black(), "xornet".yellow());
+                    println!("    {} {} -i 0.25", "$".bright_black(), "xornet".yellow(),);
+                    println!("    {} {} -p \">\"", "$".bright_black(), "xornet".yellow(),);
                     println!(
                         "    {} {} -p * -i 0.5",
                         "$".bright_black(),
-                        "xornet-reporter".yellow(),
+                        "xornet".yellow(),
                     );
                     println!(
                         "\n    {}",
@@ -118,7 +106,7 @@ impl ArgParser {
                     std::process::exit(1);
                 }
                 "-v" | "--version" => {
-                    println!("xornet-reporter v{}", env!("CARGO_PKG_VERSION"));
+                    println!("xornet v{}", env!("CARGO_PKG_VERSION"));
                     std::process::exit(0);
                 }
                 "-p" | "--prefix" => {
