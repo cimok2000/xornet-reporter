@@ -35,7 +35,7 @@ async fn main() {
         }
 
         if !args.offline {
-            reporter.lock().send_stats();
+            reporter.lock().send_stats().unwrap();
         }
 
         thread::sleep(time::Duration::from_secs_f64(args.interval));

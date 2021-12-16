@@ -103,9 +103,6 @@ impl DataCollector {
     /// Gets the current CPU stats
     /// wait what the fuck this is an array of cores?
     pub fn get_cpu(&mut self) -> Result<CPUStats> {
-        let mut processors = Vec::<CPUStats>::new();
-        self.fetcher.refresh_cpu();
-
         let mut usage = vec![];
         let mut freq = vec![];
 
@@ -114,10 +111,9 @@ impl DataCollector {
             freq.push(processor.frequency() as u16);
         }
 
-        return Ok(CPUStats {
-            usage, 
-            freq,
-        });
+        self.fetcher.refresh_cpu();
+
+        return Ok(CPUStats { usage, freq });
     }
 
     /// Gets the current RAM stats
@@ -163,11 +159,11 @@ impl DataCollector {
             }
 
             let fs_type = disk.file_system();
-		    let mut str = String::from("");
-            
-		    for unit in fs_type {
-		    	str.push(*unit as char);
-		    }
+            let mut str = String::from("");
+
+            for unit in fs_type {
+                str.push(*unit as char);
+            }
 
             let disk = DiskStats {
                 name: format!("{}", disk.name().to_string_lossy()),
