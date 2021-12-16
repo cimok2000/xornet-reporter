@@ -33,12 +33,13 @@ async fn main() {
         if !args.silent {
             let _ui = Ui::new(&args.prefix, args.no_clear, reporter.clone());
         }
-        reporter.lock().send_stats();
+
+        if !args.offline {
+            reporter.lock().send_stats();
+        }
 
         thread::sleep(time::Duration::from_secs_f64(args.interval));
     });
 
-    data_collection_handle
-        .join()
-        .expect("data_collection panicked");
+    data_collection_handle.join().expect("main panicked");
 }

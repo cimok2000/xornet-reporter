@@ -7,6 +7,7 @@ pub struct ArgParser {
     pub interval: f64,
     pub no_clear: bool,
     pub silent: bool,
+    pub offline: bool,
 }
 
 impl ArgParser {
@@ -26,6 +27,7 @@ impl ArgParser {
             interval: 1.0,
             colorless: false,
             silent: false,
+            offline: false,
             no_clear: false,
         };
         let args: Vec<String> = std::env::args().collect();
@@ -73,6 +75,11 @@ impl ArgParser {
                         "    -c,  --colorless   {} : {}",
                         "(default: false)".bright_black(),
                         "Colorless style".white()
+                    );
+                    println!(
+                        "    -off,  --offline   {} : {}",
+                        "(default: false)".bright_black(),
+                        "Disables sending data to Xornet's backend".white()
                     );
                     println!("\n{} Examples:", "●".magenta());
                     println!("    {} {}", "$".bright_black(), "xornet-reporter".yellow());
@@ -125,6 +132,9 @@ impl ArgParser {
                         );
                         std::process::exit(1);
                     }
+                }
+                "-off" | "--offline" => {
+                    arg_parser.offline = true;
                 }
                 "-i" | "--interval" => {
                     if args.len() > index + 1 {
