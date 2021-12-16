@@ -79,8 +79,8 @@ impl ArgParser {
                     );
                     println!("\n{} Examples:", "●".magenta());
                     println!("    {} {}", "$".bright_black(), "xornet".yellow());
-                    println!("    {} {} -i 0.25", "$".bright_black(), "xornet".yellow(),);
-                    println!("    {} {} -p \">\"", "$".bright_black(), "xornet".yellow(),);
+                    println!("    {} {} -i 0.25", "$".bright_black(), "xornet".yellow());
+                    println!("    {} {} -p \">\"", "$".bright_black(), "xornet".yellow());
                     println!(
                         "    {} {} -p * -i 0.5",
                         "$".bright_black(),
