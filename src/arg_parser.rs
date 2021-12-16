@@ -52,32 +52,32 @@ impl ArgParser {
                         "Show version and exit".white()
                     );
                     println!(
-                        "    -i,  --interval    {}     : {}",
+                        "    -i,  --interval   {}      : {}",
                         "(default: 1)".bright_black(),
                         "Data collection interval in seconds".white()
                     );
                     println!(
-                        "    -p,  --prefix      {}   : {}",
+                        "    -p,  --prefix     {}    : {}",
                         "(default: \"●\")".bright_black(),
                         "Prefix that is shown at the beginning of each field".white()
                     );
                     println!(
-                        "    -nc, --no-clear    {} : {}",
+                        "    -nc, --no-clear   {}  : {}",
                         "(default: false)".bright_black(),
                         "Disables the terminal clearing on each interval".white()
                     );
                     println!(
-                        "    -s,  --silent      {} : {}",
+                        "    -s,  --silent     {}  : {}",
                         "(default: false)".bright_black(),
                         "Enables simple terminal output".white()
                     );
                     println!(
-                        "    -c,  --colorless   {} : {}",
+                        "    -c,  --colorless  {}  : {}",
                         "(default: false)".bright_black(),
-                        "Colorless style".white()
+                        "Disables color".white()
                     );
                     println!(
-                        "    -off,  --offline   {} : {}",
+                        "    -off,  --offline  {}  : {}",
                         "(default: false)".bright_black(),
                         "Disables sending data to Xornet's backend".white()
                     );
