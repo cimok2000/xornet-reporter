@@ -4,6 +4,7 @@ use parking_lot::Mutex;
 use std::{io::Write, sync::Arc};
 
 use crate::{
+    data_collector::DataCollector,
     reporter::Reporter,
     util::{self, bytes_to_gb, bytes_to_kb, bytes_to_mb},
 };
@@ -153,12 +154,12 @@ impl Ui {
         return Ok(con_info);
     }
 
-    pub fn get_uuids(prefix: &str, reporter: Arc<Mutex<Reporter>>) -> Result<String> {
+    pub fn get_uuids(prefix: &str) -> Result<String> {
         return Ok(format!(
             " {} {} {} ",
             prefix.bright_black(),
             "Hardware UUID".bright_black(),
-            reporter.lock().hardware_uuid.bright_black()
+            DataCollector::get_hardware_uuid()?.bright_black()
         ));
     }
 
@@ -179,7 +180,7 @@ impl Ui {
             Ui::get_disks(prefix, reporter.clone()),
             Ok("".to_string()),
             Ui::get_connection(prefix, reporter.clone()),
-            Ui::get_uuids(prefix, reporter.clone()),
+            Ui::get_uuids(prefix),
         ];
 
         let mut string = "".to_string();

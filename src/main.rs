@@ -18,14 +18,13 @@ use crate::reporter::Reporter;
 
 #[tokio::main]
 async fn main() {
-    // Get arguments from launch
-    let args = ArgParser::new();
+    // The bad boys
+    // Asking for trouble and making it double
+    let args = ArgParser::new().await.unwrap();
+    let reporter = arcmutex(Reporter::new().await.unwrap());
 
     // Setup the terminal
     util::setup_terminal();
-
-    // Start the reporter
-    let reporter = arcmutex(Reporter::new().await.unwrap());
 
     if args.silent {
         println!("Xornet Reporter Started");

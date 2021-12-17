@@ -15,7 +15,6 @@ pub struct Reporter {
     pub version: String,
     pub websocket: Client<TcpStream>,
     pub is_connected: Arc<Mutex<bool>>,
-    pub hardware_uuid: String,
     pub auth_manager: AuthManager,
 }
 
@@ -26,9 +25,6 @@ impl Reporter {
         let version: String = env!("CARGO_PKG_VERSION").to_string();
         let statics = data_collector.get_statics().await?;
         let is_connected = arcmutex(false);
-
-        // Make this return result ? somehow
-        let hardware_uuid: String = machine_uid::get().unwrap();
 
         let mut websocket = ClientBuilder::new("ws://localhost:8000")?.connect_insecure()?;
         *is_connected.lock() = true;
@@ -55,7 +51,6 @@ impl Reporter {
 
         return Ok(Self {
             data_collector,
-            hardware_uuid,
             version,
             websocket,
             is_connected,

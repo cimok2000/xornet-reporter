@@ -1,5 +1,7 @@
+use std::process;
+
 use crate::types::{CPUStats, DiskStats, GPUStats, NetworkInterfaceStats, RAMStats, StaticData};
-use anyhow::Result;
+use anyhow::{anyhow, Result};
 use nvml::NVML;
 use serde::{Deserialize, Serialize};
 use sysinfo::System;
@@ -37,6 +39,30 @@ impl DataCollector {
             gpu_fetcher,
             fetcher,
         });
+    }
+
+    pub fn get_hardware_uuid() -> Result<String> {
+        match machine_uid::get() {
+            Ok(hardware_uuid) => return Ok(hardware_uuid),
+            Err(err) => {
+                return Err(anyhow!(
+                    "Could not get hostname. Are you running this on a supported platform?"
+                ))
+            }
+        };
+    }
+
+    pub fn get_hostname() -> Result<String> {
+        let fetcher = System::new_all();
+
+        match fetcher.host_name() {
+            Some(hostname) => return Ok(hostname),
+            None => {
+                return Err(anyhow!(
+                    "Could not get hostname. Are you running this on a supported platform?"
+                ));
+            }
+        };
     }
 
     /// Gets the total amount of processes running
