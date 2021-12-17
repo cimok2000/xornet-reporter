@@ -4,12 +4,13 @@ use std::fs::File;
 use std::path::Path;
 
 #[derive(Serialize, Deserialize, Clone)]
-pub struct ConfigJSON {
+pub struct Config {
     pub access_token: String,
 }
 
+/// Manages the config.json for the reporter
 pub struct ConfigManager {
-    pub config: ConfigJSON,
+    pub config: Config,
 }
 
 impl ConfigManager {
@@ -26,14 +27,14 @@ impl ConfigManager {
     }
 
     /// Saves the modified config to the config file
-    pub fn save_config(config: ConfigJSON) -> Result<()> {
+    pub fn save_config(config: Config) -> Result<()> {
         let file = File::create("config.json")?;
         serde_json::to_writer(file, &config)?;
         return Ok(());
     }
 
     /// Loads the config file from disk or creates a new one if it doesn't exist.
-    pub fn load_config() -> Result<ConfigJSON> {
+    pub fn load_config() -> Result<Config> {
         if !Path::new("config.json").exists() {
             return Ok(ConfigManager::create_config()?);
         } else {
@@ -43,8 +44,8 @@ impl ConfigManager {
     }
 
     /// Creates a new config file with an empty access token.
-    pub fn create_config() -> Result<ConfigJSON> {
-        let config = ConfigJSON {
+    pub fn create_config() -> Result<Config> {
+        let config = Config {
             access_token: String::new(),
         };
         ConfigManager::save_config(config.clone())?;
