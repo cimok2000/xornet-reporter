@@ -26,7 +26,7 @@ pnpm-debug.log*
 # Added by cargo
 
 /target
-
+config.json
 
 # Added by cargo
 #
