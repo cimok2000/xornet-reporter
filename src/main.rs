@@ -1,3 +1,4 @@
+use anyhow::Result;
 use arg_parser::ArgParser;
 use core::time;
 use std::thread::{self, spawn};
@@ -7,6 +8,7 @@ use util::arcmutex;
 extern crate nvml_wrapper as nvml;
 
 mod arg_parser;
+mod auth_manager;
 mod data_collector;
 mod reporter;
 mod types;
@@ -35,7 +37,7 @@ async fn main() {
         }
 
         if !args.offline {
-            reporter.lock().send_stats().unwrap();
+            // reporter.lock().send_stats().unwrap();
         }
 
         thread::sleep(time::Duration::from_secs_f64(args.interval));

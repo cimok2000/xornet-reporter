@@ -153,6 +153,15 @@ impl Ui {
         return Ok(con_info);
     }
 
+    pub fn get_uuids(prefix: &str, reporter: Arc<Mutex<Reporter>>) -> Result<String> {
+        return Ok(format!(
+            " {} {} {} ",
+            prefix.bright_black(),
+            "Hardware UUID".bright_black(),
+            reporter.lock().hardware_uuid.bright_black()
+        ));
+    }
+
     pub fn header() -> Result<String> {
         return Ok(format!(" Xornet Reporter v{} ", env!("CARGO_PKG_VERSION"))
             .bright_black()
@@ -170,6 +179,7 @@ impl Ui {
             Ui::get_disks(prefix, reporter.clone()),
             Ok("".to_string()),
             Ui::get_connection(prefix, reporter.clone()),
+            Ui::get_uuids(prefix, reporter.clone()),
         ];
 
         let mut string = "".to_string();
