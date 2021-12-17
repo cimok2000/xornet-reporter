@@ -1,4 +1,3 @@
-use anyhow::Result;
 use arg_parser::ArgParser;
 use core::time;
 use std::thread::{self, spawn};
@@ -9,6 +8,7 @@ extern crate nvml_wrapper as nvml;
 
 mod arg_parser;
 mod auth_manager;
+mod config_manager;
 mod data_collector;
 mod reporter;
 mod types;

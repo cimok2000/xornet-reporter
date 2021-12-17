@@ -1,7 +1,9 @@
 use anyhow::Result;
 use colored::Colorize;
 
-use crate::{auth_manager::AuthManager, data_collector::DataCollector};
+use crate::{
+    auth_manager::AuthManager, config_manager::ConfigManager, data_collector::DataCollector,
+};
 
 /// The structure of the launch parameters.
 pub struct ArgParser {
@@ -147,7 +149,7 @@ impl ArgParser {
                                 std::process::exit(1)
                             }
                             Ok(response) => {
-                                AuthManager::save_access_token(&response.access_token)?;
+                                ConfigManager::save_access_token(&response.access_token)?;
                                 println!(
                                     "{} {}\n",
                                     "Signup successful:".green(),

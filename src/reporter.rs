@@ -1,4 +1,4 @@
-use crate::auth_manager::AuthManager;
+use crate::config_manager::ConfigManager;
 use crate::data_collector::DataCollector;
 use crate::util::arcmutex;
 use anyhow::Result;
@@ -15,12 +15,12 @@ pub struct Reporter {
     pub version: String,
     pub websocket: Client<TcpStream>,
     pub is_connected: Arc<Mutex<bool>>,
-    pub auth_manager: AuthManager,
+    pub config_manager: ConfigManager,
 }
 
 impl Reporter {
     pub async fn new() -> Result<Self> {
-        let auth_manager: AuthManager = AuthManager::new()?;
+        let config_manager: ConfigManager = ConfigManager::new()?;
         let data_collector: DataCollector = DataCollector::new()?;
         let version: String = env!("CARGO_PKG_VERSION").to_string();
         let statics = data_collector.get_statics().await?;
@@ -29,11 +29,11 @@ impl Reporter {
         let mut websocket = ClientBuilder::new("ws://localhost:8000")?.connect_insecure()?;
         *is_connected.lock() = true;
 
-        if !auth_manager.access_token.is_empty() {
+        if !config_manager.config.access_token.is_empty() {
             websocket.send_message(&Message::text(
                 &json!({
                     "e": 0x01,
-                    "access_token": &auth_manager.access_token,
+                    "access_token": &config_manager.config.access_token,
                 })
                 .to_string(),
             ))?;
@@ -54,7 +54,7 @@ impl Reporter {
             version,
             websocket,
             is_connected,
-            auth_manager,
+            config_manager,
         });
     }
 
