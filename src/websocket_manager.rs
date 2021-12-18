@@ -7,17 +7,38 @@ use std::sync::Arc;
 use websocket::sync::Client;
 use websocket::{ClientBuilder, Message};
 
+use crate::types::{CPUStats, DiskStats, GPUStats, RAMStats};
 use crate::util::arcmutex;
 
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(untagged)]
 pub enum WebsocketEvent {
-    Login { access_token: String },
+    Login {
+        access_token: String,
+    },
+    DynamicData {
+        cpu: CPUStats,
+        ram: RAMStats,
+        gpu: GPUStats,
+        processes: String,
+        disks: Vec<DiskStats>,
+    },
+    StaticData {
+        hostname: Option<String>,
+        public_ip: String,
+        cpu_model: String,
+        os_version: Option<String>,
+        cpu_cores: Option<usize>,
+        cpu_threads: usize,
+        total_mem: u64,
+    },
 }
 
 pub fn get_event_id(ev: &WebsocketEvent) -> u16 {
     match ev {
         WebsocketEvent::Login { .. } => 0x01,
+        WebsocketEvent::StaticData { .. } => 0x04,
+        WebsocketEvent::DynamicData { .. } => 0x05,
     }
 }
 
@@ -43,7 +64,7 @@ impl WebsocketManager {
     }
 
     pub fn send(&mut self, data: WebsocketEvent) -> Result<()> {
-        let wtf = Message::text(
+        let message = Message::text(
             json!({
                 "e": get_event_id(&data),
                 "data": &data,
@@ -51,43 +72,6 @@ impl WebsocketManager {
             .to_string(),
         );
 
-        Ok(self.websocket.lock().send_message(&wtf)?)
+        Ok(self.websocket.lock().send_message(&message)?)
     }
-
-    // pub fn login(&mut self, token: &str) -> Result<()> {
-    //     if let Some(websocket) = &self.websocket {
-    //         websocket.lock().send_message(&Message::text(
-    //             &json!({
-    //                 "e": WebsocketEvent::Login as u16,
-    //                 "access_token": token,
-    //             })
-    //             .to_string(),
-    //         ))?;
-    //     }
-
-    //     return Ok(());
-    // }
-
-    // pub fn send_statics(&mut self, statics: &str) -> Result<()> {
-    //     if let Some(websocket) = &self.websocket {
-    //         websocket.lock().send_message(&Message::text(statics))?;
-    //     }
-
-    //     return Ok(());
-    // }
-    // pub fn authenticate(&mut self) -> Result<()> {}
-    // pub fn authenticate(&mut self) -> Result<()> {}
-    // pub fn authenticate(&mut self) -> Result<()> {}
-    // pub fn authenticate(&mut self) -> Result<()> {}
-    // pub fn authenticate(&mut self) -> Result<()> {}
 }
-
-// websocket.send_message(&Message::text(
-//     &json!({
-//         "e": 0x03,
-//         "version": &version,
-//         "name": "Xornet Reporter",
-//         "statics": statics,
-//     })
-//     .to_string(),
-// ))?;

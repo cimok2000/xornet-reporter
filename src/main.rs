@@ -25,6 +25,7 @@ async fn main() -> Result<()> {
     let args = ArgParser::new().await?;
     let reporter = arcmutex(Reporter::new().await?);
     reporter.lock().login()?;
+    reporter.lock().send_static_data().await?;
 
     // Setup the terminal
     util::setup_terminal();
@@ -39,7 +40,7 @@ async fn main() -> Result<()> {
         }
 
         if !args.offline {
-            // reporter.lock().send_stats().unwrap();
+            reporter.lock().send_dynamic_data();
         }
 
         thread::sleep(time::Duration::from_secs_f64(args.interval));

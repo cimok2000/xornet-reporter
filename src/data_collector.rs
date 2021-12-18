@@ -92,10 +92,6 @@ impl DataCollector {
             os_version: self.fetcher.os_version(),
             cpu_cores: self.fetcher.physical_core_count(),
             cpu_threads: self.fetcher.processors().len(),
-            // kernel_version: .,
-            // os_name: self.fetcher.,
-            // os_arch: todo!(),
-            // cpu_base_frequency: todo!(),
             total_mem: self.fetcher.total_memory(),
         });
     }

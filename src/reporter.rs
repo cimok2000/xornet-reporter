@@ -35,25 +35,30 @@ impl Reporter {
         return Ok(());
     }
 
-    // pub fn login() -> Result<()> {
-    //     login
-    // }
+    pub async fn send_static_data(&mut self) -> Result<()> {
+        let static_data = self.data_collector.get_statics().await?;
 
-    // pub fn send_stats(&mut self) -> Result<()> {
-    //     if *self.is_connected.lock() {
-    //         self.websocket.send_message(&Message::text(
-    //             &json!({
-    //                 "e": 0x04,
-    //                 "cpu": self.data_collector.get_cpu()?,
-    //                 "ram": self.data_collector.get_ram()?,
-    //                 "gpu": self.data_collector.get_gpu()?,
-    //                 "processes": self.data_collector.get_total_process_count()?.to_string(),
-    //                 "disks": self.data_collector.get_disks()?,
-    //             })
-    //             .to_string(),
-    //         ))?;
-    //     }
+        // This is is kinda troll
+        self.websocket_manager.send(WebsocketEvent::StaticData {
+            hostname: static_data.hostname,
+            public_ip: static_data.public_ip,
+            cpu_model: static_data.cpu_model,
+            os_version: static_data.os_version,
+            cpu_cores: static_data.cpu_cores,
+            cpu_threads: static_data.cpu_threads,
+            total_mem: static_data.total_mem,
+        })?;
+        return Ok(());
+    }
 
-    //     return Ok(());
-    // }
+    pub fn send_dynamic_data(&mut self) -> Result<()> {
+        self.websocket_manager.send(WebsocketEvent::DynamicData {
+            cpu: self.data_collector.get_cpu()?,
+            ram: self.data_collector.get_ram()?,
+            gpu: self.data_collector.get_gpu()?,
+            processes: self.data_collector.get_total_process_count()?.to_string(),
+            disks: self.data_collector.get_disks()?,
+        })?;
+        return Ok(());
+    }
 }
