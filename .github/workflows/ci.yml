@@ -12,10 +12,10 @@ jobs:
       matrix:
         targetPlatform: 
           - x86_64
-          - i686
-          - aarch64
-          - mips
-          - mipsel
+          # - i686
+          # - aarch64
+          # - mips
+          # - mipsel
     name: "🛠 Compile for Linux"
     runs-on: self-hosted
     # runs-on: ubuntu-latest
