@@ -136,10 +136,10 @@ jobs:
       matrix: 
        targetPlatform:
           - linux_aarch64
-          - linux_i686
-          - linux_x86_64
-          - linux_mips
-          - linux_mipsel
+          # - linux_i686
+          # - linux_x86_64
+          # - linux_mips
+          # - linux_mipsel
           - windows
           - macos
       fail-fast: false
