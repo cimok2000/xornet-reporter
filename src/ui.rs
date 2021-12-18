@@ -138,22 +138,6 @@ impl Ui {
         return Ok(disks_list.trim_end().to_string());
     }
 
-    pub fn get_connection(prefix: &str, reporter: Arc<Mutex<Reporter>>) -> Result<String> {
-        let connection_status = if *reporter.lock().is_connected.lock() {
-            "Connected".green()
-        } else {
-            "Disconnected".red()
-        };
-        let con_info = format!(
-            " {} {}    {} ",
-            prefix.bright_black(),
-            "Status".bright_black(),
-            connection_status
-        );
-
-        return Ok(con_info);
-    }
-
     pub fn get_uuids(prefix: &str) -> Result<String> {
         return Ok(format!(
             " {} {} {} ",
@@ -179,7 +163,6 @@ impl Ui {
             Ui::get_nics(prefix, reporter.clone()),
             Ui::get_disks(prefix, reporter.clone()),
             Ok("".to_string()),
-            Ui::get_connection(prefix, reporter.clone()),
             Ui::get_uuids(prefix),
         ];
 

@@ -1,3 +1,4 @@
+use anyhow::Result;
 use arg_parser::ArgParser;
 use core::time;
 use std::thread::{self, spawn};
@@ -14,14 +15,16 @@ mod reporter;
 mod types;
 mod ui;
 mod util;
+mod websocket_manager;
 use crate::reporter::Reporter;
 
 #[tokio::main]
-async fn main() {
+async fn main() -> Result<()> {
     // The bad boys
     // Asking for trouble and making it double
-    let args = ArgParser::new().await.unwrap();
-    let reporter = arcmutex(Reporter::new().await.unwrap());
+    let args = ArgParser::new().await?;
+    let reporter = arcmutex(Reporter::new().await?);
+    reporter.lock().login()?;
 
     // Setup the terminal
     util::setup_terminal();
@@ -43,4 +46,5 @@ async fn main() {
     });
 
     data_collection_handle.join().expect("main panicked");
+    Ok(())
 }
