@@ -32,13 +32,16 @@ impl Ui {
   pub fn get_gpu(prefix: &str, reporter: Arc<Mutex<Reporter>>) -> Result<String> {
     let gpu = reporter.lock().data_collector.get_gpu()?;
     let gpu_power_usage = format!("{}", gpu.power_usage);
+    let gpu_usage = format!("{}", gpu.gpu_usage);
     let gpu_vram_used = format!("{}", bytes_to_mb(gpu.mem_used));
     let gpu_vram_total = format!("{}", bytes_to_mb(gpu.mem_total));
 
     return Ok(format!(
-      " {} {}       {:.5}{} {} {} {} {}",
+      " {} {}       {}{} {:.5}{} {} {} {} {}",
       prefix.cyan(),
       "GPU".bright_black(),
+      gpu_usage.cyan(),
+      "%".bright_black(),
       gpu_power_usage.cyan(),
       "mW".bright_black(),
       gpu_vram_used.cyan(),

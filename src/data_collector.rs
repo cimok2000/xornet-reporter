@@ -155,12 +155,12 @@ impl DataCollector {
     let device = gpu_fetcher.device_by_index(0)?;
 
     let brand = format!("{:?}", device.brand()?); // GeForce on my system
-    let util = device.encoder_utilization()?; // Currently 0 on my system; Not encoding anything
+    let util = device.utilization_rates()?; // Currently 0 on my system; Not encoding anything
     let memory_info = device.memory_info()?; // Currently 1.63/6.37 GB used on my system
 
     return Ok(GPUStats {
       brand,
-      gpu_usage: util.utilization,
+      gpu_usage: util.gpu,
       power_usage: device.power_usage()?,
       mem_used: memory_info.used,
       mem_total: memory_info.total,
