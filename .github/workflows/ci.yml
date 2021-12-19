@@ -135,9 +135,9 @@ jobs:
     strategy:
       matrix: 
        targetPlatform:
-          - linux_aarch64
+          - linux_x86_64
+          # - linux_aarch64
           # - linux_i686
-          # - linux_x86_64
           # - linux_mips
           # - linux_mipsel
           - windows
