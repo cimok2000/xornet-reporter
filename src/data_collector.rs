@@ -1,9 +1,11 @@
-use crate::types::{CPUStats, DiskStats, GPUStats, NetworkInterfaceStats, RAMStats, StaticData};
+use crate::types::{
+  CPUStats, DiskStats, GPUStats, NetworkInterfaceStats, RAMStats, StaticData, TempStats,
+};
 use anyhow::{anyhow, Result};
 use nvml::NVML;
 use serde::{Deserialize, Serialize};
 use sysinfo::System;
-use sysinfo::{DiskExt, NetworkExt, ProcessorExt, SystemExt};
+use sysinfo::{ComponentExt, DiskExt, NetworkExt, ProcessorExt, SystemExt};
 use thiserror::Error;
 
 const IP_ADDRESS_URL: &str = "https://api.ipify.org?format=json";
@@ -197,5 +199,20 @@ impl DataCollector {
       disks.push(disk);
     }
     return Ok(disks);
+  }
+
+  pub fn get_temps(&mut self) -> Result<Vec<TempStats>> {
+    self.fetcher.refresh_components();
+
+    let components = self.fetcher.components();
+    let mut temps = Vec::<TempStats>::new();
+    for component in components {
+      let temp = component.temperature();
+      temps.push(TempStats {
+        label: component.label().to_string(),
+        value: temp,
+      });
+    }
+    return Ok(temps);
   }
 }
