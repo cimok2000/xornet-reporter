@@ -31,8 +31,11 @@ async fn main() -> Result<()> {
       Ui::new(&args.prefix, args.no_clear, reporter.clone());
     }
 
-    if !reporter.lock().args.offline {
-      reporter.lock().send_dynamic_data();
+    match reporter.lock().send_dynamic_data() {
+      Ok(_) => {}
+      Err(e) => {
+        eprintln!("Error while sending dynamic data: {}", e);
+      }
     }
 
     thread::sleep(time::Duration::from_secs_f64(reporter.lock().args.interval));
