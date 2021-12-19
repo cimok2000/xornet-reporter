@@ -6,6 +6,7 @@ use crate::{
 };
 
 /// The structure of the launch parameters.
+#[derive(Debug, Clone)]
 pub struct ArgParser {
   pub prefix: String,
   pub colorless: bool,

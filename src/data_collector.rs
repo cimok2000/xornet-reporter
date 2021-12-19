@@ -1,5 +1,3 @@
-use std::process;
-
 use crate::types::{CPUStats, DiskStats, GPUStats, NetworkInterfaceStats, RAMStats, StaticData};
 use anyhow::{anyhow, Result};
 use nvml::NVML;
@@ -44,7 +42,7 @@ impl DataCollector {
   pub fn get_hardware_uuid() -> Result<String> {
     match machine_uid::get() {
       Ok(hardware_uuid) => return Ok(hardware_uuid),
-      Err(err) => {
+      Err(_err) => {
         return Err(anyhow!(
           "Could not get hostname. Are you running this on a supported platform?"
         ))

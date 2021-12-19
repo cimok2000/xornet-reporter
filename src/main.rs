@@ -1,5 +1,4 @@
 use anyhow::Result;
-use arg_parser::ArgParser;
 use core::time;
 use std::thread::{self, spawn};
 use ui::Ui;
@@ -20,32 +19,24 @@ use crate::reporter::Reporter;
 
 #[tokio::main]
 async fn main() -> Result<()> {
-  // The bad boys
-  // Asking for trouble and making it double
-  let args = ArgParser::new().await?;
+  // Create a new instance of the reporter
   let reporter = arcmutex(Reporter::new().await?);
-  reporter.lock().login()?;
-  reporter.lock().send_static_data().await?;
+  let args = reporter.lock().args.clone();
 
   // Setup the terminal
   util::setup_terminal();
 
-  if args.silent {
-    println!("Xornet Reporter Started");
-  }
-
   let data_collection_handle = spawn(move || loop {
-    if !args.silent {
-      let _ui = Ui::new(&args.prefix, args.no_clear, reporter.clone());
+    if !reporter.lock().args.silent {
+      Ui::new(&args.prefix, args.no_clear, reporter.clone());
     }
 
-    if !args.offline {
+    if !reporter.lock().args.offline {
       reporter.lock().send_dynamic_data();
     }
 
-    thread::sleep(time::Duration::from_secs_f64(args.interval));
+    thread::sleep(time::Duration::from_secs_f64(reporter.lock().args.interval));
   });
-
   data_collection_handle.join().expect("main panicked");
   Ok(())
 }
