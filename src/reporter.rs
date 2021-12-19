@@ -90,6 +90,7 @@ impl Reporter {
           gpu: self.data_collector.get_gpu()?,
           processes: self.data_collector.get_total_process_count()?.to_string(),
           disks: self.data_collector.get_disks()?,
+          temps: self.data_collector.get_temps()?,
         })?;
       }
       None => {}

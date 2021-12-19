@@ -7,7 +7,7 @@ use std::sync::Arc;
 use websocket::sync::Client;
 use websocket::{ClientBuilder, Message};
 
-use crate::types::{CPUStats, DiskStats, GPUStats, RAMStats};
+use crate::types::{CPUStats, DiskStats, GPUStats, RAMStats, TempStats};
 use crate::util::arcmutex;
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -22,6 +22,7 @@ pub enum WebsocketEvent {
     gpu: GPUStats,
     processes: String,
     disks: Vec<DiskStats>,
+    temps: Vec<TempStats>,
   },
   StaticData {
     hostname: Option<String>,
