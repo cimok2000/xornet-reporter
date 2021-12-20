@@ -169,17 +169,20 @@ impl Ui {
     return Ok(temp_list.trim_end().to_string());
   }
 
-  pub fn header() -> Result<String> {
+  pub fn get_version(prefix: &str) -> Result<String> {
     return Ok(
-      format!(" Xornet Reporter v{} ", env!("CARGO_PKG_VERSION"))
-        .bright_black()
-        .to_string(),
+      format!(
+        " {} Xornet Reporter v{} ",
+        prefix,
+        env!("CARGO_PKG_VERSION")
+      )
+      .bright_black()
+      .to_string(),
     );
   }
 
   pub fn new(prefix: &str, no_clear: bool, reporter: Arc<Mutex<Reporter>>) -> Self {
     let attempts = [
-      Ui::header(),
       Ui::get_cpu(prefix, reporter.clone()),
       Ui::get_memory(prefix, reporter.clone()),
       Ui::get_process_count(prefix, reporter.clone()),
@@ -188,6 +191,7 @@ impl Ui {
       Ui::get_disks(prefix, reporter.clone()),
       Ui::get_temps(prefix, reporter.clone()),
       Ok("".to_string()),
+      Ui::get_version(prefix),
       Ui::get_uuids(prefix),
     ];
 
