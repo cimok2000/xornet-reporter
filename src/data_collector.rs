@@ -14,6 +14,8 @@ const IP_ADDRESS_URL: &str = "https://api.ipify.org?format=json";
 pub enum DataCollectorError {
   #[error("GPU usage unavailable")]
   NoGPU,
+  #[error("Temperature unavailable")]
+  NoTemp,
 }
 
 #[derive(Debug)]
@@ -205,6 +207,11 @@ impl DataCollector {
     self.fetcher.refresh_components();
 
     let components = self.fetcher.components();
+
+    if components.len() == 0 {
+      return Err(anyhow!(DataCollectorError::NoTemp));
+    };
+
     let mut temps = Vec::<TempStats>::new();
     for component in components {
       let temp = component.temperature();
