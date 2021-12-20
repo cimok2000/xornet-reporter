@@ -210,9 +210,7 @@ impl Ui {
     for attempt in attempts {
       match attempt {
         Ok(data) => string.push_str(&(data + "\n")),
-        Err(err) => {
-          errors.push_str(&format!("\n {} {}", prefix.to_string(), &err.to_string()).to_string())
-        }
+        Err(err) => errors.push_str(&format!("\n {} {}", prefix, &err).to_string()),
       }
     }
 
