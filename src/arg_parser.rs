@@ -54,6 +54,10 @@ impl ArgParser {
             "Show version and exit".white()
           );
           println!(
+            "    -su, --signup <key>                 : {}",
+            "Sign up the machine with an authentication key to Xornet for online features".white()
+          );
+          println!(
             "    -i,  --interval   {}      : {}",
             "(default: 1)".bright_black(),
             "Data collection interval in seconds".white()
@@ -67,10 +71,6 @@ impl ArgParser {
             "    -nc, --no-clear   {}  : {}",
             "(default: false)".bright_black(),
             "Disables the terminal clearing on each interval".white()
-          );
-          println!(
-            "    -su, --signup <key>   : {}",
-            "Sign up the machine with an authentication key to Xornet for online features".white()
           );
           println!(
             "    -s,  --silent     {}  : {}",
