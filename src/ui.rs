@@ -204,16 +204,19 @@ impl Ui {
     ];
 
     let mut string = "".to_string();
+    let mut errors = "".to_string();
 
     // Handle errors from the data collector here
     for attempt in attempts {
       match attempt {
         Ok(data) => string.push_str(&(data + "\n")),
-        Err(err) => println!("{:?}", err),
+        Err(err) => {
+          errors.push_str(&format!("\n {} {}", prefix.to_string(), &err.to_string()).to_string())
+        }
       }
     }
 
-    println!("{}", string);
+    println!("{} {}", string, errors.bright_black());
 
     std::io::stdout().flush().expect("Couldn't flush stdout");
 
