@@ -90,7 +90,7 @@ impl Ui {
   }
 
   pub fn get_nics(prefix: &str, reporter: Arc<Mutex<Reporter>>) -> Result<String> {
-    let nics_header = format!(" {} {} \n", prefix.cyan(), "NICs".bright_black());
+    let nics_header = format!(" {} {} \n", prefix.blue(), "NICs".bright_black());
     let nics = reporter.lock().data_collector.get_network()?;
 
     let mut nics_info = String::new();
