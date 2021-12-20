@@ -15,6 +15,47 @@ pub struct Ui {
 }
 
 impl Ui {
+  pub fn new(prefix: &str, no_clear: bool, reporter: Arc<Mutex<Reporter>>) -> Self {
+    let mut this: Self = Self {
+      prefix: prefix.to_string(),
+      reporter,
+    };
+
+    let attempts = [
+      this.get_cpu(),
+      this.get_memory(),
+      this.get_process_count(),
+      this.get_gpu(),
+      this.get_nics(),
+      this.get_disks(),
+      this.get_temps(),
+      this.get_version(),
+      this.get_uuids(),
+    ];
+
+    let mut string = "".to_string();
+    let mut errors = "".to_string();
+
+    // Handle errors from the data collector here
+    for attempt in attempts {
+      match attempt {
+        Ok(data) => string.push_str(&(data + "\n")),
+        Err(err) => errors.push_str(&format!("\n {} {}", prefix, &err).to_string()),
+      }
+    }
+
+    println!("{} {}", string, errors.bright_black());
+
+    std::io::stdout().flush().expect("Couldn't flush stdout");
+
+    // Reset the cursor back to 0, 0
+    if !no_clear {
+      util::reset_cursor();
+    };
+
+    return this;
+  }
+
   pub fn get_cpu(&mut self) -> Result<String> {
     let cpus = self.reporter.lock().data_collector.get_cpu()?;
     let mut cpu_usage: u16 = 0;
@@ -183,46 +224,5 @@ impl Ui {
       .bright_black()
       .to_string(),
     );
-  }
-
-  pub fn new(prefix: &str, no_clear: bool, reporter: Arc<Mutex<Reporter>>) -> Self {
-    let mut this: Self = Self {
-      prefix: prefix.to_string(),
-      reporter,
-    };
-
-    let attempts = [
-      this.get_cpu(),
-      this.get_memory(),
-      this.get_process_count(),
-      this.get_gpu(),
-      this.get_nics(),
-      this.get_disks(),
-      this.get_temps(),
-      this.get_version(),
-      this.get_uuids(),
-    ];
-
-    let mut string = "".to_string();
-    let mut errors = "".to_string();
-
-    // Handle errors from the data collector here
-    for attempt in attempts {
-      match attempt {
-        Ok(data) => string.push_str(&(data + "\n")),
-        Err(err) => errors.push_str(&format!("\n {} {}", prefix, &err).to_string()),
-      }
-    }
-
-    println!("{} {}", string, errors.bright_black());
-
-    std::io::stdout().flush().expect("Couldn't flush stdout");
-
-    // Reset the cursor back to 0, 0
-    if !no_clear {
-      util::reset_cursor();
-    };
-
-    return this;
   }
 }
