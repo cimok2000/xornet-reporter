@@ -17,16 +17,6 @@ pub struct ArgParser {
 }
 
 impl ArgParser {
-  /// Handles the input arguments.
-  /// Currently only custom config parameter is supported
-  ///
-  /// # Returns
-  /// * `String` - Path to the custom config file
-  ///
-  ///
-  /// # Errors
-  /// * `std::env::VarError` - If the environment variable could not be read or parsed
-  /// * `std::env::VarError` - If the environment variable is not set
   pub async fn new() -> Result<ArgParser> {
     let mut arg_parser = ArgParser {
       prefix: "●".to_string(),
