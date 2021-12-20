@@ -9,11 +9,14 @@ use crate::{
   util::{self, bytes_to_gb, bytes_to_kb, bytes_to_mb},
 };
 
-pub struct Ui {}
+pub struct Ui {
+  prefix: String,
+  reporter: Arc<Mutex<Reporter>>,
+}
 
 impl Ui {
-  pub fn get_cpu(prefix: &str, reporter: Arc<Mutex<Reporter>>) -> Result<String> {
-    let cpus = reporter.lock().data_collector.get_cpu()?;
+  pub fn get_cpu(&mut self) -> Result<String> {
+    let cpus = self.reporter.lock().data_collector.get_cpu()?;
     let mut cpu_usage: u16 = 0;
     for i in 1..cpus.usage.len() {
       cpu_usage = cpu_usage + cpus.usage[i] as u16;
@@ -22,15 +25,15 @@ impl Ui {
 
     Ok(format!(
       " {} {}       {:.5}{} ",
-      prefix.red(),
+      self.prefix.red(),
       "CPU".bright_black(),
       format!("{}", cpu_usage).red(),
       "%".bright_black()
     ))
   }
 
-  pub fn get_gpu(prefix: &str, reporter: Arc<Mutex<Reporter>>) -> Result<String> {
-    let gpu = reporter.lock().data_collector.get_gpu()?;
+  pub fn get_gpu(&mut self) -> Result<String> {
+    let gpu = self.reporter.lock().data_collector.get_gpu()?;
     let gpu_power_usage = format!("{}", gpu.power_usage);
     let gpu_usage = format!("{}", gpu.gpu_usage);
     let gpu_vram_used = format!("{}", bytes_to_mb(gpu.mem_used));
@@ -38,7 +41,7 @@ impl Ui {
 
     return Ok(format!(
       " {} {}       {}{} {:.5}{} {} {} {} {}",
-      prefix.cyan(),
+      self.prefix.cyan(),
       "GPU".bright_black(),
       gpu_usage.cyan(),
       "%".bright_black(),
@@ -51,10 +54,11 @@ impl Ui {
     ));
   }
 
-  pub fn get_process_count(prefix: &str, reporter: Arc<Mutex<Reporter>>) -> Result<String> {
+  pub fn get_process_count(&mut self) -> Result<String> {
     let proc_count = format!(
       "{}",
-      reporter
+      self
+        .reporter
         .lock()
         .data_collector
         .get_total_process_count()?
@@ -62,25 +66,25 @@ impl Ui {
     );
     return Ok(format!(
       " {} {} {} ",
-      prefix.green(),
+      self.prefix.green(),
       "Processes".bright_black(),
       proc_count.green()
     ));
   }
 
-  pub fn get_memory(prefix: &str, reporter: Arc<Mutex<Reporter>>) -> Result<String> {
+  pub fn get_memory(&mut self) -> Result<String> {
     let used_memory = format!(
       "{}",
-      bytes_to_kb(reporter.lock().data_collector.get_ram()?.used)
+      bytes_to_kb(self.reporter.lock().data_collector.get_ram()?.used)
     );
     let total_memory = format!(
       "{}",
-      bytes_to_kb(reporter.lock().data_collector.get_ram()?.total),
+      bytes_to_kb(self.reporter.lock().data_collector.get_ram()?.total),
     );
 
     return Ok(format!(
       " {} {}    {} {} {} {} ",
-      prefix.yellow(),
+      self.prefix.yellow(),
       "Memory".bright_black(),
       used_memory.yellow(),
       "/".bright_black(),
@@ -89,9 +93,9 @@ impl Ui {
     ));
   }
 
-  pub fn get_nics(prefix: &str, reporter: Arc<Mutex<Reporter>>) -> Result<String> {
-    let nics_header = format!(" {} {} \n", prefix.blue(), "NICs".bright_black());
-    let nics = reporter.lock().data_collector.get_network()?;
+  pub fn get_nics(&mut self) -> Result<String> {
+    let nics_header = format!(" {} {} \n", self.prefix.blue(), "NICs".bright_black());
+    let nics = self.reporter.lock().data_collector.get_network()?;
 
     let mut nics_info = String::new();
     nics_info.push_str(&nics_header);
@@ -116,9 +120,9 @@ impl Ui {
     return Ok(nics_info.trim_end().to_string());
   }
 
-  pub fn get_disks(prefix: &str, reporter: Arc<Mutex<Reporter>>) -> Result<String> {
-    let disks_header = format!(" {} {} \n", prefix.magenta(), "Disks".bright_black());
-    let disks = reporter.lock().data_collector.get_disks()?;
+  pub fn get_disks(&mut self) -> Result<String> {
+    let disks_header = format!(" {} {} \n", self.prefix.magenta(), "Disks".bright_black());
+    let disks = self.reporter.lock().data_collector.get_disks()?;
 
     let mut disks_list = String::new();
     disks_list.push_str(&disks_header);
@@ -141,23 +145,23 @@ impl Ui {
     return Ok(disks_list.trim_end().to_string());
   }
 
-  pub fn get_uuids(prefix: &str) -> Result<String> {
+  pub fn get_uuids(&mut self) -> Result<String> {
     return Ok(format!(
       " {} {} {} ",
-      prefix.bright_black(),
+      self.prefix.bright_black(),
       "Hardware UUID".bright_black(),
       DataCollector::get_hardware_uuid()?.bright_black()
     ));
   }
 
-  pub fn get_temps(prefix: &str, reporter: Arc<Mutex<Reporter>>) -> Result<String> {
+  pub fn get_temps(&mut self) -> Result<String> {
     let mut temp_list = String::new();
     temp_list.push_str(&format!(
       " {} {} \n",
-      prefix.bright_purple(),
+      self.prefix.bright_purple(),
       "Temperatures".bright_black(),
     ));
-    let temps = reporter.lock().data_collector.get_temps()?;
+    let temps = self.reporter.lock().data_collector.get_temps()?;
     for i in 0..temps.len() {
       temp_list.push_str(&format!(
         "     {} \t{}{}\n",
@@ -169,11 +173,11 @@ impl Ui {
     return Ok(temp_list.trim_end().to_string());
   }
 
-  pub fn get_version(prefix: &str) -> Result<String> {
+  pub fn get_version(&mut self) -> Result<String> {
     return Ok(
       format!(
-        " {} Xornet Reporter v{} ",
-        prefix,
+        "\n {} Xornet Reporter v{} ",
+        self.prefix,
         env!("CARGO_PKG_VERSION")
       )
       .bright_black()
@@ -182,17 +186,21 @@ impl Ui {
   }
 
   pub fn new(prefix: &str, no_clear: bool, reporter: Arc<Mutex<Reporter>>) -> Self {
+    let mut this: Self = Self {
+      prefix: prefix.to_string(),
+      reporter,
+    };
+
     let attempts = [
-      Ui::get_cpu(prefix, reporter.clone()),
-      Ui::get_memory(prefix, reporter.clone()),
-      Ui::get_process_count(prefix, reporter.clone()),
-      Ui::get_gpu(prefix, reporter.clone()),
-      Ui::get_nics(prefix, reporter.clone()),
-      Ui::get_disks(prefix, reporter.clone()),
-      Ui::get_temps(prefix, reporter.clone()),
-      Ok("".to_string()),
-      Ui::get_version(prefix),
-      Ui::get_uuids(prefix),
+      this.get_cpu(),
+      this.get_memory(),
+      this.get_process_count(),
+      this.get_gpu(),
+      this.get_nics(),
+      this.get_disks(),
+      this.get_temps(),
+      this.get_version(),
+      this.get_uuids(),
     ];
 
     let mut string = "".to_string();
@@ -214,6 +222,6 @@ impl Ui {
       util::reset_cursor();
     };
 
-    return Self {};
+    return this;
   }
 }
