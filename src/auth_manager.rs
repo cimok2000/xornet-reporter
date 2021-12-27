@@ -32,7 +32,7 @@ impl AuthManager {
 
     let client = reqwest::Client::new();
     let response = client
-      .post("http://localhost:8086/machines/@signup")
+      .post("http://localhost:8085/machines/@signup")
       .json(&SignupBody {
         two_factor_key: two_factor_key.to_string(),
         hostname: hostname.to_string(),
