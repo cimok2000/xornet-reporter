@@ -19,7 +19,7 @@ impl Reporter {
     let websocket_manager: Option<WebsocketManager>;
 
     if !args.offline {
-      websocket_manager = Some(WebsocketManager::new("ws://localhost:8085")?);
+      websocket_manager = Some(WebsocketManager::new("ws://localhost:8085/reporter")?);
     } else {
       websocket_manager = None;
     }

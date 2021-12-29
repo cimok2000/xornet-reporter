@@ -14,7 +14,7 @@ use crate::util::arcmutex;
 #[serde(untagged)]
 pub enum WebsocketEvent {
   Login {
-    access_token: String,
+    auth_token: String,
   },
   DynamicData {
     cpu: CPUStats,
@@ -35,11 +35,11 @@ pub enum WebsocketEvent {
   },
 }
 
-pub fn get_event_id(ev: &WebsocketEvent) -> u16 {
+pub fn get_event_id(ev: &WebsocketEvent) -> &str {
   match ev {
-    WebsocketEvent::Login { .. } => 0x01,
-    WebsocketEvent::StaticData { .. } => 0x04,
-    WebsocketEvent::DynamicData { .. } => 0x05,
+    WebsocketEvent::Login { .. } => "login",
+    WebsocketEvent::StaticData { .. } => "staticData",
+    WebsocketEvent::DynamicData { .. } => "dynamicData",
   }
 }
 
