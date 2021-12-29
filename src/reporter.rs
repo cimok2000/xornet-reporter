@@ -50,7 +50,7 @@ impl Reporter {
     match self.websocket_manager.as_mut() {
       Some(websocket_manager) => {
         websocket_manager.send(WebsocketEvent::Login {
-          access_token: self.config_manager.config.access_token.to_string(),
+          auth_token: self.config_manager.config.access_token.to_string(),
         })?;
       }
       None => {}
@@ -87,10 +87,10 @@ impl Reporter {
         websocket_manager.send(WebsocketEvent::DynamicData {
           cpu: self.data_collector.get_cpu()?,
           ram: self.data_collector.get_ram()?,
-          gpu: self.data_collector.get_gpu()?,
+          gpu: self.data_collector.get_gpu().ok(),
           processes: self.data_collector.get_total_process_count()?.to_string(),
           disks: self.data_collector.get_disks()?,
-          temps: self.data_collector.get_temps()?,
+          temps: self.data_collector.get_temps().ok(),
         })?;
       }
       None => {}

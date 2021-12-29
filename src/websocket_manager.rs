@@ -19,10 +19,10 @@ pub enum WebsocketEvent {
   DynamicData {
     cpu: CPUStats,
     ram: RAMStats,
-    gpu: GPUStats,
+    gpu: Option<GPUStats>,
     processes: String,
     disks: Vec<DiskStats>,
-    temps: Vec<TempStats>,
+    temps: Option<Vec<TempStats>>,
   },
   StaticData {
     hostname: Option<String>,
@@ -68,7 +68,7 @@ impl WebsocketManager {
     let message = Message::text(
       json!({
           "e": get_event_id(&data),
-          "data": &data,
+          "d": &data,
       })
       .to_string(),
     );
