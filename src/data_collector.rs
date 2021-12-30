@@ -114,8 +114,8 @@ impl DataCollector {
 
       let nic = NetworkInterfaceStats {
         name: interface_name.to_string(),
-        tx: data.transmitted(),
-        rx: data.received(),
+        tx: data.transmitted() * 8,
+        rx: data.received() * 8,
       };
 
       nics.push(nic);
