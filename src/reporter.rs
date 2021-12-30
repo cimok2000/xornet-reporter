@@ -18,15 +18,18 @@ impl Reporter {
     let args = ArgParser::new().await?;
     let websocket_manager: Option<WebsocketManager>;
 
-    if !args.offline {
-      websocket_manager = Some(WebsocketManager::new("ws://localhost:8085/reporter")?);
-    } else {
-      websocket_manager = None;
-    }
-
     let config_manager: ConfigManager = ConfigManager::new()?;
     let data_collector: DataCollector = DataCollector::new()?;
     let version: String = env!("CARGO_PKG_VERSION").to_string();
+
+    if !args.offline {
+      websocket_manager = Some(WebsocketManager::new(&format!(
+        "ws://{}/reporter",
+        config_manager.config.backend_hostname
+      ))?);
+    } else {
+      websocket_manager = None;
+    }
 
     let mut this: Self = Self {
       data_collector,

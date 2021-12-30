@@ -6,6 +6,7 @@ use std::path::Path;
 #[derive(Serialize, Deserialize, Clone)]
 pub struct Config {
   pub access_token: String,
+  pub backend_hostname: String,
 }
 
 /// Manages the config.json for the reporter
@@ -47,6 +48,7 @@ impl ConfigManager {
   pub fn create_config() -> Result<Config> {
     let config = Config {
       access_token: String::new(),
+      backend_hostname: String::new(),
     };
     ConfigManager::save_config(config.clone())?;
     return Ok(config);

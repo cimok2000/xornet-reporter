@@ -26,13 +26,14 @@ impl AuthManager {
   pub async fn signup(
     two_factor_key: &str,
     hostname: &str,
+    backend_hostname: &str,
     hardware_uuid: &str,
   ) -> Result<SignupResponse> {
     println!("Signing up to Xornet...");
 
     let client = reqwest::Client::new();
     let response = client
-      .post("http://localhost:8085/machines/@signup")
+      .post(&format!("http://{}/machines/@signup", backend_hostname))
       .json(&SignupBody {
         two_factor_key: two_factor_key.to_string(),
         hostname: hostname.to_string(),

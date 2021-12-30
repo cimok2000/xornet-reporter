@@ -128,9 +128,20 @@ impl ArgParser {
           if args.len() > index + 1 {
             index += 1;
             let two_factor_key = &args[index];
+            let config_manager: ConfigManager = ConfigManager::new()?;
+
+            if config_manager.config.backend_hostname == "" {
+              println!(
+                "{}",
+                "Backend Hostname is not set in the config.json, please set it and retry:".red(),
+              );
+              std::process::exit(1)
+            }
+
             match AuthManager::signup(
               two_factor_key,
               &DataCollector::get_hostname()?,
+              &config_manager.config.backend_hostname,
               &DataCollector::get_hardware_uuid()?,
             )
             .await
