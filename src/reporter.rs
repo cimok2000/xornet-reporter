@@ -36,12 +36,8 @@ impl Reporter {
       args: args,
     };
 
-    if this.args.silent {
-      println!("Xornet Reporter Started");
-    } else {
-      this.login()?;
-      this.send_static_data().await?;
-    }
+    this.login()?;
+    this.send_static_data().await?;
 
     return Ok(this);
   }

@@ -32,7 +32,9 @@ async fn main() -> Result<()> {
     }
 
     match reporter.lock().send_dynamic_data() {
-      Ok(_) => {}
+      Ok(_) => {
+        println!("{}", "Xornet Reporter Sending Data...")
+      }
       Err(e) => {
         eprintln!("Error while sending dynamic data: {}", e);
       }
