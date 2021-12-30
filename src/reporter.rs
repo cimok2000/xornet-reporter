@@ -24,7 +24,7 @@ impl Reporter {
 
     if !args.offline {
       websocket_manager = Some(WebsocketManager::new(&format!(
-        "ws://{}/reporter",
+        "wss://{}/reporter",
         config_manager.config.backend_hostname
       ))?);
     } else {

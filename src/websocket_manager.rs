@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 use std::net::TcpStream;
 use std::sync::Arc;
+use websocket::sync::stream::TlsStream;
 use websocket::sync::Client;
 use websocket::{ClientBuilder, Message};
 
@@ -52,12 +53,12 @@ pub struct WebsocketMessage {
 
 pub struct WebsocketManager {
   pub websocket_url: String,
-  pub websocket: Arc<Mutex<Client<TcpStream>>>,
+  pub websocket: Arc<Mutex<Client<TlsStream<TcpStream>>>>,
 }
 
 impl WebsocketManager {
   pub fn new(websocket_url: &str) -> Result<Self> {
-    let websocket = arcmutex(ClientBuilder::new(websocket_url)?.connect_insecure()?);
+    let websocket = arcmutex(ClientBuilder::new(websocket_url)?.connect_secure(None)?);
 
     return Ok(Self {
       websocket_url: websocket_url.to_string(),
