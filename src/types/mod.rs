@@ -3,11 +3,11 @@ use serde::{Deserialize, Serialize};
 #[derive(Serialize, Deserialize, Debug)]
 pub struct StaticData {
   pub hostname: Option<String>,
-  pub public_ip: String,
-  pub cpu_model: String,
   pub os_version: Option<String>,
   pub os_name: Option<String>,
   pub cpu_cores: Option<usize>,
+  pub public_ip: String,
+  pub cpu_model: String,
   pub cpu_threads: usize,
   pub total_mem: u64,
 }
