@@ -4,8 +4,7 @@ use crate::types::{
 use anyhow::{anyhow, Result};
 use nvml::NVML;
 use serde::{Deserialize, Serialize};
-use sysinfo::System;
-use sysinfo::{ComponentExt, DiskExt, NetworkExt, ProcessorExt, SystemExt};
+use sysinfo::{ComponentExt, DiskExt, NetworkExt, ProcessorExt, System, SystemExt};
 use thiserror::Error;
 
 const IP_ADDRESS_URL: &str = "https://api.ipify.org?format=json";
@@ -92,6 +91,7 @@ impl DataCollector {
       public_ip: DataCollector::get_current_ip().await?,
       hostname: self.fetcher.host_name(),
       os_version: self.fetcher.os_version(),
+      os_name: self.fetcher.name(),
       cpu_cores: self.fetcher.physical_core_count(),
       cpu_threads: self.fetcher.processors().len(),
       total_mem: self.fetcher.total_memory(),

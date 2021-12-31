@@ -31,6 +31,7 @@ pub enum WebsocketEvent {
     public_ip: String,
     cpu_model: String,
     os_version: Option<String>,
+    os_name: Option<String>,
     cpu_cores: Option<usize>,
     cpu_threads: usize,
     total_mem: u64,

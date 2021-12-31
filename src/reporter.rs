@@ -69,6 +69,7 @@ impl Reporter {
           public_ip: static_data.public_ip,
           cpu_model: static_data.cpu_model,
           os_version: static_data.os_version,
+          os_name: static_data.os_name,
           cpu_cores: static_data.cpu_cores,
           cpu_threads: static_data.cpu_threads,
           total_mem: static_data.total_mem,
