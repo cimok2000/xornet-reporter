@@ -22,14 +22,7 @@ impl Reporter {
     let data_collector: DataCollector = DataCollector::new()?;
     let version: String = env!("CARGO_PKG_VERSION").to_string();
 
-    if !args.offline {
-      websocket_manager = Some(WebsocketManager::new(&format!(
-        "wss://{}/reporter",
-        config_manager.config.backend_hostname
-      ))?);
-    } else {
-      websocket_manager = None;
-    }
+    websocket_manager = None;
 
     let mut this: Self = Self {
       data_collector,
@@ -39,10 +32,21 @@ impl Reporter {
       args: args,
     };
 
-    this.login()?;
-    this.send_static_data().await?;
+    if !this.args.offline {
+      this.init_connection()?;
+      this.send_static_data().await?;
+    }
 
     return Ok(this);
+  }
+
+  pub fn init_connection(&mut self) -> Result<()> {
+    self.websocket_manager = Some(WebsocketManager::new(&format!(
+      "wss://{}/reporter",
+      self.config_manager.config.backend_hostname
+    ))?);
+    self.login()?;
+    Ok(())
   }
 
   pub fn login(&mut self) -> Result<()> {
@@ -84,7 +88,7 @@ impl Reporter {
   pub fn send_dynamic_data(&mut self) -> Result<()> {
     match self.websocket_manager.as_mut() {
       Some(websocket_manager) => {
-        websocket_manager.send(WebsocketEvent::DynamicData {
+        let status = websocket_manager.send(WebsocketEvent::DynamicData {
           cpu: self.data_collector.get_cpu()?,
           ram: self.data_collector.get_ram()?,
           gpu: self.data_collector.get_gpu().ok(),
@@ -92,7 +96,14 @@ impl Reporter {
           disks: self.data_collector.get_disks()?,
           temps: self.data_collector.get_temps().ok(),
           network: self.data_collector.get_network()?,
-        })?;
+        });
+        match status {
+          Ok(_) => {}
+          Err(e) => {
+            eprintln!("Websocket error: {}", e);
+            self.init_connection()?;
+          }
+        }
       }
       None => {}
     }
