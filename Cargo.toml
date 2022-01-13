@@ -29,8 +29,6 @@ reqwest = {version = "0.11.7", features = ["json"]}
 tokio = { version = "1.15.0", features = ["full"] }
 uuid = { version = "0.8", features = ["serde", "v4"] }
 
-# openssl = {version = "0.10.38", features = ["vendored"]}
-
 # User interface
 colored = "2.0.0"
 crossterm = "0.22.1"
@@ -39,6 +37,7 @@ ctrlc = "3.2.1"
 [target.'cfg(windows)'.build-dependencies]
 winres = "0.1"
 
-
+[target.'cfg(unix)'.build-dependencies]
+openssl = {version = "0.10.38", features = ["vendored"]}
 
  
