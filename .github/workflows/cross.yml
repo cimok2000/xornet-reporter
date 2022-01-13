@@ -64,10 +64,10 @@ jobs:
         uses: actions/checkout@v2
       - name: 🛎 Install cross
         run: cargo install cross
-      - name: 🛎 Build ${{matrix.platform}}
-        run: cross build --target ${{matrix.platform}} --verbose --release
+      - name: 🛎 Build ${{matrix.target}}
+        run: cross build --target ${{matrix.target}} --verbose --release
       - name: 💎 Upload artifact
         uses: actions/upload-artifact@v1
         with:
-          name: xornet-reporter_${{matrix.targetPlatform}}
-          path: target/${{matrix.platform}}/release/xornet-reporter
+          name: xornet-reporter_${{matrix.target}}
+          path: target/${{matrix.target}}/release/xornet-reporter
