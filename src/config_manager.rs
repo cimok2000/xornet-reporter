@@ -2,6 +2,7 @@ use anyhow::Result;
 use serde::{Deserialize, Serialize};
 use std::fs::File;
 use std::path::Path;
+use uuid::Uuid;
 
 #[derive(Serialize, Deserialize, Clone)]
 pub struct Config {
@@ -45,8 +46,8 @@ impl ConfigManager {
     }
   }
 
-  pub fn create_uuid() -> Result<String> {
-    return Uuid::new_v4()?.to_string();
+  pub fn create_uuid() -> String {
+    return Uuid::new_v4().to_string();
   }
 
   /// Creates a new config file with an empty access token and default backend address.
@@ -54,7 +55,7 @@ impl ConfigManager {
     let config = Config {
       access_token: String::new(),
       backend_hostname: "backend.xornet.cloud".to_string(),
-      uuid: ConfigManager::create_uuid()?,
+      uuid: ConfigManager::create_uuid(),
     };
     ConfigManager::save_config(config.clone())?;
     return Ok(config);

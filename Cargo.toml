@@ -27,7 +27,8 @@ thiserror = "1.0.30"
 websocket = "0.26.2"
 reqwest = {version = "0.11.7", features = ["json"]}
 tokio = { version = "1.15.0", features = ["full"] }
-uuid = "0.8.2"
+uuid = { version = "0.8", features = ["serde", "v4"] }
+
 # openssl = {version = "0.10.38", features = ["vendored"]}
 
 # User interface
