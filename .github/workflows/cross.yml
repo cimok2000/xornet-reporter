@@ -65,7 +65,7 @@ jobs:
       - name: 🛎 Install cross
         run: cargo install cross
       - name: 🛎 Build ${{matrix.platform}}
-        uses: cross build --target ${{matrix.platform}} --verbose --release
+        run: cross build --target ${{matrix.platform}} --verbose --release
       - name: 💎 Upload artifact
         uses: actions/upload-artifact@v1
         with:
