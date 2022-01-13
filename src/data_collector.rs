@@ -42,17 +42,6 @@ impl DataCollector {
     });
   }
 
-  pub fn get_hardware_uuid() -> Result<String> {
-    match machine_uid::get() {
-      Ok(hardware_uuid) => return Ok(hardware_uuid),
-      Err(_err) => {
-        return Err(anyhow!(
-          "Could not get hostname. Are you running this on a supported platform?"
-        ))
-      }
-    };
-  }
-
   pub fn get_hostname() -> Result<String> {
     let fetcher = System::new_all();
 

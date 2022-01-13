@@ -7,6 +7,7 @@ use std::path::Path;
 pub struct Config {
   pub access_token: String,
   pub backend_hostname: String,
+  pub uuid: String,
 }
 
 /// Manages the config.json for the reporter
@@ -44,11 +45,16 @@ impl ConfigManager {
     }
   }
 
+  pub fn create_uuid() -> Result<String> {
+    return Uuid::new_v4()?.to_string();
+  }
+
   /// Creates a new config file with an empty access token and default backend address.
   pub fn create_config() -> Result<Config> {
     let config = Config {
       access_token: String::new(),
       backend_hostname: "backend.xornet.cloud".to_string(),
+      uuid: ConfigManager::create_uuid()?,
     };
     ConfigManager::save_config(config.clone())?;
     return Ok(config);

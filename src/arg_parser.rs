@@ -142,7 +142,7 @@ impl ArgParser {
               two_factor_key,
               &DataCollector::get_hostname()?,
               &config_manager.config.backend_hostname,
-              &DataCollector::get_hardware_uuid()?,
+              &config_manager.config.uuid,
             )
             .await
             {

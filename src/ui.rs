@@ -30,7 +30,6 @@ impl Ui {
       this.get_disks(),
       this.get_temps(),
       this.get_version(),
-      this.get_uuids(),
     ];
 
     let mut string = "".to_string();
@@ -184,15 +183,6 @@ impl Ui {
     }
 
     return Ok(disks_list.trim_end().to_string());
-  }
-
-  pub fn get_uuids(&mut self) -> Result<String> {
-    return Ok(format!(
-      " {} {} {} ",
-      self.prefix.bright_black(),
-      "Hardware UUID".bright_black(),
-      DataCollector::get_hardware_uuid()?.bright_black()
-    ));
   }
 
   pub fn get_temps(&mut self) -> Result<String> {

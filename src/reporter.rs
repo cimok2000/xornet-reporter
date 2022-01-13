@@ -3,7 +3,6 @@ use crate::config_manager::ConfigManager;
 use crate::data_collector::DataCollector;
 use crate::websocket_manager::{WebsocketEvent, WebsocketManager};
 use anyhow::Result;
-extern crate machine_uid;
 
 pub struct Reporter {
   pub data_collector: DataCollector,
