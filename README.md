@@ -33,7 +33,7 @@ ExecStart=<xornet reporter binary path> --silent
 WantedBy=multi-user.target
 ```
 3. Start the service `sudo systemctl start xornet`
-4. Very that it works `sudo systemctl status xornet` 
+4. Verify that it works `sudo systemctl status xornet` 
 5. If the service doesn't crash enable it so it starts automatically on startup with `sudo systemctl enable xornet`
 
 # ⚡ One-shot Installation

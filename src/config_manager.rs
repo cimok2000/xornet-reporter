@@ -44,11 +44,11 @@ impl ConfigManager {
     }
   }
 
-  /// Creates a new config file with an empty access token.
+  /// Creates a new config file with an empty access token and default backend address.
   pub fn create_config() -> Result<Config> {
     let config = Config {
       access_token: String::new(),
-      backend_hostname: String::new(),
+      backend_hostname: "backend.xornet.cloud".to_string(),
     };
     ConfigManager::save_config(config.clone())?;
     return Ok(config);
