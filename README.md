@@ -3,15 +3,14 @@
 # ⚡ How do I add my machine on Xornet?
 
 1. Download the reporter through the [Releases](https://github.com/xornet-cloud/Reporter/releases/) for your platform
-2. Run the reporter once with `./xornet-reporter.exe`
-3. This will throw an error but it will generate a `config.json` where you ran it at
-4. Fill in the "backend_hostname" field with `"backend.xornet.cloud"` or your own xornet backend if you're self-hosting
-5. Go on Xornet and click the + button and copy the generated token
-6. Signup your reporter with the token `./xornet-reporter.exe -su 61F14F509A1F4824B27ADDAC6EC9F510`
-7. If the signup succeeds run the reporter with `--silent` after
-8. Your machine should now show up on Xornet's dashboard
+2. Go on Xornet and click the + button and copy the generated token
+3. Signup your reporter with the token `./xornet-reporter.exe -su 61F14F509A1F4824B27ADDAC6EC9F510`
+4. If the signup succeeds run the reporter with `--silent` after
+5. Your machine should now show up on Xornet's dashboard
 
 # Optional Steps
+If you wanna use your own backend change the "backend_hostname" field with `"backend.xornet.cloud"` to your own xornet backend
+
 You can make a service on systemd to automatically start the reporter
 
 1. Create the service file `sudo nano /etc/systemd/system/xornet.service`
