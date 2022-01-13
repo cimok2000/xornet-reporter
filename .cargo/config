@@ -7,6 +7,9 @@ linker = "mips-linux-gnu-gcc"
 [target.mipsel-unknown-linux-gnu]
 linker = "mipsel-linux-gnu-gcc"
 
+[target.arm-unknown-linux-gnueabihf]
+linker = "/rpi_tools/arm-bcm2708/arm-linux-gnueabihf/bin/arm-linux-gnueabihf-gcc"
+
 # [target.i686-pc-windows-msvc]
 # linker = "libs/msvc-i686/link.exe"
 
