@@ -101,6 +101,7 @@ impl Reporter {
           Err(e) => {
             eprintln!("Websocket error: {}", e);
             self.init_connection()?;
+            self.send_static_data();
           }
         }
       }
