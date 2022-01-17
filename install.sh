@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set +x
-trap cleanup INT
+trap handle_ctrl_c INT
 path=$(pwd)
 
 # Cleanup
@@ -38,6 +38,13 @@ handle_exit_code_non_crucial() {
   fi
 }
 
+# Ctrl-C
+handle_ctrl_c() {
+  echo "CTRL-C detected."
+  cleanup
+  exit
+}
+
 echo "Xornet reporter install script v1.0.0"
 echo "--------------------------------------"
 echo "This script will install and set up Xornet reporter for your system."
@@ -47,6 +54,7 @@ if [ "$EUID" -ne 0 ]; then
   echo "Please run this script as root"
   exit 1
 fi
+echo "Ok."
 echo
 echo "Checking CPU architecture..."
 arch=$(uname -m)
@@ -146,7 +154,11 @@ handle_exit_code
 if [ ! -f /opt/xornet/config.json ]; then
   cd /opt/xornet
   echo "Setting up as a new installation..."
-  read -p "Please enter your Xornet Signup Token: " token
+  if [ ! $1 ]; then
+    read -p "Please enter your Xornet Signup Token: " token
+  else
+    token=$1
+  fi
   ./xornet-reporter -su $token
   handle_exit_code
   cd $path
