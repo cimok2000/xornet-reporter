@@ -13,13 +13,6 @@ cleanup() {
   echo "Ok."
 }
 
-# Clear stdin
-clear_stdin() {
-  while read -r -t 0 -s -n 1; do
-    :
-  done
-}
-
 # Handle exit code for command
 handle_exit_code() {
   if [ $? -ne 0 ]; then
@@ -89,12 +82,11 @@ if [ -d /opt/xornet ]; then
   echo "Xornet reporter is already installed."
   ready=false
   while [ $ready = false ]; do
-    clear_stdin
     echo "Please choose one of the following options:"
     echo "1. Clean install Xornet reporter"
     echo "2. Update existing Xornet reporter"
     echo "3. Exit"
-    read -p "Please enter your choice: " choice
+    read -p "Please enter your choice: " choice </dev/tty
     echo
     case $choice in
     1)
@@ -163,7 +155,7 @@ if [ ! -f /opt/xornet/config.json ]; then
   cd /opt/xornet
   echo "Setting up as a new installation..."
   if [ ! $1 ]; then
-    read -p "Please enter your Xornet Signup Token: " token
+    read -p "Please enter your Xornet Signup Token: " token </dev/tty
   else
     token=$1
   fi
