@@ -1,50 +1,21 @@
-![Xornet Logo](https://cdn.discordapp.com/attachments/851974319370010655/854669456793534494/unknown.png)
+![Logo](https://cdn.discordapp.com/attachments/755597803102928966/931042317878587412/logo.svg)
 
 # ⚡ How do I add my machine on Xornet?
-
-1. Download the reporter through the [Releases](https://github.com/xornet-cloud/Reporter/releases/) for your platform
+1. Install the reporter with the scripts below or download it through the [Releases](https://github.com/xornet-cloud/Reporter/releases/) for your platform
 2. Go on Xornet and click the + button and copy the generated token
 3. Signup your reporter with the token `./xornet-reporter.exe -su 61F14F509A1F4824B27ADDAC6EC9F510`
 4. If the signup succeeds run the reporter with `--silent` after
 5. Your machine should now show up on Xornet's dashboard
+6. (optional) if you wanna use your own backend change the "backend_hostname" field with `"backend.xornet.cloud"` to your own xornet backend
 
-# Optional Steps
-If you wanna use your own backend change the "backend_hostname" field with `"backend.xornet.cloud"` to your own xornet backend
-
-You can make a service on systemd to automatically start the reporter
-
-1. Create the service file `sudo nano /etc/systemd/system/xornet.service`
-2. Paste the following in the file:
-```yaml
-[Unit]
-Description=Xornet Reporter
-After=network.target
-
-[Service]
-Type=simple
-User=$USER
-Restart=always
-RestartSec=3
-WorkingDirectory=<xornet reporter binary path> # make sure your config.json is in this path so the reporter can see it
-ExecStart=<xornet reporter binary path> --silent
-
-[Install]
-WantedBy=multi-user.target
-```
-3. Start the service `sudo systemctl start xornet`
-4. Verify that it works `sudo systemctl status xornet` 
-5. If the service doesn't crash enable it so it starts automatically on startup with `sudo systemctl enable xornet`
-
-# ⚡ One-shot Installation
+# ⚡ Installation
 
 ## Linux
-
 ```bash
-curl -s https://raw.githubusercontent.com/xornet-cloud/Reporter/main/scripts/install.sh | sudo bash
+curl -s https://raw.githubusercontent.com/xornet-cloud/Reporter/main/install.sh | sudo bash
 ```
 
 ## Windows
-
 ```powershell
 Invoke-Command -ScriptBlock ([Scriptblock]::Create((Invoke-WebRequest -UseBasicParsing 'https://raw.githubusercontent.com/xornet-cloud/Reporter/main/scripts/install.ps1').Content))
 ```
