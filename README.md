@@ -10,14 +10,9 @@
 
 # ⚡ Installation
 
-## Linux
+## Linux Service
 ```bash
-curl -s https://raw.githubusercontent.com/xornet-cloud/Reporter/main/install.sh | sudo bash
-```
-
-## Windows
-```powershell
-Invoke-Command -ScriptBlock ([Scriptblock]::Create((Invoke-WebRequest -UseBasicParsing 'https://raw.githubusercontent.com/xornet-cloud/Reporter/main/scripts/install.ps1').Content))
+curl https://raw.githubusercontent.com/xornet-cloud/Reporter/main/install.sh | sudo bash -s <signup token here>
 ```
 
 # Reporter
