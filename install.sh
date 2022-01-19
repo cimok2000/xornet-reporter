@@ -60,12 +60,12 @@ echo "Checking CPU architecture..."
 arch=$(uname -m)
 # TODO: Add support for lowercase
 case $arch in
-  armv7*)
-    arch="armv7"
-    ;;
-  *)
-    arch=$arch
-    ;;
+armv7*)
+  arch="armv7"
+  ;;
+*)
+  arch=$arch
+  ;;
 esac
 echo $arch
 echo
