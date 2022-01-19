@@ -149,7 +149,7 @@ fi
 
 # Download the latest release from github and extract it
 echo "Downloading the latest release from github..."
-download_url=$(curl -s https://api.github.com/repos/xornet-cloud/Reporter/releases | grep browser_download_url | grep "linux_${arch}" | head -n 1 | cut -d '"' -f 4)
+download_url=$(curl -s https://api.github.com/repos/xornet-cloud/Reporter/releases | grep browser_download_url | grep "${arch}-" | head -n 1 | cut -d '"' -f 4)
 curl -L $download_url -o xornet-reporter
 handle_exit_code
 echo "Moving the executable into /opt/xornet..."
