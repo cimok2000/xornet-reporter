@@ -4,7 +4,6 @@ use parking_lot::Mutex;
 use std::{io::Write, sync::Arc};
 
 use crate::{
-  data_collector::DataCollector,
   reporter::Reporter,
   util::{self, bytes_to_gb, bytes_to_kb, bytes_to_mb},
 };
