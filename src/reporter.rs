@@ -2,7 +2,8 @@ use crate::arg_parser::ArgParser;
 use crate::config_manager::ConfigManager;
 use crate::data_collector::DataCollector;
 use crate::websocket_manager::{WebsocketEvent, WebsocketManager};
-use anyhow::Result;
+use anyhow::{anyhow, Result};
+use futures::FutureExt;
 
 pub struct Reporter {
   pub data_collector: DataCollector,
@@ -18,7 +19,7 @@ impl Reporter {
     let websocket_manager: Option<WebsocketManager>;
 
     let config_manager: ConfigManager = ConfigManager::new()?;
-    let data_collector: DataCollector = DataCollector::new()?;
+    let data_collector: DataCollector = DataCollector::new().await?;
     let version: String = env!("CARGO_PKG_VERSION").to_string();
 
     websocket_manager = None;
@@ -101,7 +102,10 @@ impl Reporter {
           Err(e) => {
             eprintln!("Websocket error: {}", e);
             self.init_connection()?;
-            self.send_static_data();
+            match self.send_static_data().now_or_never() {
+              Some(it) => it,
+              None => return Err(anyhow!("Websocket error: {}", e)),
+            }?;
           }
         }
       }

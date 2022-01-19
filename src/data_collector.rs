@@ -1,7 +1,11 @@
+use std::path;
+
 use crate::types::{
   CPUStats, DiskStats, GPUStats, NetworkInterfaceStats, RAMStats, StaticData, TempStats,
 };
+use amdgpu_sysfs::gpu_controller::GpuController;
 use anyhow::{anyhow, Result};
+use futures::executor::block_on;
 use nvml::NVML;
 use serde::{Deserialize, Serialize};
 use sysinfo::{ComponentExt, DiskExt, NetworkExt, ProcessorExt, System, SystemExt};
@@ -19,8 +23,14 @@ pub enum DataCollectorError {
 
 #[derive(Debug)]
 pub struct DataCollector {
-  pub gpu_fetcher: Option<NVML>,
+  pub gpu_fetcher: GPUFetcher,
   pub fetcher: System,
+}
+
+#[derive(Debug)]
+pub struct GPUFetcher {
+  pub amd: Option<GpuController>,
+  pub nvidia: Option<NVML>,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -30,11 +40,21 @@ pub struct CurrentIP {
 
 impl DataCollector {
   /// Creates a new data collector
-  pub fn new() -> Result<Self> {
+  pub async fn new() -> Result<Self> {
     let fetcher = System::new_all();
+    let nvidia_fetcher = NVML::init().ok();
+    let amd_fetcher =
+      match GpuController::new_from_path(path::Path::new("/sys/class/drm/card0").to_path_buf())
+        .await
+      {
+        Ok(amd) => Some(amd),
+        Err(_) => None,
+      };
 
-    // This guy panics on systems without nvidia
-    let gpu_fetcher = NVML::init().ok();
+    let gpu_fetcher = GPUFetcher {
+      amd: amd_fetcher,
+      nvidia: nvidia_fetcher,
+    };
 
     return Ok(Self {
       gpu_fetcher,
@@ -140,22 +160,53 @@ impl DataCollector {
   }
 
   pub fn get_gpu(&mut self) -> Result<GPUStats> {
-    let gpu_fetcher = self.gpu_fetcher.as_ref().ok_or(DataCollectorError::NoGPU)?;
+    let gpu_fetcher = &self.gpu_fetcher;
+    match gpu_fetcher.nvidia.as_ref() {
+      Some(nvml) => {
+        let device = nvml.device_by_index(0)?;
 
-    // Get the first `Device` (GPU) in the system
-    let device = gpu_fetcher.device_by_index(0)?;
+        let brand = format!("{:?}", device.brand()?);
+        let util = device.utilization_rates()?;
+        let memory_info = device.memory_info()?;
 
-    let brand = format!("{:?}", device.brand()?); // GeForce on my system
-    let util = device.utilization_rates()?; // Currently 0 on my system; Not encoding anything
-    let memory_info = device.memory_info()?; // Currently 1.63/6.37 GB used on my system
+        return Ok(GPUStats {
+          brand,
+          gpu_usage: util.gpu,
+          power_usage: device.power_usage()?,
+          mem_used: memory_info.used,
+          mem_total: memory_info.total,
+        });
+      }
+      None => {}
+    };
+    match gpu_fetcher.amd.as_ref() {
+      Some(amd) => {
+        let brand = format!("{:?}", amd.get_pci_subsys_id());
+        let util = match block_on(amd.get_busy_percent()) {
+          Some(it) => it,
+          None => return Err(anyhow!("Could not get GPU usage")),
+        };
+        let memory_used = match block_on(amd.get_used_vram()) {
+          Some(it) => it,
+          None => return Err(anyhow!("Could not get GPU memory usage")),
+        };
+        let memory_total = match block_on(amd.get_total_vram()) {
+          Some(it) => it,
+          None => return Err(anyhow!("Could not get GPU memory total")),
+        };
 
-    return Ok(GPUStats {
-      brand,
-      gpu_usage: util.gpu,
-      power_usage: device.power_usage()?,
-      mem_used: memory_info.used,
-      mem_total: memory_info.total,
-    });
+        return Ok(GPUStats {
+          brand,
+          gpu_usage: util as u32,
+          power_usage: 0,
+          mem_used: memory_used,
+          mem_total: memory_total,
+        });
+      }
+      None => {
+        return Err(DataCollectorError::NoGPU)?;
+      }
+    };
   }
 
   /// Gets the current DISKS stats
