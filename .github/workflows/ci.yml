@@ -6,61 +6,49 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build-linux:
+  compile-linux:
     strategy:
       fail-fast: false
       matrix:
-        targetPlatform: 
-          - x86_64
-          # - i686
-          # - aarch64
-          # - mips
-          # - mipsel
-    name: "🛠 Compile for Linux"
-    runs-on: self-hosted
-    # runs-on: ubuntu-latest
+        target: 
+          - aarch64-unknown-linux-gnu
+          - aarch64-unknown-linux-musl
+          - arm-unknown-linux-gnueabi
+          - arm-unknown-linux-gnueabihf
+          - arm-unknown-linux-musleabi
+          - arm-unknown-linux-musleabihf
+          - armv7-unknown-linux-gnueabihf
+          - armv7-unknown-linux-musleabihf
+          - i586-unknown-linux-gnu
+          - i586-unknown-linux-musl
+          - i686-unknown-linux-gnu
+          - i686-unknown-linux-musl
+          - mips-unknown-linux-gnu
+          - mips-unknown-linux-musl
+          - mips64-unknown-linux-gnuabi64
+          - mips64el-unknown-linux-gnuabi64
+          - mipsel-unknown-linux-gnu
+          - mipsel-unknown-linux-musl
+          - powerpc-unknown-linux-gnu
+          - powerpc64le-unknown-linux-gnu
+          - riscv64gc-unknown-linux-gnu
+          - s390x-unknown-linux-gnu
+          - x86_64-unknown-linux-gnu
+          - x86_64-unknown-linux-musl
+    name: "🛠 Compile"
+    runs-on: ubuntu-latest
     steps:
-    - name: 🛎 Checkout
-      uses: actions/checkout@v2
-    - name: 🗳 Add Target
-      run: "rustup target add ${{matrix.targetPlatform}}-unknown-linux-gnu"
-    - name: 🛠 Build
-      run: cargo build --target ${{matrix.targetPlatform}}-unknown-linux-gnu --release
-    # - name: 🧪 Run tests
-    #   run: cargo test --release
-    - name: 🗜 Compress with UPX
-      if: ${{matrix.targetPlatform != 'i686'}}
-      run: upx target/${{matrix.targetPlatform}}-unknown-linux-gnu/release/xornet-reporter
-    - name: 💎 Upload artifact
-      uses: actions/upload-artifact@v1
-      with:
-        name: xornet-reporter_compiled_linux_${{matrix.targetPlatform}}
-        path: target/${{matrix.targetPlatform}}-unknown-linux-gnu/release/xornet-reporter
-
-  # build-windows:
-  #   strategy:
-  #     fail-fast: false
-  #     matrix:
-  #       targetPlatform: 
-  #         - x86_64
-  #         - i686
-  #   name: "🛠 Compile for Windows"
-  #   runs-on: self-hosted
-  #   # runs-on: ubuntu-latest
-  #   steps:
-  #   - name: 🛎 Checkout
-  #     uses: actions/checkout@v2
-  #   - name: 🗳 Add Target
-  #     run: "rustup target add ${{matrix.targetPlatform}}-pc-windows-msvc"
-  #   - name: 🛠 Build
-  #     run: cargo build --target ${{matrix.targetPlatform}}-pc-windows-msvc --release
-  #   - name: 🧪 Run tests
-  #     run: cargo test --release
-  #   - name: 💎 Upload artifact
-  #     uses: actions/upload-artifact@v1
-  #     with:
-  #       name: xornet-reporter_compiled_win_${{matrix.targetPlatform}}
-  #       path: target/${{matrix.targetPlatform}}-pc-windows-msvc/release/xornet-reporter
+      - name: 🛎 Checkout
+        uses: actions/checkout@v2
+      - name: 🛎 Install cross
+        run: cargo install cross
+      - name: 🛎 Build ${{matrix.target}}
+        run: cross build --target ${{matrix.target}} --verbose --release
+      - name: 💎 Upload artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: xornet-reporter_compiled_linux_${{matrix.target}}
+          path: target/${{matrix.target}}/release/xornet-reporter
 
   build-windows:
     name: "🛠 Compile for Windows"
@@ -135,11 +123,30 @@ jobs:
     strategy:
       matrix: 
        targetPlatform:
-          - linux_x86_64
-          # - linux_aarch64
-          # - linux_i686
-          # - linux_mips
-          # - linux_mipsel
+          - linux_aarch64-unknown-linux-gnu
+          - linux_aarch64-unknown-linux-musl
+          - linux_arm-unknown-linux-gnueabi
+          - linux_arm-unknown-linux-gnueabihf
+          - linux_arm-unknown-linux-musleabi
+          - linux_arm-unknown-linux-musleabihf
+          - linux_armv7-unknown-linux-gnueabihf
+          - linux_armv7-unknown-linux-musleabihf
+          - linux_i586-unknown-linux-gnu
+          - linux_i586-unknown-linux-musl
+          - linux_i686-unknown-linux-gnu
+          - linux_i686-unknown-linux-musl
+          - linux_mips-unknown-linux-gnu
+          - linux_mips-unknown-linux-musl
+          - linux_mips64-unknown-linux-gnuabi64
+          - linux_mips64el-unknown-linux-gnuabi64
+          - linux_mipsel-unknown-linux-gnu
+          - linux_mipsel-unknown-linux-musl
+          - linux_powerpc-unknown-linux-gnu
+          - linux_powerpc64le-unknown-linux-gnu
+          - linux_riscv64gc-unknown-linux-gnu
+          - linux_s390x-unknown-linux-gnu
+          - linux_x86_64-unknown-linux-gnu
+          - linux_x86_64-unknown-linux-musl
           - windows
           - macos
       fail-fast: false
