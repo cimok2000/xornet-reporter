@@ -1,6 +1,6 @@
 use crossterm::{
   cursor, execute,
-  terminal::{EnterAlternateScreen, LeaveAlternateScreen},
+  terminal::{self, EnterAlternateScreen, LeaveAlternateScreen},
 };
 use parking_lot::Mutex;
 use std::{io::stdout, sync::Arc};
@@ -39,6 +39,10 @@ pub fn setup_terminal() {
     std::process::exit(0);
   })
   .expect("Ctrl + C handler failed to be set");
+}
+
+pub fn clear_screen() {
+  execute!(stdout(), terminal::Clear(terminal::ClearType::All)).unwrap();
 }
 
 pub fn reset_cursor() {

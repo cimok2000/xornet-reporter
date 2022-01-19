@@ -5,7 +5,7 @@ use std::{io::Write, sync::Arc};
 
 use crate::{
   reporter::Reporter,
-  util::{self, bytes_to_gb, bytes_to_kb, bytes_to_mb},
+  util::{self, bytes_to_gb, bytes_to_kb, bytes_to_mb, clear_screen},
 };
 
 pub struct Ui {
@@ -41,7 +41,7 @@ impl Ui {
         Err(err) => errors.push_str(&format!("\n {} {}", prefix, &err).to_string()),
       }
     }
-
+    clear_screen();
     println!("{} {}", string, errors.bright_black());
 
     std::io::stdout().flush().expect("Couldn't flush stdout");
