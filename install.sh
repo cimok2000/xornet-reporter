@@ -58,6 +58,14 @@ echo "Ok."
 echo
 echo "Checking CPU architecture..."
 arch=$(uname -m)
+case $arch in
+  armV71)
+    arch="armV7"
+    ;;
+  *)
+    arch=$arch
+    ;;
+esac
 echo $arch
 echo
 echo "Checking for required apps for the script to run..."
