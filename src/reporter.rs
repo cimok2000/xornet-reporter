@@ -92,7 +92,7 @@ impl Reporter {
           cpu: self.data_collector.get_cpu()?,
           ram: self.data_collector.get_ram()?,
           gpu: self.data_collector.get_gpu().ok(),
-          processes: self.data_collector.get_total_process_count()?.to_string(),
+          process_count: self.data_collector.get_total_process_count()? as i32,
           disks: self.data_collector.get_disks()?,
           temps: self.data_collector.get_temps().ok(),
           network: self.data_collector.get_network()?,

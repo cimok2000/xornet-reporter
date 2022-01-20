@@ -21,7 +21,7 @@ pub enum WebsocketEvent {
     cpu: CPUStats,
     ram: RAMStats,
     gpu: Option<GPUStats>,
-    processes: String,
+    process_count: i32,
     disks: Vec<DiskStats>,
     temps: Option<Vec<TempStats>>,
     network: Vec<NetworkInterfaceStats>,
