@@ -1,6 +1,7 @@
 use std::path;
 use std::process::Command;
 use std::str::FromStr;
+use std::time::SystemTime;
 use std::{collections::HashMap, env};
 
 use crate::types::{
@@ -31,6 +32,7 @@ pub struct DataCollector {
   pub program_iterations: usize,
   iterator_index: usize,
   network_interface_speeds: HashMap<String, f32>,
+  start_timestamp: u128,
 }
 
 #[derive(Debug)]
@@ -68,9 +70,13 @@ impl DataCollector {
       iterator_index: 0,
       program_iterations: 60,
       network_interface_speeds: HashMap::new(),
+      start_timestamp: SystemTime::now()
+        .duration_since(SystemTime::UNIX_EPOCH)?
+        .as_millis(),
     });
   }
 
+  /// Increments the iterator index by one or resets it to 0 if it reaches the program iterations
   pub fn increment_iterator_index(&mut self) {
     self.iterator_index += 1;
     if self.program_iterations <= self.iterator_index {
@@ -78,6 +84,7 @@ impl DataCollector {
     }
   }
 
+  /// Gets the hostname of the system
   pub fn get_hostname() -> Result<String> {
     let fetcher = System::new_all();
 
@@ -89,6 +96,23 @@ impl DataCollector {
         ));
       }
     };
+  }
+
+  pub fn get_uptime() -> Result<u64> {
+    let boot_time = System::new().boot_time() * 1000;
+    let timeframe = SystemTime::now()
+      .duration_since(SystemTime::UNIX_EPOCH)?
+      .as_millis() as u64
+      - boot_time;
+    return Ok(timeframe);
+  }
+
+  pub fn get_reporter_uptime(&mut self) -> Result<u64> {
+    let timeframe = SystemTime::now()
+      .duration_since(SystemTime::UNIX_EPOCH)?
+      .as_millis()
+      - self.start_timestamp;
+    return Ok(timeframe as u64);
   }
 
   /// Gets the total amount of processes running
@@ -170,7 +194,8 @@ impl DataCollector {
     let interface_path = format!("/sys/class/net/{}/speed", interface_name);
     let interface_speed = Command::new("cat").arg(&interface_path).output()?;
     let interface_speed =
-      f32::from_str(&String::from_utf8_lossy(&interface_speed.stdout).replace("\n", "")).unwrap_or(0.0);
+      f32::from_str(&String::from_utf8_lossy(&interface_speed.stdout).replace("\n", ""))
+        .unwrap_or(0.0);
     return Ok(interface_speed);
   }
 

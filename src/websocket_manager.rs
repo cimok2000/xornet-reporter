@@ -25,6 +25,8 @@ pub enum WebsocketEvent {
     disks: Vec<DiskStats>,
     temps: Option<Vec<TempStats>>,
     network: Vec<NetworkInterfaceStats>,
+    host_uptime: u64,
+    reporter_uptime: u64,
   },
   StaticData {
     hostname: Option<String>,
