@@ -144,15 +144,18 @@ impl Ui {
       // Network
       let rx = format!("{}", nic.rx);
       let tx = format!("{}", nic.tx);
+      let speed = format!("{}", nic.speed);
       let name = &nic.name;
 
       nics_info.push_str(&format!(
-        "     {}  {} {} {} {}\n",
+        "     {}  {} {} {} {} {} {}\n",
         name.bright_black(),
         rx.blue(),
         "rx".bright_black(),
         tx.blue(),
         "tx".bright_black(),
+        speed.blue(),
+        "Mbps".bright_black()
       ));
     }
 
