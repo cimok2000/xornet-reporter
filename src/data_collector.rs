@@ -1,4 +1,7 @@
 use std::path;
+use std::process::Command;
+use std::str::FromStr;
+use std::{collections::HashMap, env};
 
 use crate::types::{
   CPUStats, DiskStats, GPUStats, NetworkInterfaceStats, RAMStats, StaticData, TempStats,
@@ -25,6 +28,9 @@ pub enum DataCollectorError {
 pub struct DataCollector {
   pub gpu_fetcher: GPUFetcher,
   pub fetcher: System,
+  pub program_iterations: usize,
+  iterator_index: usize,
+  network_interface_speeds: HashMap<String, f32>,
 }
 
 #[derive(Debug)]
@@ -59,7 +65,17 @@ impl DataCollector {
     return Ok(Self {
       gpu_fetcher,
       fetcher,
+      iterator_index: 0,
+      program_iterations: 60,
+      network_interface_speeds: HashMap::new(),
     });
+  }
+
+  pub fn increment_iterator_index(&mut self) {
+    self.iterator_index += 1;
+    if self.program_iterations <= self.iterator_index {
+      self.iterator_index = 0;
+    }
   }
 
   pub fn get_hostname() -> Result<String> {
@@ -121,16 +137,36 @@ impl DataCollector {
         continue;
       };
 
+      if self.iterator_index == 0 {
+        // Get the speed of the interface on linux otherwise it's 0
+        let speed = if env::consts::OS == "linux" {
+          DataCollector::get_nic_linkspeed(&interface_name)?
+        } else {
+          0.0
+        };
+        self
+          .network_interface_speeds
+          .insert(interface_name.to_string(), speed);
+      }
+
       let nic = NetworkInterfaceStats {
         name: interface_name.to_string(),
         tx: data.transmitted() * 8,
         rx: data.received() * 8,
+        speed: self.network_interface_speeds[&interface_name.to_string()],
       };
 
       nics.push(nic);
     }
 
     return Ok(nics);
+  }
+
+  fn get_nic_linkspeed(interface_name: &str) -> Result<f32> {
+    let interface_path = format!("/sys/class/net/{}/speed", interface_name);
+    let interface_speed = Command::new("cat").arg(&interface_path).output()?;
+    let interface_speed = f32::from_str(&String::from_utf8_lossy(&interface_speed.stdout))?;
+    return Ok(interface_speed);
   }
 
   /// Gets the current CPU stats

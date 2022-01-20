@@ -17,6 +17,7 @@ pub struct NetworkInterfaceStats {
   pub name: String,
   pub tx: u64,
   pub rx: u64,
+  pub speed: f32,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
