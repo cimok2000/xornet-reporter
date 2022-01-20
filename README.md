@@ -16,8 +16,8 @@ curl https://raw.githubusercontent.com/xornet-cloud/Reporter/main/install.sh | s
 ```
 
 ## Windows Service
-1. Download the windows version from the ![Releases](https://github.com/xornet-cloud/Reporter/releases)
-2. Download ![nssm](https://cdn.discordapp.com/attachments/755597803102928966/933533332099190794/nssm.exe)
+1. Download the windows version from the [Releases](https://github.com/xornet-cloud/Reporter/releases)
+2. Download [nssm](https://cdn.discordapp.com/attachments/755597803102928966/933533332099190794/nssm.exe)
 3. `nssm install` and install the service as shown below
 
 ![Example](https://cdn.discordapp.com/attachments/911762334979084368/931249917370957854/unknown.png)
