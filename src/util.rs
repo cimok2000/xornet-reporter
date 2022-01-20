@@ -48,3 +48,31 @@ pub fn clear_screen() {
 pub fn reset_cursor() {
   execute!(stdout(), cursor::MoveTo(0, 0)).unwrap();
 }
+
+pub fn parse_time(reftime: u64) -> String {
+  let time: u64 = reftime / 1000;
+  let mut time_str: String = String::new();
+  let mut time_vec: Vec<u64> = vec![];
+  let unit_vec = [
+    String::from("y"),
+    String::from("w"),
+    String::from("d"),
+    String::from("h"),
+    String::from("m"),
+    String::from("s"),
+  ];
+
+  time_vec.push(time / 31536000);
+  time_vec.push((time / 604800) % 52);
+  time_vec.push((time / 86400) % 7);
+  time_vec.push((time / 3600) % 24);
+  time_vec.push((time / 60) % 60);
+  time_vec.push(time % 60);
+
+  for i in 0..time_vec.len() {
+    if time_vec[i] != 0 {
+      time_str += &format!("{}{} ", time_vec[i], unit_vec[i]);
+    }
+  }
+  return time_str;
+}
