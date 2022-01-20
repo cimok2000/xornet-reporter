@@ -7,6 +7,7 @@
 4. If the signup succeeds run the reporter with `--silent` after
 5. Your machine should now show up on Xornet's dashboard
 6. (optional) if you wanna use your own backend change the "backend_hostname" field with `"backend.xornet.cloud"` to your own xornet backend
+7. If you're on windows install the service as noted below
 
 # ⚡ Installation
 
@@ -16,9 +17,8 @@ curl https://raw.githubusercontent.com/xornet-cloud/Reporter/main/install.sh | s
 ```
 
 ## Windows Service
-1. Download the windows version from the [Releases](https://github.com/xornet-cloud/Reporter/releases)
-2. Download [nssm](https://cdn.discordapp.com/attachments/755597803102928966/933533332099190794/nssm.exe)
-3. `nssm install` and install the service as shown below
+1. Download [nssm](https://cdn.discordapp.com/attachments/755597803102928966/933533332099190794/nssm.exe)
+2. `nssm install` and install the service as shown below
 
 ![Example](https://cdn.discordapp.com/attachments/911762334979084368/931249917370957854/unknown.png)
 
