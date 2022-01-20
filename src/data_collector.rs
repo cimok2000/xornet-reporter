@@ -153,7 +153,11 @@ impl DataCollector {
         name: interface_name.to_string(),
         tx: data.transmitted() * 8,
         rx: data.received() * 8,
-        speed: self.network_interface_speeds[&interface_name.to_string()],
+        speed: self
+          .network_interface_speeds
+          .get(&interface_name.to_string())
+          .unwrap_or(&0.0)
+          .to_owned(),
       };
 
       nics.push(nic);

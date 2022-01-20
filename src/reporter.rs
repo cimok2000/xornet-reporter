@@ -86,7 +86,6 @@ impl Reporter {
   }
 
   pub fn send_dynamic_data(&mut self) -> Result<()> {
-    self.data_collector.increment_iterator_index();
     match self.websocket_manager.as_mut() {
       Some(websocket_manager) => {
         let status = websocket_manager.send(WebsocketEvent::DynamicData {
@@ -112,7 +111,7 @@ impl Reporter {
       }
       None => {}
     }
-
+    self.data_collector.increment_iterator_index();
     return Ok(());
   }
 }
