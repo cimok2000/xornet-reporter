@@ -140,7 +140,7 @@ if [ -d /opt/xornet ]; then
         handle_exit_code_non_crucial
       fi
       echo "Removing old Xornet reporter executable..."
-      rm -rf /opt/xornet/xornet-reporter
+      rm /opt/xornet/xornet-reporter
       handle_exit_code_non_crucial
       ready=true
       ;;
