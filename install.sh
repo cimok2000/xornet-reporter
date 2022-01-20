@@ -45,8 +45,21 @@ handle_ctrl_c() {
   exit
 }
 
-echo "Xornet reporter install script v1.0.0"
-echo "--------------------------------------"
+logo=$(
+  cat <<'EOF'
+  .,::      .:  ...    :::::::.. :::.    :::..,::::::::::::::::::
+  `;;;,  .,;;.;;;;;;;. ;;;;``;;;;`;;;;,  `;;;;;;;'''';;;;;;;;''''
+    '[[,,[[',[[     \[[,[[[,/[[['  [[[[[. '[[ [[cccc      [[     
+     Y$$$P  $$$,     $$$$$$$$$c    $$$ "Y$c$$ $$""""      $$     
+   oP"``"Yo,"888,_ _,88P888b "88bo,888    Y88 888oo,__    88,    
+,m"       "Mm,"YMMMMMP" MMMM   "W" MMM     YM """"YUMMM   MMM   
+version: 1.1.0
+EOF
+)
+echo "${logo}"
+echo
+echo "Xornet reporter install script"
+echo "------------------------------"
 echo "This script will install and set up Xornet reporter for your system."
 echo
 echo "Checking for root privileges..."
