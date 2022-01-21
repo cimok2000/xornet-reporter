@@ -1,4 +1,3 @@
-use std::path;
 use std::process::Command;
 use std::str::FromStr;
 use std::time::SystemTime;
@@ -7,9 +6,7 @@ use std::{collections::HashMap, env};
 use crate::types::{
   CPUStats, DiskStats, GPUStats, NetworkInterfaceStats, RAMStats, StaticData, TempStats,
 };
-use amdgpu_sysfs::gpu_controller::GpuController;
 use anyhow::{anyhow, Result};
-use futures::executor::block_on;
 use nvml::NVML;
 use serde::{Deserialize, Serialize};
 use sysinfo::{ComponentExt, DiskExt, NetworkExt, ProcessorExt, System, SystemExt};
@@ -37,7 +34,6 @@ pub struct DataCollector {
 
 #[derive(Debug)]
 pub struct GPUFetcher {
-  pub amd: Option<GpuController>,
   pub nvidia: Option<NVML>,
 }
 
@@ -48,19 +44,11 @@ pub struct CurrentIP {
 
 impl DataCollector {
   /// Creates a new data collector
-  pub async fn new() -> Result<Self> {
+  pub fn new() -> Result<Self> {
     let fetcher = System::new_all();
     let nvidia_fetcher = NVML::init().ok();
-    let amd_fetcher =
-      match GpuController::new_from_path(path::Path::new("/sys/class/drm/card0").to_path_buf())
-        .await
-      {
-        Ok(amd) => Some(amd),
-        Err(_) => None,
-      };
 
     let gpu_fetcher = GPUFetcher {
-      amd: amd_fetcher,
       nvidia: nvidia_fetcher,
     };
 
@@ -241,32 +229,6 @@ impl DataCollector {
           power_usage: device.power_usage()?,
           mem_used: memory_info.used,
           mem_total: memory_info.total,
-        });
-      }
-      None => {}
-    };
-    match gpu_fetcher.amd.as_ref() {
-      Some(amd) => {
-        let brand = format!("{:?}", amd.get_pci_subsys_id());
-        let util = match block_on(amd.get_busy_percent()) {
-          Some(it) => it,
-          None => return Err(anyhow!("Could not get GPU usage")),
-        };
-        let memory_used = match block_on(amd.get_used_vram()) {
-          Some(it) => it,
-          None => return Err(anyhow!("Could not get GPU memory usage")),
-        };
-        let memory_total = match block_on(amd.get_total_vram()) {
-          Some(it) => it,
-          None => return Err(anyhow!("Could not get GPU memory total")),
-        };
-
-        return Ok(GPUStats {
-          brand,
-          gpu_usage: util as u32,
-          power_usage: 0,
-          mem_used: memory_used,
-          mem_total: memory_total,
         });
       }
       None => {
