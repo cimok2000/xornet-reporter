@@ -99,6 +99,7 @@ function start_service {
 
 function main {
   print_logo
+  create_bin_folder
   download_nssm
   $is_service_installed = check_if_service_exists -ErrorAction SilentlyContinue
   $is_running = check_if_service_is_running -ErrorAction SilentlyContinue
@@ -106,7 +107,6 @@ function main {
     stop_xornet_service
   }
   delete_old
-  create_bin_folder
   download_reporter 
   signup
   if ($is_service_installed -eq 0) {
