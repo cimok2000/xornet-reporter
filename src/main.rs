@@ -1,6 +1,6 @@
 use anyhow::Result;
 use core::time;
-use std::thread::{self, spawn};
+use std::thread;
 use ui::Ui;
 use util::arcmutex;
 
@@ -26,12 +26,12 @@ async fn main() -> Result<()> {
   // Setup the terminal
   util::setup_terminal();
 
-  let data_collection_handle = spawn(move || loop {
+  loop {
     if !reporter.lock().args.silent {
       Ui::new(&args.prefix, args.no_clear, reporter.clone());
     }
 
-    match reporter.lock().send_dynamic_data() {
+    match reporter.lock().send_dynamic_data().await {
       Ok(_) => {
         println!("{}", "Xornet Reporter Sending Data...")
       }
@@ -41,7 +41,5 @@ async fn main() -> Result<()> {
     }
 
     thread::sleep(time::Duration::from_secs_f64(reporter.lock().args.interval));
-  });
-  data_collection_handle.join().expect("main panicked");
-  Ok(())
+  }
 }
