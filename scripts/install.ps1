@@ -56,7 +56,6 @@ function signup {
     $signup_key = Read-Host -Prompt "Please enter your signup token: "
     cd "C:/Program Files/Xornet"
     ./xornet.exe -su $signup_key
-    echo "Signup successfull"
   }
 }
 
