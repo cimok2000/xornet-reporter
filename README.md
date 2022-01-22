@@ -3,8 +3,7 @@
 # ⚡ How do I add my machine on Xornet?
 
 1. Go on Xornet and click the + button and copy the generated token
-2. Signup your reporter with the token `./xornet-reporter.exe -su 61F14F509A1F4824B27ADDAC6EC9F510`
-3. Install the service for your platform as noted below
+2. Run the installation script for your platform as noted below
 
 # ⚡ Installation
 
