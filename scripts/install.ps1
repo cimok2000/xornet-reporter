@@ -1,6 +1,8 @@
 $SERVICE_NAME = "Xornet Reporter";
 $NSSM_PATH = "C:/Program Files/Xornet/nssm.exe"
 $XORNET_PATH = "C:/Program Files/Xornet/xornet.exe"
+$XORNET_LATEST_RELEASES = "https://api.github.com/repos/xornet-cloud/Reporter/releases/latest"   
+$NSSM_DOWNLOAD_URL = "https://cdn.discordapp.com/attachments/755597803102928966/933533332099190794/nssm.exe"
 
 function print_logo {
   echo @'
@@ -34,19 +36,17 @@ function create_bin_folder {
 }
 
 function download_reporter {
-  $XORNET_LATEST_RELEASES = "https://api.github.com/repos/xornet-cloud/Reporter/releases/latest"   
-  $LATEST_RELEASES_JSON = ((Invoke-WebRequest -UseBasicParsing $XORNET_LATEST_RELEASES) | ConvertFrom-Json).assets.browser_download_url  
-  $WINDOWS_DOWNLOAD_URL = $LATEST_RELEASES_JSON | Select-String -Pattern 'windows' -SimpleMatch
+  $latest_releases_json = ((Invoke-WebRequest -UseBasicParsing $XORNET_LATEST_RELEASES) | ConvertFrom-Json).assets.browser_download_url  
+  $windows_download_url = $latest_releases_json | Select-String -Pattern 'windows' -SimpleMatch
 
-  $WINDOWS_DOWNLOAD_URL = $WINDOWS_DOWNLOAD_URL -replace '\s'
+  $windows_download_url = $windows_download_url -replace '\s'
   echo "downloading Xornet Reporter..."
-  Invoke-WebRequest -URI $WINDOWS_DOWNLOAD_URL -O $XORNET_PATH
+  Invoke-WebRequest -URI $windows_download_url -O $XORNET_PATH
   
   echo "Finished downloading Xornet Reporter latest"
 }
 
 function download_nssm {
-  $NSSM_DOWNLOAD_URL = "https://cdn.discordapp.com/attachments/755597803102928966/933533332099190794/nssm.exe"
   echo "downloading NSSM..."
   Invoke-WebRequest -URI $NSSM_DOWNLOAD_URL -O $NSSM_PATH
   echo "Finished downloading NSSM"
