@@ -40,9 +40,8 @@ function download_reporter {
 
   $WINDOWS_DOWNLOAD_URL = $WINDOWS_DOWNLOAD_URL -replace '\s'
 
-  Invoke-WebRequest - echo "downloading NSSM..." | Out-Null
-  $WINDOWS_DOWNLOAD_URL -O $XORNET_PATH
-
+  Invoke-WebRequest - echo "downloading NSSM..." $WINDOWS_DOWNLOAD_URL -O $XORNET_PATH | Out-Null
+  
   echo "Finished downloading Xornet Reporter latest"
 }
 
