@@ -1,4 +1,6 @@
 $SERVICE_NAME = "Xornet Reporter";
+$NSSM_PATH = "C:/Program Files/Xornet/nssm.exe"
+$XORNET_PATH = "C:/Program Files/Xornet/xornet.exe"
 
 function print_logo {
   echo @'
@@ -15,8 +17,8 @@ v1.1.0
 }
 
 function delete_old {
-  if (Test-Path -Path "C:/Program Files/Xornet/xornet.exe") {
-    Remove-Item -Recurse -Force -Confirm:$false "C:/Program Files/Xornet/xornet.exe" | Out-Null
+  if (Test-Path -Path $XORNET_PATH) {
+    Remove-Item -Recurse -Force -Confirm:$false $XORNET_PATH | Out-Null
     echo "Deleted old Xornet installation"
   }
 }
@@ -38,14 +40,16 @@ function download_reporter {
 
   $WINDOWS_DOWNLOAD_URL = $WINDOWS_DOWNLOAD_URL -replace '\s'
 
-  Invoke-WebRequest -URI $WINDOWS_DOWNLOAD_URL -O "C:/Program Files/Xornet/xornet.exe"
+  Invoke-WebRequest - echo "downloading NSSM..." | Out-Null
+  $WINDOWS_DOWNLOAD_URL -O $XORNET_PATH
 
   echo "Finished downloading Xornet Reporter latest"
 }
 
 function download_nssm {
   $NSSM_DOWNLOAD_URL = "https://cdn.discordapp.com/attachments/755597803102928966/933533332099190794/nssm.exe"
-  Invoke-WebRequest -URI $NSSM_DOWNLOAD_URL -O "C:/Program Files/Xornet/nssm.exe"
+  echo "downloading NSSM..."
+  Invoke-WebRequest -URI $NSSM_DOWNLOAD_URL -O $NSSM_PATH | Out-Null
   echo "Finished downloading NSSM"
 }
 
@@ -60,7 +64,7 @@ function signup {
 }
 
 function check_if_service_exists {
-  $result = & "C:/Program Files/Xornet/nssm.exe" get $SERVICE_NAME Name
+  $result = & $NSSM_PATH get $SERVICE_NAME Name
   if ($result -eq $SERVICE_NAME){
     return 1
   }
@@ -69,7 +73,7 @@ function check_if_service_exists {
 
 function check_if_service_is_running {
   echo "Checking if theres a service already running"
-  $service_state = & "C:/Program Files/Xornet/nssm.exe" status $SERVICE_NAME
+  $service_state = & $NSSM_PATH status $SERVICE_NAME
 
   if ($service_state -eq "SERVICE_RUNNING") {
     return 1
@@ -80,16 +84,16 @@ function check_if_service_is_running {
 
 function stop_xornet_service {
   echo "Stopping existing service (if any)"
-  & "C:/Program Files/Xornet/nssm.exe" stop $SERVICE_NAME
+  & $NSSM_PATH stop $SERVICE_NAME
 }
 
 function install_service {
-  & "C:/Program Files/Xornet/nssm.exe" install $SERVICE_NAME 'C:/Program Files/Xornet/xornet.exe' --silent
+  & $NSSM_PATH install $SERVICE_NAME $XORNET_PATH --silent
   echo "Installed Xornet Reporter service sucessfully"
 }
 
 function start_service {
-  & "C:/Program Files/Xornet/nssm.exe" start $SERVICE_NAME
+  & $NSSM_PATH start $SERVICE_NAME
   echo "Started Xornet Reporter Service"
 }
 
