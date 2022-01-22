@@ -19,18 +19,10 @@ curl https://raw.githubusercontent.com/xornet-cloud/Reporter/main/scripts/instal
 ```
 
 ## Windows Service
-
+Make sure you have [Powershell 7](https://www.microsoft.com/store/productId/9MZ1SNWT0N5D)
 ```powershell
 Invoke-Command -ScriptBlock ([Scriptblock]::Create((Invoke-WebRequest -UseBasicParsing 'https://raw.githubusercontent.com/xornet-cloud/Reporter/main/scripts/install.ps1').Content))
 ```
-
-1. Download [nssm](https://cdn.discordapp.com/attachments/755597803102928966/933533332099190794/nssm.exe)
-2. `nssm install` and install the service as shown below
-
-![Example](https://cdn.discordapp.com/attachments/911762334979084368/931249917370957854/unknown.png)
-
-4. Go on task manager > services > (Xornet Reporter) and click `Start`
-
 # Reporter
 
 This is the data collector that gets your system's state and sends it to the backend, it can also be used as a pure system stat inspector without needing to connect it to Xornet
