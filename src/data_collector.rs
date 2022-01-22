@@ -132,6 +132,7 @@ impl DataCollector {
       cpu_cores: self.fetcher.physical_core_count(),
       cpu_threads: self.fetcher.processors().len(),
       total_mem: self.fetcher.total_memory(),
+      reporter_version: env!("CARGO_PKG_VERSION").to_string(),
     });
   }
 

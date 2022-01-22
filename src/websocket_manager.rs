@@ -37,6 +37,7 @@ pub enum WebsocketEvent {
     cpu_cores: Option<usize>,
     cpu_threads: usize,
     total_mem: u64,
+    reporter_version: String
   },
 }
 
