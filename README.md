@@ -19,7 +19,8 @@ curl https://raw.githubusercontent.com/xornet-cloud/Reporter/main/scripts/instal
 ```
 
 ## Windows Service
-Make sure you have [Powershell 7](https://www.microsoft.com/store/productId/9MZ1SNWT0N5D)
+1. Make sure you have [Powershell 7](https://www.microsoft.com/store/productId/9MZ1SNWT0N5D)
+2. Run Powershell as Admin
 ```powershell
 Invoke-Command -ScriptBlock ([Scriptblock]::Create((Invoke-WebRequest -UseBasicParsing 'https://raw.githubusercontent.com/xornet-cloud/Reporter/main/scripts/install.ps1').Content))
 ```
