@@ -10,6 +10,7 @@ pub struct StaticData {
   pub cpu_model: String,
   pub cpu_threads: usize,
   pub total_mem: u64,
+  pub reporter_version: String,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
