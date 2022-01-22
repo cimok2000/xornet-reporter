@@ -11,7 +11,7 @@ function print_logo {
    oP"``"Yo,"888,_ _,88P888b "88bo,888    Y88 888oo,__    88,    
 ,m"       "Mm,"YMMMMMP" MMMM   "W" MMM     YM """"YUMMM   MMM   
 
-v1.1.0
+Powershell Install Script v1.0.6
 
 '@
 }
