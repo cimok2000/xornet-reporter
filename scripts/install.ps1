@@ -39,8 +39,8 @@ function download_reporter {
   $WINDOWS_DOWNLOAD_URL = $LATEST_RELEASES_JSON | Select-String -Pattern 'windows' -SimpleMatch
 
   $WINDOWS_DOWNLOAD_URL = $WINDOWS_DOWNLOAD_URL -replace '\s'
-
-  Invoke-WebRequest - echo "downloading NSSM..." $WINDOWS_DOWNLOAD_URL -O $XORNET_PATH
+  echo "downloading Xornet Reporter..."
+  Invoke-WebRequest -URI $WINDOWS_DOWNLOAD_URL -O $XORNET_PATH
   
   echo "Finished downloading Xornet Reporter latest"
 }
@@ -49,7 +49,6 @@ function download_nssm {
   $NSSM_DOWNLOAD_URL = "https://cdn.discordapp.com/attachments/755597803102928966/933533332099190794/nssm.exe"
   echo "downloading NSSM..."
   Invoke-WebRequest -URI $NSSM_DOWNLOAD_URL -O $NSSM_PATH
-  
   echo "Finished downloading NSSM"
 }
 
