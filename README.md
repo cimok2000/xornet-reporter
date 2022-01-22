@@ -2,13 +2,9 @@
 
 # ⚡ How do I add my machine on Xornet?
 
-1. Install the reporter with the scripts below or download it through the [Releases](https://github.com/xornet-cloud/Reporter/releases/) for your platform
-2. Go on Xornet and click the + button and copy the generated token
-3. Signup your reporter with the token `./xornet-reporter.exe -su 61F14F509A1F4824B27ADDAC6EC9F510`
-4. If the signup succeeds run the reporter with `--silent` after
-5. Your machine should now show up on Xornet's dashboard
-6. (optional) if you wanna use your own backend change the "backend_hostname" field with `"backend.xornet.cloud"` to your own xornet backend
-7. If you're on windows install the service as noted below
+1. Go on Xornet and click the + button and copy the generated token
+2. Signup your reporter with the token `./xornet-reporter.exe -su 61F14F509A1F4824B27ADDAC6EC9F510`
+3. Install the service for your platform as noted below
 
 # ⚡ Installation
 
