@@ -1,6 +1,7 @@
 ![Logo](https://cdn.discordapp.com/attachments/755597803102928966/931042317878587412/logo.svg)
 
 # ⚡ How do I add my machine on Xornet?
+
 1. Install the reporter with the scripts below or download it through the [Releases](https://github.com/xornet-cloud/Reporter/releases/) for your platform
 2. Go on Xornet and click the + button and copy the generated token
 3. Signup your reporter with the token `./xornet-reporter.exe -su 61F14F509A1F4824B27ADDAC6EC9F510`
@@ -12,11 +13,17 @@
 # ⚡ Installation
 
 ## Linux Service
+
 ```bash
-curl https://raw.githubusercontent.com/xornet-cloud/Reporter/main/install.sh | sudo bash -s <signup token here>
+curl https://raw.githubusercontent.com/xornet-cloud/Reporter/main/scripts/install.sh | sudo bash
 ```
 
 ## Windows Service
+
+```powershell
+Invoke-Command -ScriptBlock ([Scriptblock]::Create((Invoke-WebRequest -UseBasicParsing 'https://raw.githubusercontent.com/xornet-cloud/Reporter/main/scripts/install.ps1').Content))
+```
+
 1. Download [nssm](https://cdn.discordapp.com/attachments/755597803102928966/933533332099190794/nssm.exe)
 2. `nssm install` and install the service as shown below
 
