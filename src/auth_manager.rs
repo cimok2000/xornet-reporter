@@ -33,7 +33,7 @@ impl AuthManager {
 
     let client = reqwest::Client::new();
     let response = client
-      .post(&format!("https://{}/machines/@signup", backend_hostname))
+      .post(&format!("https://{backend_hostname}/machines/@signup"))
       .json(&SignupBody {
         two_factor_key: two_factor_key.to_string(),
         hostname: hostname.to_string(),
@@ -45,15 +45,15 @@ impl AuthManager {
     match response.status() {
       reqwest::StatusCode::OK => {
         let response_json: SignupResponse = serde_json::from_str(&response.text().await?)?;
-        return Ok(response_json);
+        Ok(response_json)
       }
       reqwest::StatusCode::BAD_REQUEST
       | reqwest::StatusCode::NOT_FOUND
       | reqwest::StatusCode::INTERNAL_SERVER_ERROR => {
         let response_json: SignupResponseError = serde_json::from_str(&response.text().await?)?;
-        return Err(anyhow::anyhow!(response_json.error));
+        Err(anyhow::anyhow!(response_json.error))
       }
-      _ => return Err(anyhow::anyhow!("Unexpected response from Xornet")),
+      _ => Err(anyhow::anyhow!("Unexpected response from Xornet")),
     }
   }
 }

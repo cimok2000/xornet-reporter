@@ -9,7 +9,9 @@ use crate::types::{
 use anyhow::{anyhow, Result};
 use nvml::NVML;
 use serde::{Deserialize, Serialize};
-use sysinfo::{ComponentExt, DiskExt, NetworkExt, ProcessorExt, System, SystemExt};
+use sysinfo::{
+  ComponentExt, DiskExt, NetworkExt, ProcessRefreshKind, ProcessorExt, System, SystemExt,
+};
 use thiserror::Error;
 
 const IP_ADDRESS_URL: &str = "https://api.ipify.org?format=json";
@@ -76,14 +78,9 @@ impl DataCollector {
   pub fn get_hostname() -> Result<String> {
     let fetcher = System::new_all();
 
-    match fetcher.host_name() {
-      Some(hostname) => return Ok(hostname),
-      None => {
-        return Err(anyhow!(
-          "Could not get hostname. Are you running this on a supported platform?"
-        ));
-      }
-    };
+    fetcher.host_name().ok_or(anyhow!(
+      "Could not get hostname. Are you running this on a supported platform?"
+    ))
   }
 
   pub fn get_uptime() -> Result<u64> {
@@ -105,7 +102,9 @@ impl DataCollector {
 
   /// Gets the total amount of processes running
   pub fn get_total_process_count(&mut self) -> Result<usize> {
-    self.fetcher.refresh_processes();
+    self
+      .fetcher
+      .refresh_processes_specifics(ProcessRefreshKind::new());
     return Ok(self.fetcher.processes().len());
   }
 
