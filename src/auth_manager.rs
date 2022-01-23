@@ -33,7 +33,7 @@ impl AuthManager {
 
     let client = reqwest::Client::new();
     let response = client
-      .post(&format!("https://{backend_hostname}/machines/@signup"))
+      .post(&format!("https://{}/machines/@signup", backend_hostname))
       .json(&SignupBody {
         two_factor_key: two_factor_key.to_string(),
         hostname: hostname.to_string(),
