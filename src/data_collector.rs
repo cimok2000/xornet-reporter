@@ -47,12 +47,12 @@ pub struct CurrentIP {
 impl DataCollector {
   /// Creates a new data collector
   pub fn new() -> Result<Self> {
-    let fetcher = System::new_all();
-    let nvidia_fetcher = NVML::init().ok();
-
-    let gpu_fetcher = GPUFetcher {
-      nvidia: nvidia_fetcher,
-    };
+    let (fetcher, gpu_fetcher) = (
+      System::new_all(),
+      GPUFetcher {
+        nvidia: NVML::init().ok(),
+      },
+    );
 
     return Ok(Self {
       gpu_fetcher,
@@ -190,8 +190,7 @@ impl DataCollector {
   /// Gets the current CPU stats
   /// wait what the fuck this is an array of cores?
   pub fn get_cpu(&mut self) -> Result<CPUStats> {
-    let mut usage = vec![];
-    let mut freq = vec![];
+    let (mut usage, mut freq) = (vec![], vec![]);
 
     for processor in self.fetcher.processors() {
       usage.push(processor.cpu_usage().floor() as u16);
@@ -218,10 +217,11 @@ impl DataCollector {
     match gpu_fetcher.nvidia.as_ref() {
       Some(nvml) => {
         let device = nvml.device_by_index(0)?;
-
-        let brand = format!("{:?}", device.brand()?);
-        let util = device.utilization_rates()?;
-        let memory_info = device.memory_info()?;
+        let (brand, util, memory_info) = (
+          format!("{:?}", device.brand()?),
+          device.utilization_rates()?,
+          device.memory_info()?,
+        );
 
         return Ok(GPUStats {
           brand,
@@ -242,16 +242,17 @@ impl DataCollector {
     let mut disks = Vec::<DiskStats>::new();
 
     for disk in self.fetcher.disks() {
-      let name = disk.name().to_string_lossy();
-      let mount = disk.mount_point().to_string_lossy();
+      let (name, mount) = (
+        disk.name().to_string_lossy(),
+        disk.mount_point().to_string_lossy(),
+      );
 
       // Ignore docker disks because they are the same as their host's disk
       if name.contains("docker") || mount.contains("docker") {
         continue;
       }
 
-      let fs_type = disk.file_system();
-      let mut str = String::from("");
+      let (fs_type, mut str) = (disk.file_system(), String::from(""));
 
       for unit in fs_type {
         str.push(*unit as char);

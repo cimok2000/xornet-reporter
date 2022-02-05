@@ -2147,7 +2147,7 @@ dependencies = [
 
 [[package]]
 name = "xornet-reporter"
-version = "0.9.3"
+version = "0.9.4"
 dependencies = [
  "anyhow",
  "battery",
