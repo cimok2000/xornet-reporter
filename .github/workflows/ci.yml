@@ -93,7 +93,7 @@ jobs:
           name: xornet-reporter_compiled_x86_64-unknown-linux-gnu
           path: linux_build
       - name: "🧪 Test --help argument"
-        run: ./linux_build/xornet-reporter --help
+        run: sudo ./linux_build/xornet-reporter --help
       - name: "🧪 Test --offline argument"
         run: sudo timeout 120 ./linux_build/xornet-reporter --offline
   test-windows: 
@@ -122,7 +122,7 @@ jobs:
           name: xornet-reporter_compiled_macos
           path: macos_build
       - name: "🧪 Test --help argument"
-        run: ./macos_build/xornet-reporter --help
+        run: sudo ./macos_build/xornet-reporter --help
       - name: "🧪 Test --offline argument"
         run: sudo timeout 120 ./macos_build/xornet-reporter --offline
 
