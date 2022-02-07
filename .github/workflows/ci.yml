@@ -111,7 +111,7 @@ jobs:
         run: ./macos_build/xornet-reporter --help
       - name: "🧪 Test --offline argument"
         run: >
-          sudo node -e "const { spawn } = require('child_process'); const reporter = spawn('./windows_build/xornet-reporter.exe', ['--offline'], {stdio: 'inherit'}); reporter.stdout.on('data', (data) => console.log(data.toString())); reporter.stderr.on('data', (data) => console.log(data.toString())); setTimeout(() => reporter.kill(), 5000);"
+          sudo node -e "const { spawn } = require('child_process'); const reporter = spawn('./macos_build/xornet-reporter', ['--offline'], {stdio: 'inherit'}); reporter.stdout.on('data', (data) => console.log(data.toString())); reporter.stderr.on('data', (data) => console.log(data.toString())); setTimeout(() => reporter.kill(), 5000);"
 
   # Create release
   create-release:
