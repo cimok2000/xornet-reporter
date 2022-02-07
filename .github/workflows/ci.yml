@@ -95,7 +95,8 @@ jobs:
       - name: "🧪 Test --help argument"
         run: ./windows_build/xornet-reporter.exe --help
       - name: "🧪 Test --offline argument"
-        run: ./windows_build/xornet-reporter.exe --offline
+        run: >
+          node -e "const { spawn } = require('child_process'); const reporter = spawn('./windows_build/xornet-reporter.exe', ['--offline']); reporter.stdout.on('data', data => console.log(data.toString())); reporter.stderr.on('data', data => console.log(data.toString())); setTimeout(() => reporter.kill(), 5000);"
 
   # Create release
   create-release:
