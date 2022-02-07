@@ -51,7 +51,7 @@ jobs:
           name: xornet-reporter_compiled_${{matrix.target}}
           path: target/${{matrix.target}}/release/xornet-reporter
   build-windows:
-    name: "🛠 Compile for Windows"
+    name: "🛠 Compile for Windows (x86_64)"
     runs-on: windows-latest
     steps:
     - name: 🛎 Checkout
@@ -66,7 +66,7 @@ jobs:
         name: xornet-reporter_compiled_windows
         path: target/release/xornet-reporter.exe
   build-macos:
-    name: "🛠 Compile for MacOS"
+    name: "🛠 Compile for MacOS (x86_64)"
     runs-on: macos-latest
     steps:
     - name: 🛎 Checkout
