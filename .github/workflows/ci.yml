@@ -110,7 +110,7 @@ jobs:
         run: ./windows_build/xornet-reporter.exe --help
       - name: "🧪 Test --offline argument"
         run: >
-          node -e "const { spawn } = require('child_process'); const reporter = spawn('./windows_build/xornet-reporter.exe', ['--offline'], {stdio: 'inherit'}); reporter.stdout.on('data', (data) => console.log(data.toString())); reporter.stderr.on('data', (data) => console.log(data.toString())); setTimeout(() => reporter.kill(), 5000);"
+          node -e "const { spawn } = require('child_process'); const reporter = spawn('./windows_build/xornet-reporter.exe', ['--offline']); reporter.stdout.on('data', (data) => console.log(data.toString())); reporter.stderr.on('data', (data) => console.log(data.toString())); setTimeout(() => reporter.kill(), 5000);"
   test-macos: 
     name: "🧪 Test MacOS (x86_64)"
     runs-on: macos-latest
