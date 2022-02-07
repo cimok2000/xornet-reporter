@@ -97,7 +97,8 @@ jobs:
       - name: "🧪 Test --help argument"
         run: sudo ./linux_build/xornet-reporter --help
       - name: "🧪 Test --offline argument"
-        run: sudo timeout 120 ./linux_build/xornet-reporter --offline
+        run: >
+          node -e "const { spawn } = require('child_process'); const reporter = spawn('./linux_build/xornet-reporter', ['--offline']); reporter.stdout.on('data', (data) => console.log(data.toString())); reporter.stderr.on('data', (data) => console.log(data.toString())); setTimeout(() => reporter.kill(), 5000);"
   test-windows: 
     name: "🧪 Test Windows (x86_64)"
     runs-on: windows-latest
