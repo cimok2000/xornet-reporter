@@ -92,6 +92,8 @@ jobs:
         with:
           name: xornet-reporter_compiled_x86_64-unknown-linux-gnu
           path: linux_build
+      - name: "🛠 Chmod"
+        run: chmod +x ./linux_build/xornet-reporter
       - name: "🧪 Test --help argument"
         run: sudo ./linux_build/xornet-reporter --help
       - name: "🧪 Test --offline argument"
@@ -121,10 +123,13 @@ jobs:
         with:
           name: xornet-reporter_compiled_macos
           path: macos_build
+      - name: "🛠 Chmod"
+        run: chmod +x ./macos_build/xornet-reporter
       - name: "🧪 Test --help argument"
         run: sudo ./macos_build/xornet-reporter --help
       - name: "🧪 Test --offline argument"
-        run: sudo timeout 120 ./macos_build/xornet-reporter --offline
+        run: >
+          node -e "const { spawn } = require('child_process'); const reporter = spawn('./macos_build/xornet-reporter', ['--offline']); reporter.stdout.on('data', (data) => console.log(data.toString())); reporter.stderr.on('data', (data) => console.log(data.toString())); setTimeout(() => reporter.kill(), 5000);"
 
   # Create release
   create-release:
