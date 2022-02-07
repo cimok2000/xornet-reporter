@@ -97,12 +97,27 @@ jobs:
       - name: "🧪 Test --offline argument"
         run: >
           node -e "const { spawn } = require('child_process'); const reporter = spawn('./windows_build/xornet-reporter.exe', ['--offline']); reporter.stdout.on('data', data => console.log(data.toString())); reporter.stderr.on('data', data => console.log(data.toString())); setTimeout(() => reporter.kill(), 5000);"
+  test-macos: 
+    name: "🧪 Test MacOS (x86_64)"
+    runs-on: macos-latest
+    needs: build-macos
+    steps:
+      - name: 💎 Download MacOS Binary
+        uses: actions/download-artifact@v2
+        with:
+          name: xornet-reporter_compiled_macos
+          path: macos_build
+      - name: "🧪 Test --help argument"
+        run: ./macos_build/xornet-reporter --help
+      - name: "🧪 Test --offline argument"
+        run: >
+          node -e "const { spawn } = require('child_process'); const reporter = spawn('./macos_build/xornet-reporter', ['--offline']); reporter.stdout.on('data', data => console.log(data.toString())); reporter.stderr.on('data', data => console.log(data.toString())); setTimeout(() => reporter.kill(), 5000);"
 
   # Create release
   create-release:
     name: "📦 Create Release"
     runs-on: ubuntu-latest
-    needs: [build-linux, build-macos, test-windows]
+    needs: [build-linux, test-macos, test-windows]
     outputs:
       upload_url: ${{ steps.create_release.outputs.upload_url }}
     steps:
