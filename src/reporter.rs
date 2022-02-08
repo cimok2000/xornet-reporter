@@ -88,7 +88,7 @@ impl Reporter {
         disks: self.data_collector.get_disks()?,
         temps: self.data_collector.get_temps().ok(),
         network: self.data_collector.get_network()?,
-        host_uptime: DataCollector::get_uptime()?,
+        host_uptime: self.data_collector.get_uptime()?,
         reporter_uptime: self.data_collector.get_reporter_uptime()?,
       }) {
         eprintln!("Websocket error: {}", e);

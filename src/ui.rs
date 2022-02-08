@@ -4,7 +4,6 @@ use parking_lot::Mutex;
 use std::{io::Write, sync::Arc};
 
 use crate::{
-  data_collector::DataCollector,
   reporter::Reporter,
   util::{self, bytes_to_gb, bytes_to_kb, bytes_to_mb, clear_screen, parse_time},
 };
@@ -58,7 +57,7 @@ impl Ui {
 
   pub fn get_uptimes(&mut self) -> Result<String> {
     let reporter_uptime = self.reporter.lock().data_collector.get_reporter_uptime()?;
-    let uptime = DataCollector::get_uptime()?;
+    let uptime = self.reporter.lock().data_collector.get_uptime()?;
     Ok(format!(
       " {} {} {} {} {}",
       self.prefix.green(),

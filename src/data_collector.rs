@@ -83,8 +83,8 @@ impl DataCollector {
     ))
   }
 
-  pub fn get_uptime() -> Result<u64> {
-    let boot_time = System::new().boot_time() * 1000;
+  pub fn get_uptime(&mut self) -> Result<u64> {
+    let boot_time = self.fetcher.boot_time() * 1000;
     let timeframe = SystemTime::now()
       .duration_since(SystemTime::UNIX_EPOCH)?
       .as_millis() as u64
