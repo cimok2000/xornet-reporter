@@ -15,10 +15,10 @@ pub struct StaticData {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct NetworkInterfaceStats {
-  pub name: String,
+  pub n: String,
   pub tx: u64,
   pub rx: u64,
-  pub speed: f32,
+  pub s: f32,
 }
 
 #[derive(Serialize, Deserialize, Debug)]

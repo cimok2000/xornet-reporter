@@ -158,8 +158,8 @@ impl Ui {
       // Network
       let rx = format!("{}", nic.rx);
       let tx = format!("{}", nic.tx);
-      let speed = format!("{}", nic.speed);
-      let name = &nic.name;
+      let speed = format!("{}", nic.s);
+      let name = &nic.n;
 
       nics_info.push_str(&format!(
         "     {}  {} {} {} {} {} {}\n",

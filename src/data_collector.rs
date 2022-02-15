@@ -162,10 +162,10 @@ impl DataCollector {
       }
 
       let nic = NetworkInterfaceStats {
-        name: interface_name.to_string(),
+        n: interface_name.to_string(),
         tx: data.transmitted() * 8,
         rx: data.received() * 8,
-        speed: self
+        s: self
           .network_interface_speeds
           .get(&interface_name.to_string())
           .unwrap_or(&0.0)
