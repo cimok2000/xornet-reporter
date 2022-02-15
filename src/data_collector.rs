@@ -248,7 +248,7 @@ impl DataCollector {
       );
 
       // Ignore docker disks because they are the same as their host's disk
-      if name.contains("docker") || mount.contains("docker") {
+      if name.contains("docker") || mount.contains("docker") || mount.contains("boot") {
         continue;
       }
 
