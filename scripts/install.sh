@@ -73,8 +73,11 @@ echo "Checking CPU architecture..."
 arch=$(uname -m)
 # TODO: Add support for lowercase
 case $arch in
-armv7*)
+armv7* | armv8*)
   arch="armv7"
+  ;;
+arm*)
+  arch="arm"
   ;;
 *)
   arch=$arch
@@ -89,12 +92,12 @@ if [ ! -f /usr/bin/curl ]; then
 fi
 echo "Curl is installed."
 
-if [ ! -f /usr/bin/systemctl ]; then
-  echo "Systemd is not installed. This script cannot create the systemd service."
-  systemctl_installed=false
-else
+if ps --no-headers -o comm 1 | grep 'systemd' > /dev/null; then 
   echo "Systemd is installed."
   systemctl_installed=true
+else
+  echo "Systemd is not installed. This script cannot create the systemd service."
+  systemctl_installed=false
 fi
 echo "Ok."
 echo
