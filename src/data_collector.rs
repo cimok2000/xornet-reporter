@@ -217,18 +217,15 @@ impl DataCollector {
     match gpu_fetcher.nvidia.as_ref() {
       Some(nvml) => {
         let device = nvml.device_by_index(0)?;
-        let (brand, util, memory_info) = (
+        let (brand, util) = (
           format!("{:?}", device.brand()?),
           device.utilization_rates()?,
-          device.memory_info()?,
         );
 
         return Ok(GPUStats {
           brand,
           gpu_usage: util.gpu,
           power_usage: device.power_usage()?,
-          mem_used: memory_info.used,
-          mem_total: memory_info.total,
         });
       }
       None => {

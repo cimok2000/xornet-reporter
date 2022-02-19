@@ -38,8 +38,6 @@ pub struct GPUStats {
   pub brand: String,
   pub gpu_usage: u32,
   pub power_usage: u32,
-  pub mem_used: u64,
-  pub mem_total: u64,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
