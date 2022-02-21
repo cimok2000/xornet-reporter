@@ -1,6 +1,6 @@
 [package]
 name = "xornet-reporter"
-version = "0.10.1"
+version = "0.10.2"
 edition = "2018"
 
 # Optimize for size
@@ -27,6 +27,7 @@ websocket = "0.26.2"
 tokio = { version = "1.15.0", features = ["full"] }
 reqwest = { version = "0.11.7", features = ["json"] }
 uuid = { version = "0.8", features = ["serde", "v4"] }
+native-tls = "0.2.8"
 
 # User interface
 colored = "2.0.0"

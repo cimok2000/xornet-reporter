@@ -38,10 +38,15 @@ impl Reporter {
   }
 
   pub fn init_connection(&mut self) -> Result<()> {
-    self.websocket_manager = Some(WebsocketManager::new(&format!(
+    let websocket_url: String = format!(
       "wss://{}/reporter",
-      self.config_manager.config.backend_hostname
-    ))?);
+      if self.args.use_local_backend {
+        String::from("localhost:7000")
+      } else {
+        self.config_manager.config.backend_hostname.to_owned()
+      }
+    );
+    self.websocket_manager = Some(WebsocketManager::new(&websocket_url)?);
     self.login()?;
     Ok(())
   }

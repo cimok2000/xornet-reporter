@@ -11,6 +11,7 @@ pub struct ArgParser {
   pub prefix: String,
   pub colorless: bool,
   pub interval: f64,
+  pub use_local_backend: bool,
   pub no_clear: bool,
   pub silent: bool,
   pub offline: bool,
@@ -22,6 +23,7 @@ impl ArgParser {
       prefix: "●".to_string(),
       interval: 1.0,
       colorless: false,
+      use_local_backend: false,
       silent: false,
       offline: false,
       no_clear: false,
@@ -42,6 +44,10 @@ impl ArgParser {
           println!(
             "    -v,  --version                      : {}",
             "Show version and exit".white()
+          );
+          println!(
+            "    -ll, --local                        : {}",
+            "Use local backend (localhost:7000) (used for developing purposes)".white()
           );
           println!(
             "    -su, --signup <key>                 : {}",
@@ -123,6 +129,9 @@ impl ArgParser {
         }
         "-off" | "--offline" => {
           arg_parser.offline = true;
+        }
+        "-ll" | "--local" => {
+          arg_parser.use_local_backend = true;
         }
         "-su" | "--signup" => {
           if args.len() > index + 1 {

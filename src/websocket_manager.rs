@@ -37,7 +37,7 @@ pub enum WebsocketEvent {
     cpu_cores: Option<usize>,
     cpu_threads: usize,
     total_mem: u64,
-    reporter_version: String
+    reporter_version: String,
   },
 }
 
@@ -62,11 +62,10 @@ pub struct WebsocketManager {
 
 impl WebsocketManager {
   pub fn new(websocket_url: &str) -> Result<Self> {
-    let websocket = arcmutex(ClientBuilder::new(websocket_url)?.connect_secure(None)?);
-
+    let mut client = ClientBuilder::new(websocket_url)?;
     return Ok(Self {
       websocket_url: websocket_url.to_string(),
-      websocket,
+      websocket: arcmutex(client.connect_secure(None)?),
     });
   }
 
