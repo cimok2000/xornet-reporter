@@ -1,7 +1,7 @@
 use anyhow::Result;
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize)]
+#[derive(Serialize, Debug)]
 pub struct SignupBody {
   pub two_factor_key: String,
   pub hostname: String,
@@ -15,7 +15,7 @@ pub struct SignupResponse {
 
 #[derive(Deserialize)]
 pub struct SignupResponseError {
-  pub error: String,
+  pub message: String,
 }
 
 #[derive(Debug)]
@@ -32,15 +32,17 @@ impl AuthManager {
     println!("Signing up to Xornet...");
 
     let client = reqwest::Client::new();
-    let response = client
-      .post(&format!("https://{}/machines/@signup", backend_hostname))
-      .json(&SignupBody {
-        two_factor_key: two_factor_key.to_string(),
-        hostname: hostname.to_string(),
-        hardware_uuid: hardware_uuid.to_string(),
-      })
-      .send()
-      .await?;
+    let url = format!("https://{}/v1/auth/machine/signup", backend_hostname);
+    let body = SignupBody {
+      two_factor_key: two_factor_key.to_string(),
+      hostname: hostname.to_string(),
+      hardware_uuid: hardware_uuid.to_string(),
+    };
+    println!("POST: {}", url);
+    println!("{:?}", body);
+    let response = client.post(&url).json(&body).send().await?;
+
+    println!("{:?}", response.status());
 
     match response.status() {
       reqwest::StatusCode::OK => {
@@ -51,9 +53,12 @@ impl AuthManager {
       | reqwest::StatusCode::NOT_FOUND
       | reqwest::StatusCode::INTERNAL_SERVER_ERROR => {
         let response_json: SignupResponseError = serde_json::from_str(&response.text().await?)?;
-        Err(anyhow::anyhow!(response_json.error))
+        Err(anyhow::anyhow!(response_json.message))
       }
-      _ => Err(anyhow::anyhow!("Unexpected response from Xornet")),
+      _any_other => {
+        println!("{:?}", _any_other);
+        return Err(anyhow::anyhow!("Unexpected response from Xornet"));
+      }
     }
   }
 }

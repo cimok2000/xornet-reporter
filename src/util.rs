@@ -9,10 +9,6 @@ pub fn bytes_to_kb(bytes: u64) -> u64 {
   return bytes / 1024;
 }
 
-pub fn bytes_to_mb(bytes: u64) -> u64 {
-  return bytes / 1024 / 1024;
-}
-
 pub fn bytes_to_gb(bytes: u64) -> u64 {
   return bytes / 1024 / 1024 / 1024;
 }

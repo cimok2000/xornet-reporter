@@ -5,7 +5,7 @@ use std::{io::Write, sync::Arc};
 
 use crate::{
   reporter::Reporter,
-  util::{self, bytes_to_gb, bytes_to_kb, bytes_to_mb, clear_screen, parse_time},
+  util::{self, bytes_to_gb, bytes_to_kb, clear_screen, parse_time},
 };
 
 pub struct Ui {
