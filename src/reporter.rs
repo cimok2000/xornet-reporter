@@ -1,6 +1,7 @@
 use crate::arg_parser::ArgParser;
 use crate::config_manager::ConfigManager;
 use crate::data_collector::DataCollector;
+use crate::types::DynamicData;
 use crate::websocket_manager::{WebsocketEvent, WebsocketManager};
 use anyhow::Result;
 
@@ -10,6 +11,7 @@ pub struct Reporter {
   pub config_manager: ConfigManager,
   pub websocket_manager: Option<WebsocketManager>,
   pub args: ArgParser,
+  pub dynamic_data: DynamicData,
 }
 
 impl Reporter {
@@ -18,8 +20,19 @@ impl Reporter {
     let websocket_manager: Option<WebsocketManager> = None;
 
     let config_manager: ConfigManager = ConfigManager::new()?;
-    let data_collector: DataCollector = DataCollector::new()?;
+    let mut data_collector: DataCollector = DataCollector::new()?;
     let version: String = env!("CARGO_PKG_VERSION").to_string();
+    let dynamic_data: DynamicData = DynamicData {
+      cpu: data_collector.get_cpu()?,
+      ram: data_collector.get_ram()?,
+      gpu: data_collector.get_gpu().ok(),
+      process_count: data_collector.get_total_process_count()? as i32,
+      disks: data_collector.get_disks()?,
+      temps: data_collector.get_temps().ok(),
+      network: data_collector.get_network()?,
+      host_uptime: data_collector.get_uptime()?,
+      reporter_uptime: data_collector.get_reporter_uptime()?,
+    };
 
     let mut this = Self {
       data_collector,
@@ -27,6 +40,7 @@ impl Reporter {
       websocket_manager,
       config_manager,
       args,
+      dynamic_data,
     };
 
     if !this.args.offline {
@@ -83,18 +97,34 @@ impl Reporter {
     Ok(())
   }
 
+  pub async fn update_dynamic_data(&mut self) -> Result<()> {
+    self.dynamic_data = DynamicData {
+      cpu: self.data_collector.get_cpu()?,
+      ram: self.data_collector.get_ram()?,
+      gpu: self.data_collector.get_gpu().ok(),
+      process_count: self.data_collector.get_total_process_count()? as i32,
+      disks: self.data_collector.get_disks()?,
+      temps: self.data_collector.get_temps().ok(),
+      network: self.data_collector.get_network()?,
+      host_uptime: self.data_collector.get_uptime()?,
+      reporter_uptime: self.data_collector.get_reporter_uptime()?,
+    };
+    return Ok(());
+  }
+
   pub async fn send_dynamic_data(&mut self) -> Result<()> {
     if let Some(websocket_manager) = self.websocket_manager.as_mut() {
+      let dd = self.dynamic_data.clone();
       if let Err(e) = websocket_manager.send(WebsocketEvent::DynamicData {
-        cpu: self.data_collector.get_cpu()?,
-        ram: self.data_collector.get_ram()?,
-        gpu: self.data_collector.get_gpu().ok(),
-        process_count: self.data_collector.get_total_process_count()? as i32,
-        disks: self.data_collector.get_disks()?,
-        temps: self.data_collector.get_temps().ok(),
-        network: self.data_collector.get_network()?,
-        host_uptime: self.data_collector.get_uptime()?,
-        reporter_uptime: self.data_collector.get_reporter_uptime()?,
+        cpu: dd.cpu,
+        ram: dd.ram,
+        gpu: dd.gpu,
+        process_count: dd.process_count,
+        disks: dd.disks,
+        temps: dd.temps,
+        network: dd.network,
+        host_uptime: dd.host_uptime,
+        reporter_uptime: dd.reporter_uptime,
       }) {
         eprintln!("Websocket error: {}", e);
         self.init_connection()?;

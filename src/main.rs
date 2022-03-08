@@ -31,6 +31,14 @@ async fn main() -> Result<()> {
       Ui::new(&args.prefix, args.no_clear, reporter.clone());
     }
 
+    match reporter.lock().update_dynamic_data().await {
+      Ok(_) => {}
+      Err(e) => {
+        println!("{}", e);
+        thread::sleep(time::Duration::from_secs(1));
+      }
+    }
+
     match reporter.lock().send_dynamic_data().await {
       Ok(_) => {
         println!("{}", "Xornet Reporter Sending Data...")

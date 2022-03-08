@@ -4,6 +4,7 @@ use parking_lot::Mutex;
 use std::{io::Write, sync::Arc};
 
 use crate::{
+  data_collector::DataCollectorError,
   reporter::Reporter,
   util::{self, bytes_to_gb, bytes_to_kb, clear_screen, parse_time},
 };
@@ -19,7 +20,6 @@ impl Ui {
       prefix: prefix.to_string(),
       reporter,
     };
-
     let attempts = [
       this.get_uptimes(),
       this.get_cpu(),
@@ -56,8 +56,8 @@ impl Ui {
   }
 
   pub fn get_uptimes(&mut self) -> Result<String> {
-    let reporter_uptime = self.reporter.lock().data_collector.get_reporter_uptime()?;
-    let uptime = self.reporter.lock().data_collector.get_uptime()?;
+    let reporter_uptime = self.reporter.lock().dynamic_data.reporter_uptime;
+    let uptime = self.reporter.lock().dynamic_data.host_uptime;
     Ok(format!(
       " {} {} {} {} {}",
       self.prefix.green(),
@@ -69,7 +69,7 @@ impl Ui {
   }
 
   pub fn get_cpu(&mut self) -> Result<String> {
-    let cpus = self.reporter.lock().data_collector.get_cpu()?;
+    let cpus = self.reporter.lock().dynamic_data.cpu.clone();
     let mut cpu_usage: u16 = 0;
     for i in 1..cpus.usage.len() {
       cpu_usage = cpu_usage + cpus.usage[i] as u16;
@@ -86,7 +86,14 @@ impl Ui {
   }
 
   pub fn get_gpu(&mut self) -> Result<String> {
-    let gpu = self.reporter.lock().data_collector.get_gpu()?;
+    let gpu = self
+      .reporter
+      .lock()
+      .dynamic_data
+      .gpu
+      .clone()
+      .ok_or(DataCollectorError::NoGPU)?;
+
     let gpu_power_usage = format!("{}", gpu.power_usage);
     let gpu_usage = format!("{}", gpu.gpu_usage);
 
@@ -104,12 +111,7 @@ impl Ui {
   pub fn get_process_count(&mut self) -> Result<String> {
     let proc_count = format!(
       "{}",
-      self
-        .reporter
-        .lock()
-        .data_collector
-        .get_total_process_count()?
-        .to_string()
+      self.reporter.lock().dynamic_data.process_count.to_string()
     );
     return Ok(format!(
       " {} {} {} ",
@@ -122,11 +124,11 @@ impl Ui {
   pub fn get_memory(&mut self) -> Result<String> {
     let used_memory = format!(
       "{}",
-      bytes_to_kb(self.reporter.lock().data_collector.get_ram()?.used)
+      bytes_to_kb(self.reporter.lock().dynamic_data.ram.used)
     );
     let total_memory = format!(
       "{}",
-      bytes_to_kb(self.reporter.lock().data_collector.get_ram()?.total),
+      bytes_to_kb(self.reporter.lock().dynamic_data.ram.total)
     );
 
     return Ok(format!(
@@ -142,7 +144,7 @@ impl Ui {
 
   pub fn get_nics(&mut self) -> Result<String> {
     let nics_header = format!(" {} {} \n", self.prefix.blue(), "NICs".bright_black());
-    let nics = self.reporter.lock().data_collector.get_network()?;
+    let nics = self.reporter.lock().dynamic_data.network.clone();
 
     let mut nics_info = String::new();
     nics_info.push_str(&nics_header);
@@ -172,7 +174,7 @@ impl Ui {
 
   pub fn get_disks(&mut self) -> Result<String> {
     let disks_header = format!(" {} {} \n", self.prefix.magenta(), "Disks".bright_black());
-    let disks = self.reporter.lock().data_collector.get_disks()?;
+    let disks = self.reporter.lock().dynamic_data.disks.clone();
 
     let mut disks_list = String::new();
     disks_list.push_str(&disks_header);
@@ -202,7 +204,13 @@ impl Ui {
       self.prefix.bright_purple(),
       "Temperatures".bright_black(),
     ));
-    let temps = self.reporter.lock().data_collector.get_temps()?;
+    let temps = self
+      .reporter
+      .lock()
+      .dynamic_data
+      .temps
+      .clone()
+      .ok_or(DataCollectorError::NoTemp)?;
     for i in 0..temps.len() {
       temp_list.push_str(&format!(
         "     {} \t{}{}\n",

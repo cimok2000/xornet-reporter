@@ -12,8 +12,20 @@ pub struct StaticData {
   pub total_mem: u64,
   pub reporter_version: String,
 }
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct DynamicData {
+  pub cpu: CPUStats,
+  pub ram: RAMStats,
+  pub gpu: Option<GPUStats>,
+  pub process_count: i32,
+  pub disks: Vec<DiskStats>,
+  pub temps: Option<Vec<TempStats>>,
+  pub network: Vec<NetworkInterfaceStats>,
+  pub host_uptime: u64,
+  pub reporter_uptime: u64,
+}
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct NetworkInterfaceStats {
   pub n: String,
   pub tx: u64,
@@ -21,26 +33,26 @@ pub struct NetworkInterfaceStats {
   pub s: f32,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct CPUStats {
   pub usage: Vec<u16>,
   pub freq: Vec<u16>,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct RAMStats {
   pub used: u64,
   pub total: u64,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct GPUStats {
   pub brand: String,
   pub gpu_usage: u32,
   pub power_usage: u32,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct DiskStats {
   pub name: String,
   pub mount: String,
@@ -50,7 +62,7 @@ pub struct DiskStats {
   pub used: u64,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct TempStats {
   pub label: String,
   pub value: f32,
