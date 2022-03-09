@@ -140,7 +140,7 @@ impl Ui {
     );
 
     return Ok(format!(
-      " {} {}    {} {} {} {}\n {} {}    {} {} {} {} ",
+      " {} {}    {} {} {} {}\n {} {}      {} {} {} {} ",
       self.prefix.yellow(),
       "Memory".bright_black(),
       used_memory.yellow(),
