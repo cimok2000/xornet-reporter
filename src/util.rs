@@ -79,11 +79,11 @@ pub fn parse_time(reftime: u64) -> String {
 /// * `speed` - The speed multiplier of the number
 pub fn parse_speed(number: f32, speed: &str) -> f32 {
   match speed {
-    "bps" => return number * 1000000f32,
-    "Kbps" => return number * 1000f32,
+    "bps" => return number / 1000000f32,
+    "Kbps" => return number / 1000f32,
     "Mbps" => return number,
-    "Gbps" => return number / 1000f32,
-    "Tbps" => return number / 1000000f32,
+    "Gbps" => return number * 1000f32,
+    "Tbps" => return number * 1000000f32,
     _ => return number,
   }
 }

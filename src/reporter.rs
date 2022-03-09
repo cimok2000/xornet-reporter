@@ -111,6 +111,7 @@ impl Reporter {
       host_uptime: self.data_collector.get_uptime()?,
       reporter_uptime: self.data_collector.get_reporter_uptime()?,
     };
+    self.data_collector.increment_iterator_index();
     return Ok(());
   }
 
@@ -133,7 +134,6 @@ impl Reporter {
         self.init_connection()?;
         self.send_static_data().await?;
       }
-      self.data_collector.increment_iterator_index();
     }
 
     Ok(())

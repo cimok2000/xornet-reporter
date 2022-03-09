@@ -221,14 +221,10 @@ impl DataCollector {
       ])
       .output()?;
 
-    println!("{:?}", &String::from_utf8_lossy(&output_string.stdout));
-
     // Convert the json output to a vector of WindowsNetworkInterface structs
     let output_json = serde_json::from_str::<Vec<WindowsNetworkInterface>>(
       &String::from_utf8_lossy(&output_string.stdout),
     )?;
-
-    println!("{:?}", output_json);
 
     output_json.iter().for_each(|nic| {
       let split: Vec<&str> = nic.LinkSpeed.split_whitespace().collect();
@@ -240,8 +236,6 @@ impl DataCollector {
         parse_speed(f32::from_str(speed).unwrap_or(0.0), mult),
       ));
     });
-
-    println!("{:?}", nics);
 
     // Good job Windows!
     return Ok(nics);
