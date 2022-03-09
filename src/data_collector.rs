@@ -6,6 +6,7 @@ use std::{collections::HashMap, env};
 use crate::types::{
   CPUStats, DiskStats, GPUStats, NetworkInterfaceStats, RAMStats, StaticData, SwapStats, TempStats,
 };
+use crate::util::parse_speed;
 use anyhow::{anyhow, Result};
 use nvml::NVML;
 use serde::{Deserialize, Serialize};
@@ -32,6 +33,12 @@ pub struct DataCollector {
   iterator_index: usize,
   network_interface_speeds: HashMap<String, f32>,
   start_timestamp: u128,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct WindowsNetworkInterface {
+  pub name: String,
+  pub LinkSpeed: String,
 }
 
 #[derive(Debug)]
@@ -83,6 +90,7 @@ impl DataCollector {
     ))
   }
 
+  /// Get uptime of the system
   pub fn get_uptime(&mut self) -> Result<u64> {
     let boot_time = self.fetcher.boot_time() * 1000;
     let timeframe = SystemTime::now()
@@ -92,6 +100,7 @@ impl DataCollector {
     return Ok(timeframe);
   }
 
+  /// Get uptime of the reporter
   pub fn get_reporter_uptime(&mut self) -> Result<u64> {
     let timeframe = SystemTime::now()
       .duration_since(SystemTime::UNIX_EPOCH)?
@@ -115,10 +124,8 @@ impl DataCollector {
     Ok(cur_ip.ip)
   }
 
-  /**
-  Gets all the static information about the system
-  that can't change in runtime
-  */
+  /// Gets all the static information about the system
+  /// that can't change in runtime
   pub async fn get_statics(&self) -> Result<StaticData> {
     let processor_info = self.fetcher.global_processor_info();
 
@@ -140,6 +147,12 @@ impl DataCollector {
     let mut nics = Vec::new();
     self.fetcher.refresh_networks();
 
+    let nicspeeds = if self.iterator_index == 0 && env::consts::OS == "windows" {
+      DataCollector::get_nic_linkspeeds()?
+    } else {
+      vec![]
+    };
+
     for (interface_name, data) in self.fetcher.networks() {
       // Ignore bullshit loopback interfaces, no one cares
       if interface_name.contains("NPCAP")
@@ -151,10 +164,21 @@ impl DataCollector {
 
       if self.iterator_index == 0 {
         // Get the speed of the interface on linux otherwise it's 0
-        let speed = if env::consts::OS == "linux" {
-          DataCollector::get_nic_linkspeed(&interface_name)?
-        } else {
-          0.0
+        let speed = match env::consts::OS {
+          "linux" => DataCollector::get_nic_linkspeed(&interface_name)?,
+          "windows" => {
+            let nic_index = nicspeeds
+              .iter()
+              .position(|(name, _)| name == interface_name)
+              .ok_or(anyhow!(
+                "Could not find interface {} in the list of nicspeeds",
+                interface_name
+              ))?;
+
+            // Return the speed of the interface
+            nicspeeds[nic_index].1
+          }
+          _ => 0.0,
         };
         self
           .network_interface_speeds
@@ -187,8 +211,44 @@ impl DataCollector {
     return Ok(interface_speed);
   }
 
+  #[cfg(target_os = "windows")]
+  fn get_nic_linkspeeds() -> Result<Vec<(String, f32)>> {
+    let mut nics: Vec<(String, f32)> = Vec::new();
+    let output_string = Command::new("powershell")
+      .args([
+        "-Command",
+        "Get-NetAdapter | select name, linkSpeed | ConvertTo-Json",
+      ])
+      .output()?;
+
+    println!("{:?}", &String::from_utf8_lossy(&output_string.stdout));
+
+    // Convert the json output to a vector of WindowsNetworkInterface structs
+    let output_json = serde_json::from_str::<Vec<WindowsNetworkInterface>>(
+      &String::from_utf8_lossy(&output_string.stdout),
+    )?;
+
+    println!("{:?}", output_json);
+
+    output_json.iter().for_each(|nic| {
+      let split: Vec<&str> = nic.LinkSpeed.split_whitespace().collect();
+      let speed = split[0];
+      let mult = split[1];
+
+      nics.push((
+        nic.name.to_string(),
+        parse_speed(f32::from_str(speed).unwrap_or(0.0), mult),
+      ));
+    });
+
+    println!("{:?}", nics);
+
+    // Good job Windows!
+    return Ok(nics);
+  }
+
   /// Gets the current CPU stats
-  /// wait what the fuck this is an array of cores?
+  /// wait what the fuck this is an array of cores? 🥴👍
   pub fn get_cpu(&mut self) -> Result<CPUStats> {
     let (mut usage, mut freq) = (vec![], vec![]);
 
@@ -212,6 +272,7 @@ impl DataCollector {
     });
   }
 
+  /// Gets the current swap states
   pub fn get_swap(&mut self) -> Result<SwapStats> {
     return Ok(SwapStats {
       used: self.fetcher.used_swap(),
@@ -219,6 +280,7 @@ impl DataCollector {
     });
   }
 
+  /// Get the current GPU states
   pub fn get_gpu(&mut self) -> Result<GPUStats> {
     let gpu_fetcher = &self.gpu_fetcher;
     match gpu_fetcher.nvidia.as_ref() {
@@ -241,7 +303,7 @@ impl DataCollector {
     };
   }
 
-  /// Gets the current DISKS stats
+  /// Gets the current disk(s) stats
   pub fn get_disks(&self) -> Result<Vec<DiskStats>> {
     let mut disks = Vec::<DiskStats>::new();
 
@@ -276,6 +338,7 @@ impl DataCollector {
     return Ok(disks);
   }
 
+  /// Get the current temperature of the system
   pub fn get_temps(&mut self) -> Result<Vec<TempStats>> {
     self.fetcher.refresh_components();
 
