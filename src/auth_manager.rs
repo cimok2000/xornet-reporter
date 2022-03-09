@@ -32,7 +32,7 @@ impl AuthManager {
     println!("Signing up to Xornet...");
 
     let client = reqwest::Client::new();
-    let url = format!("https://{}/v1/auth/machine/signup", backend_hostname);
+    let url = format!("https://{}/machines/@signup", backend_hostname);
     let body = SignupBody {
       two_factor_key: two_factor_key.to_string(),
       hostname: hostname.to_string(),
