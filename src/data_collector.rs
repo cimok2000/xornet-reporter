@@ -211,7 +211,6 @@ impl DataCollector {
     return Ok(interface_speed);
   }
 
-  #[cfg(target_os = "windows")]
   fn get_nic_linkspeeds() -> Result<Vec<(String, f32)>> {
     let mut nics: Vec<(String, f32)> = Vec::new();
     let output_string = Command::new("powershell")
