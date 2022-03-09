@@ -4,7 +4,7 @@ use std::time::SystemTime;
 use std::{collections::HashMap, env};
 
 use crate::types::{
-  CPUStats, DiskStats, GPUStats, NetworkInterfaceStats, RAMStats, StaticData, TempStats,
+  CPUStats, DiskStats, GPUStats, NetworkInterfaceStats, RAMStats, StaticData, SwapStats, TempStats,
 };
 use anyhow::{anyhow, Result};
 use nvml::NVML;
@@ -209,6 +209,13 @@ impl DataCollector {
     return Ok(RAMStats {
       used: self.fetcher.used_memory(),
       total: self.fetcher.total_memory(),
+    });
+  }
+
+  pub fn get_swap(&mut self) -> Result<SwapStats> {
+    return Ok(SwapStats {
+      used: self.fetcher.used_swap(),
+      total: self.fetcher.total_swap(),
     });
   }
 

@@ -25,6 +25,7 @@ impl Reporter {
     let dynamic_data: DynamicData = DynamicData {
       cpu: data_collector.get_cpu()?,
       ram: data_collector.get_ram()?,
+      swap: data_collector.get_swap()?,
       gpu: data_collector.get_gpu().ok(),
       process_count: data_collector.get_total_process_count()? as i32,
       disks: data_collector.get_disks()?,
@@ -101,6 +102,7 @@ impl Reporter {
     self.dynamic_data = DynamicData {
       cpu: self.data_collector.get_cpu()?,
       ram: self.data_collector.get_ram()?,
+      swap: self.data_collector.get_swap()?,
       gpu: self.data_collector.get_gpu().ok(),
       process_count: self.data_collector.get_total_process_count()? as i32,
       disks: self.data_collector.get_disks()?,

@@ -122,6 +122,14 @@ impl Ui {
   }
 
   pub fn get_memory(&mut self) -> Result<String> {
+    let used_swap = format!(
+      "{}",
+      bytes_to_kb(self.reporter.lock().dynamic_data.swap.used)
+    );
+    let total_swap = format!(
+      "{}",
+      bytes_to_kb(self.reporter.lock().dynamic_data.swap.total)
+    );
     let used_memory = format!(
       "{}",
       bytes_to_kb(self.reporter.lock().dynamic_data.ram.used)
@@ -132,12 +140,18 @@ impl Ui {
     );
 
     return Ok(format!(
-      " {} {}    {} {} {} {} ",
+      " {} {}    {} {} {} {}\n {} {}    {} {} {} {} ",
       self.prefix.yellow(),
       "Memory".bright_black(),
       used_memory.yellow(),
       "/".bright_black(),
       total_memory.yellow(),
+      "MB".bright_black(),
+      self.prefix.yellow(),
+      "Swap".bright_black(),
+      used_swap.yellow(),
+      "/".bright_black(),
+      total_swap.yellow(),
       "MB".bright_black()
     ));
   }

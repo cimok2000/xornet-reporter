@@ -18,6 +18,7 @@ pub struct DynamicData {
   pub ram: RAMStats,
   pub gpu: Option<GPUStats>,
   pub process_count: i32,
+  pub swap: SwapStats,
   pub disks: Vec<DiskStats>,
   pub temps: Option<Vec<TempStats>>,
   pub network: Vec<NetworkInterfaceStats>,
@@ -41,6 +42,12 @@ pub struct CPUStats {
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct RAMStats {
+  pub used: u64,
+  pub total: u64,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct SwapStats {
   pub used: u64,
   pub total: u64,
 }
