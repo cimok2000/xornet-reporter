@@ -120,6 +120,7 @@ impl Reporter {
       if let Err(e) = websocket_manager.send(WebsocketEvent::DynamicData {
         cpu: dd.cpu,
         ram: dd.ram,
+        swap: dd.swap,
         gpu: dd.gpu,
         process_count: dd.process_count,
         disks: dd.disks,

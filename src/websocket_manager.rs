@@ -8,7 +8,9 @@ use websocket::sync::stream::TlsStream;
 use websocket::sync::Client;
 use websocket::{ClientBuilder, Message};
 
-use crate::types::{CPUStats, DiskStats, GPUStats, NetworkInterfaceStats, RAMStats, TempStats};
+use crate::types::{
+  CPUStats, DiskStats, GPUStats, NetworkInterfaceStats, RAMStats, SwapStats, TempStats,
+};
 use crate::util::arcmutex;
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -20,6 +22,7 @@ pub enum WebsocketEvent {
   DynamicData {
     cpu: CPUStats,
     ram: RAMStats,
+    swap: SwapStats,
     gpu: Option<GPUStats>,
     process_count: i32,
     disks: Vec<DiskStats>,
