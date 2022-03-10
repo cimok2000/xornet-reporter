@@ -19,6 +19,14 @@ curl https://raw.githubusercontent.com/xornet-cloud/Reporter/main/scripts/instal
 
 ### Scoop
 
+1. Install scoop (if you haven't already)
+
 ```powershell
-iwr -useb get.scoop.sh | iex && scoop install "https://raw.githubusercontent.com/xornet-cloud/Reporter/main/scripts/scoop.json"
+iwr -useb get.scoop.sh | iex
+```
+
+2. Install Xornet Reporter
+
+```powershell
+scoop install "https://raw.githubusercontent.com/xornet-cloud/Reporter/main/scripts/scoop.json"
 ```
