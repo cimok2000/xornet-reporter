@@ -1,6 +1,0 @@
-{
-  "version": "0.13.2",
-  "description": "The app that sends your data to Xornet servers for monitoring",
-  "url": "https://github.com/xornet-cloud/Reporter/releases/download/v0.13.2/xornet-reporter.exe",
-  "bin": "xornet-reporter.exe"
-}
