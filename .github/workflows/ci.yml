@@ -215,5 +215,5 @@ jobs:
         with:
           upload_url: ${{ needs.create-release.outputs.upload_url }}
           asset_path: ${{matrix.targetPlatform}}_build/${{ matrix.targetPlatform == 'windows' && 'xornet-reporter.exe' || 'xornet-reporter' }}
-          asset_name: xornet-reporter.${{matrix.targetPlatform}}
+          asset_name: xornet-reporter.${{ matrix.targetPlatform == 'windows' && 'exe' || matrix.targetPlatform }}
           asset_content_type: application/octet-stream
