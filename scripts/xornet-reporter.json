@@ -12,13 +12,13 @@
   ],
   "autoupdate": {
     "url": "https://github.com/xornet-cloud/Reporter/releases/download/v$version/xornet-reporter.exe",
-    "pre_install": "sudo nssm stop 'Xornet Reporter (scoop)'"
+    "pre_install": "sudo nssm stop 'Xornet Reporter'"
   },
   "uninstaller": {
     "script": [
-      "echo 'Stopping Xornet Reporter (scoop)'",
-      "sudo nssm stop 'Xornet Reporter (scoop)'",
-      "sudo nssm remove 'Xornet Reporter (scoop)' confirm"
+      "echo 'Stopping Xornet Reporter'",
+      "sudo nssm stop 'Xornet Reporter'",
+      "sudo nssm remove 'Xornet Reporter' confirm"
     ]
   },
   "post_install": [
@@ -26,9 +26,9 @@
     "$curPath = Get-Location",
     "cd ~/scoop/apps/xornet-reporter/0.13.2",
     "$xornetPath = Get-Location",
-    "sudo nssm install 'Xornet Reporter (scoop)' $xornetPath/xornet-reporter.exe \"--silent\"",
+    "sudo nssm install 'Xornet Reporter' $xornetPath/xornet-reporter.exe \"--silent\"",
     "xornet-reporter.exe -su $token",
-    "sudo nssm start 'Xornet Reporter (scoop)'",
+    "sudo nssm start 'Xornet Reporter'",
     "cd $curPath"
   ]
 }
