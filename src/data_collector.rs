@@ -170,13 +170,14 @@ impl DataCollector {
             let nic_index = nicspeeds
               .iter()
               .position(|(name, _)| name == interface_name)
-              .ok_or(anyhow!(
-                "Could not find interface {} in the list of nicspeeds",
-                interface_name
-              ))?;
+              .unwrap_or(-1);
 
             // Return the speed of the interface
-            nicspeeds[nic_index].1
+            if nic_index == -1 {
+              return 0.0;
+            } else {
+              return nicspeeds[nic_index].1;
+            }
           }
           _ => 0.0,
         };
