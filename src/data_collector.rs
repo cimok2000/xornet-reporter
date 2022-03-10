@@ -172,7 +172,7 @@ impl DataCollector {
               .position(|(name, _)| name == interface_name);
 
             if nic_index.is_some() {
-              nicspeeds[nic_index].1
+              nicspeeds[nic_index.unwrap()].1
             } else {
               0.0
             }
