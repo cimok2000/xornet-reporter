@@ -28,5 +28,5 @@ iwr -useb get.scoop.sh | iex
 2. Install Xornet Reporter
 
 ```powershell
-scoop install "https://raw.githubusercontent.com/xornet-cloud/Reporter/main/scripts/scoop.json"
+scoop install "https://raw.githubusercontent.com/xornet-cloud/Reporter/main/scripts/xornet-reporter.json"
 ```
