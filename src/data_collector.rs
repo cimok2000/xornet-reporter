@@ -169,15 +169,9 @@ impl DataCollector {
           "windows" => {
             let nic_index = nicspeeds
               .iter()
-              .position(|(name, _)| name == interface_name)
-              .unwrap_or(-1);
+              .position(|(name, _)| name == interface_name)?;
 
-            // Return the speed of the interface
-            if nic_index == -1 {
-              return 0.0;
-            } else {
-              return nicspeeds[nic_index].1;
-            }
+            nicspeeds[nic_index].1
           }
           _ => 0.0,
         };
