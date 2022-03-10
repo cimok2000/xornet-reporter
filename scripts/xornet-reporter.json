@@ -21,6 +21,9 @@
       "sudo nssm remove 'Xornet Reporter' confirm"
     ]
   },
+  "pre_install": [
+    "sudo nssm remove 'Xornet Reporter' confirm"
+  ],
   "post_install": [
     "$token = Read-Host -Prompt 'Please enter your signup token: '",
     "$curPath = Get-Location",
