@@ -4,14 +4,16 @@ use std::fs::File;
 use std::path::Path;
 use uuid::Uuid;
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct Config {
   pub access_token: String,
   pub backend_hostname: String,
   pub uuid: String,
+  pub docker_integration: bool,
 }
 
 /// Manages the config.json for the reporter
+#[derive(Clone, Debug)]
 pub struct ConfigManager {
   pub config: Config,
 }
@@ -32,7 +34,7 @@ impl ConfigManager {
   /// Saves the modified config to the config file
   pub fn save_config(config: Config) -> Result<()> {
     let file = File::create("config.json")?;
-    serde_json::to_writer(file, &config)?;
+    serde_json::to_writer_pretty(file, &config)?;
     return Ok(());
   }
 
@@ -42,7 +44,11 @@ impl ConfigManager {
       return Ok(ConfigManager::create_config()?);
     } else {
       let file = File::open("config.json")?;
-      return Ok(serde_json::from_reader(file)?);
+
+      return match serde_json::from_reader(file) {
+        Ok(config) => Ok(config),
+        Err(_) => Ok(ConfigManager::create_config()?),
+      };
     }
   }
 
@@ -56,6 +62,7 @@ impl ConfigManager {
       access_token: String::new(),
       backend_hostname: "backend.xornet.cloud".to_string(),
       uuid: ConfigManager::create_uuid(),
+      docker_integration: false,
     };
     ConfigManager::save_config(config.clone())?;
     return Ok(config);

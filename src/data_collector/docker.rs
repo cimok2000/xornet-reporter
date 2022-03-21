@@ -21,7 +21,10 @@ impl DataCollector {
     let mut stats: Vec<DockerStats> = Vec::new();
 
     for line in output_string.split("\n") {
-      stats.push(serde_json::from_str(line)?);
+      let stat = serde_json::from_str(line);
+      if let Ok(stat) = stat {
+        stats.push(stat);
+      }
     }
 
     // parse the output as DockerStats struct from the json

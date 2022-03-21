@@ -20,7 +20,7 @@ impl Reporter {
     let websocket_manager: Option<WebsocketManager> = None;
 
     let config_manager: ConfigManager = ConfigManager::new()?;
-    let mut data_collector: DataCollector = DataCollector::new()?;
+    let mut data_collector: DataCollector = DataCollector::new(config_manager.clone())?;
     let version: String = env!("CARGO_PKG_VERSION").to_string();
     let dynamic_data: DynamicData = data_collector.get_all_dynamic_data()?;
 

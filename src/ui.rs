@@ -124,14 +124,35 @@ impl Ui {
 
   pub fn get_dockers(&mut self) -> Result<String> {
     match &self.reporter.lock().dynamic_data.docker {
-      Some(docker) => {
-        let total_containers = format!("{}", docker.len());
-        return Ok(format!(
+      Some(containers) => {
+        let mut docker_info = String::new();
+        let total_containers = format!("{}", containers.len());
+        docker_info.push_str(&format!(
           " {} {} {} ",
           self.prefix.cyan(),
           "Containers Running".bright_black(),
           total_containers.cyan()
         ));
+
+        for i in 0..containers.len() {
+          let container = &containers[i];
+
+          let name = format!("{}", container.name);
+          let id = format!("{}", container.container);
+          let cpu = format!("{}", container.cpu);
+          let ram_percent = format!("{}", container.memory.percent);
+          let ram_raw = format!("{}", container.memory.raw);
+
+          docker_info.push_str(&format!(
+            "\n     {}  {}  {} {} {}",
+            id.bright_black(),
+            cpu.red(),
+            ram_percent.yellow(),
+            ram_raw.yellow(),
+            name.cyan(),
+          ));
+        }
+        return Ok(docker_info);
       }
       None => return Ok(format!("")),
     };
