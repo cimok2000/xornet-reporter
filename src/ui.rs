@@ -28,8 +28,8 @@ impl Ui {
       this.get_gpu(),
       this.get_nics(),
       this.get_disks(),
-      this.get_dockers(),
       this.get_temps(),
+      this.get_dockers(),
       this.get_version(),
     ];
 
