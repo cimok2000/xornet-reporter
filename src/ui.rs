@@ -145,10 +145,10 @@ impl Ui {
 
           docker_info.push_str(&format!(
             "\n     {}  {}  {} {} {}",
-            id.bright_black(),
-            cpu.red(),
-            ram_percent.yellow(),
-            ram_raw.yellow(),
+            id.cyan(),
+            cpu.bright_black(),
+            ram_percent.bright_black(),
+            ram_raw.bright_black(),
             name.cyan(),
           ));
         }

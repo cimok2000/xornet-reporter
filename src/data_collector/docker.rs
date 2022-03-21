@@ -16,7 +16,6 @@ impl DataCollector {
       ])
       .output()?;
 
-    // trim the whitespace from stdout
     let output_string = String::from_utf8(command.stdout)?.trim().to_string();
     let mut stats: Vec<DockerStats> = Vec::new();
 
@@ -27,7 +26,6 @@ impl DataCollector {
       }
     }
 
-    // parse the output as DockerStats struct from the json
     return match command.status.code() {
       Some(0) => Ok(stats),
       Some(_code) => Err(DataCollectorError::NoDockerStats)?,
