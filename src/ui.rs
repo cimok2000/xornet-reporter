@@ -266,7 +266,7 @@ impl Ui {
       temp_list.push_str(&format!(
         "     {} \t{}{}\n",
         temps[i].label.bright_black(),
-        temps[i].value.to_string().purple(),
+        temps[i].value.to_string().bright_purple(),
         "°C".bright_black()
       ));
     }
