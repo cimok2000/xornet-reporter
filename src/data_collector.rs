@@ -4,7 +4,8 @@ use std::time::SystemTime;
 use std::{collections::HashMap, env};
 
 use crate::types::{
-  CPUStats, DiskStats, GPUStats, NetworkInterfaceStats, RAMStats, StaticData, SwapStats, TempStats,
+  CPUStats, DiskStats, DynamicData, GPUStats, NetworkInterfaceStats, RAMStats, StaticData,
+  SwapStats, TempStats,
 };
 use crate::util::parse_speed;
 use anyhow::{anyhow, Result};
@@ -23,6 +24,8 @@ pub enum DataCollectorError {
   NoGPU,
   #[error("Temperature unavailable")]
   NoTemp,
+  #[error("Docker Stats unavailable")]
+  NoDockerStats,
 }
 
 #[derive(Debug)]
@@ -79,6 +82,23 @@ impl DataCollector {
     if self.program_iterations <= self.iterator_index {
       self.iterator_index = 0;
     }
+  }
+
+  pub fn get_all_dynamic_data(&mut self) -> Result<DynamicData> {
+    self.increment_iterator_index();
+
+    Ok(DynamicData {
+      cpu: self.get_cpu()?,
+      ram: self.get_ram()?,
+      swap: self.get_swap()?,
+      gpu: self.get_gpu().ok(),
+      process_count: self.get_total_process_count()? as i32,
+      disks: self.get_disks()?,
+      temps: self.get_temps().ok(),
+      network: self.get_network()?,
+      host_uptime: self.get_uptime()?,
+      reporter_uptime: self.get_reporter_uptime()?,
+    })
   }
 
   /// Gets the hostname of the system
@@ -199,6 +219,19 @@ impl DataCollector {
     }
 
     return Ok(nics);
+  }
+
+  pub fn get_docker_stats(&mut self) -> Result<String> {
+    let docker_stats = Command::new("docker")
+      .arg("stats")
+      .arg("--no-stream")
+      .output()?;
+
+    return match docker_stats.status.code() {
+      Some(0) => Ok(String::from_utf8_lossy(&docker_stats.stdout).to_string()),
+      Some(_code) => Err(DataCollectorError::NoDockerStats)?,
+      None => Err(DataCollectorError::NoDockerStats)?,
+    };
   }
 
   fn get_nic_linkspeed(interface_name: &str) -> Result<f32> {

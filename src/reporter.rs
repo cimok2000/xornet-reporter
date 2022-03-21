@@ -22,18 +22,7 @@ impl Reporter {
     let config_manager: ConfigManager = ConfigManager::new()?;
     let mut data_collector: DataCollector = DataCollector::new()?;
     let version: String = env!("CARGO_PKG_VERSION").to_string();
-    let dynamic_data: DynamicData = DynamicData {
-      cpu: data_collector.get_cpu()?,
-      ram: data_collector.get_ram()?,
-      swap: data_collector.get_swap()?,
-      gpu: data_collector.get_gpu().ok(),
-      process_count: data_collector.get_total_process_count()? as i32,
-      disks: data_collector.get_disks()?,
-      temps: data_collector.get_temps().ok(),
-      network: data_collector.get_network()?,
-      host_uptime: data_collector.get_uptime()?,
-      reporter_uptime: data_collector.get_reporter_uptime()?,
-    };
+    let dynamic_data: DynamicData = data_collector.get_all_dynamic_data()?;
 
     let mut this = Self {
       data_collector,
@@ -99,23 +88,14 @@ impl Reporter {
   }
 
   pub async fn update_dynamic_data(&mut self) -> Result<()> {
-    self.dynamic_data = DynamicData {
-      cpu: self.data_collector.get_cpu()?,
-      ram: self.data_collector.get_ram()?,
-      swap: self.data_collector.get_swap()?,
-      gpu: self.data_collector.get_gpu().ok(),
-      process_count: self.data_collector.get_total_process_count()? as i32,
-      disks: self.data_collector.get_disks()?,
-      temps: self.data_collector.get_temps().ok(),
-      network: self.data_collector.get_network()?,
-      host_uptime: self.data_collector.get_uptime()?,
-      reporter_uptime: self.data_collector.get_reporter_uptime()?,
-    };
+    self.dynamic_data = self.data_collector.get_all_dynamic_data()?;
     self.data_collector.increment_iterator_index();
     return Ok(());
   }
 
   pub async fn send_dynamic_data(&mut self) -> Result<()> {
+    println!("{:?}", self.data_collector.get_docker_stats());
+
     if let Some(websocket_manager) = self.websocket_manager.as_mut() {
       let dd = self.dynamic_data.clone();
       if let Err(e) = websocket_manager.send(WebsocketEvent::DynamicData {
