@@ -28,6 +28,7 @@ impl Ui {
       this.get_gpu(),
       this.get_nics(),
       this.get_disks(),
+      this.get_dockers(),
       this.get_temps(),
       this.get_version(),
     ];
@@ -119,6 +120,21 @@ impl Ui {
       "Processes".bright_black(),
       proc_count.green()
     ));
+  }
+
+  pub fn get_dockers(&mut self) -> Result<String> {
+    match &self.reporter.lock().dynamic_data.docker {
+      Some(docker) => {
+        let total_containers = format!("{}", docker.len());
+        return Ok(format!(
+          " {} {} {} ",
+          self.prefix.cyan(),
+          "Containers Running".bright_black(),
+          total_containers.cyan()
+        ));
+      }
+      None => return Ok(format!("")),
+    };
   }
 
   pub fn get_memory(&mut self) -> Result<String> {

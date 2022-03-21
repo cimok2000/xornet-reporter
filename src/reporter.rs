@@ -94,8 +94,6 @@ impl Reporter {
   }
 
   pub async fn send_dynamic_data(&mut self) -> Result<()> {
-    println!("{:?}", self.data_collector.get_docker_stats());
-
     if let Some(websocket_manager) = self.websocket_manager.as_mut() {
       let dd = self.dynamic_data.clone();
       if let Err(e) = websocket_manager.send(WebsocketEvent::DynamicData {
