@@ -75,10 +75,13 @@ impl DataCollector {
   }
 
   pub fn get_all_dynamic_data(&mut self) -> Result<DynamicData> {
-    if self.config_manager.config.docker_integration {
-      if self.iterator_index % 5 == 0 {
-        self.docker_stats_buffer = self.get_docker_stats()?;
+    match self.config_manager.config.docker_integration {
+      Some(true) => {
+        if self.iterator_index % 5 == 0 {
+          self.docker_stats_buffer = self.get_docker_stats()?;
+        }
       }
+      _ => {}
     }
 
     Ok(DynamicData {

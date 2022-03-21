@@ -9,7 +9,7 @@ pub struct Config {
   pub access_token: String,
   pub backend_hostname: String,
   pub uuid: String,
-  pub docker_integration: bool,
+  pub docker_integration: Option<bool>,
 }
 
 /// Manages the config.json for the reporter
@@ -45,8 +45,22 @@ impl ConfigManager {
     } else {
       let file = File::open("config.json")?;
 
-      return match serde_json::from_reader(file) {
-        Ok(config) => Ok(config),
+      let result = serde_json::from_reader(file);
+      return match result {
+        Ok(config) => {
+          let mut config: Config = config;
+          if config.uuid.is_empty() {
+            config.uuid = ConfigManager::create_uuid();
+          }
+          if config.backend_hostname.is_empty() {
+            config.uuid = "backend.xornet.cloud".to_string();
+          }
+          if config.docker_integration.is_none() {
+            config.docker_integration = Some(false);
+          }
+          ConfigManager::save_config(config.clone())?;
+          return Ok(config);
+        }
         Err(_) => Ok(ConfigManager::create_config()?),
       };
     }
@@ -62,7 +76,7 @@ impl ConfigManager {
       access_token: String::new(),
       backend_hostname: "backend.xornet.cloud".to_string(),
       uuid: ConfigManager::create_uuid(),
-      docker_integration: false,
+      docker_integration: Some(false),
     };
     ConfigManager::save_config(config.clone())?;
     return Ok(config);
