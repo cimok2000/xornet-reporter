@@ -29,6 +29,7 @@ impl Ui {
       this.get_nics(),
       this.get_disks(),
       this.get_temps(),
+      this.get_dockers(),
       this.get_version(),
     ];
 
@@ -119,6 +120,42 @@ impl Ui {
       "Processes".bright_black(),
       proc_count.green()
     ));
+  }
+
+  pub fn get_dockers(&mut self) -> Result<String> {
+    match &self.reporter.lock().dynamic_data.docker {
+      Some(containers) => {
+        let mut docker_info = String::new();
+        let total_containers = format!("{}", containers.len());
+        docker_info.push_str(&format!(
+          " {} {} {} ",
+          self.prefix.cyan(),
+          "Containers Running".bright_black(),
+          total_containers.cyan()
+        ));
+
+        for i in 0..containers.len() {
+          let container = &containers[i];
+
+          let name = format!("{}", container.name);
+          let id = format!("{}", container.container);
+          let cpu = format!("{}", container.cpu);
+          let ram_percent = format!("{}", container.memory.percent);
+          let ram_raw = format!("{}", container.memory.raw);
+
+          docker_info.push_str(&format!(
+            "\n     {}  {}  {} {} {}",
+            id.cyan(),
+            cpu.bright_black(),
+            ram_percent.bright_black(),
+            ram_raw.bright_black(),
+            name.cyan(),
+          ));
+        }
+        return Ok(docker_info);
+      }
+      None => return Ok(format!("")),
+    };
   }
 
   pub fn get_memory(&mut self) -> Result<String> {
@@ -229,7 +266,7 @@ impl Ui {
       temp_list.push_str(&format!(
         "     {} \t{}{}\n",
         temps[i].label.bright_black(),
-        temps[i].value.to_string().purple(),
+        temps[i].value.to_string().bright_purple(),
         "°C".bright_black()
       ));
     }

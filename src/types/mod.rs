@@ -18,12 +18,27 @@ pub struct DynamicData {
   pub ram: RAMStats,
   pub gpu: Option<GPUStats>,
   pub process_count: i32,
+  pub docker: Option<Vec<DockerStats>>,
   pub swap: SwapStats,
   pub disks: Vec<DiskStats>,
   pub temps: Option<Vec<TempStats>>,
   pub network: Vec<NetworkInterfaceStats>,
   pub host_uptime: u64,
   pub reporter_uptime: u64,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct DockerMemoryStats {
+  pub raw: String,
+  pub percent: String,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct DockerStats {
+  pub container: String,
+  pub name: String,
+  pub memory: DockerMemoryStats,
+  pub cpu: String,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
