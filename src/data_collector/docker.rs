@@ -1,4 +1,4 @@
-use std::process::Command;
+use std::{env, process::Command};
 
 use crate::types::DockerStats;
 use anyhow::Result;
@@ -7,7 +7,7 @@ use super::{DataCollector, DataCollectorError};
 
 impl DataCollector {
   pub fn get_docker_stats(&mut self) -> Result<Vec<DockerStats>> {
-    let command = Command::new("docker")
+    let command = Command::new(if env::consts::OS == "linux" { "/usr/bin/docker" } else { "docker" })
       .args([
         "stats",
         "--no-stream",
