@@ -9,7 +9,7 @@ use websocket::sync::Client;
 use websocket::{ClientBuilder, Message};
 
 use crate::types::{
-  CPUStats, DiskStats, GPUStats, NetworkInterfaceStats, RAMStats, SwapStats, TempStats,
+  CPUStats, DiskStats, GPUStats, NetworkInterfaceStats, RAMStats, SwapStats, TempStats, DockerStats,
 };
 use crate::util::arcmutex;
 
@@ -27,6 +27,7 @@ pub enum WebsocketEvent {
     process_count: i32,
     disks: Vec<DiskStats>,
     temps: Option<Vec<TempStats>>,
+    docker: Option<Vec<DockerStats>>,
     network: Vec<NetworkInterfaceStats>,
     host_uptime: u64,
     reporter_uptime: u64,

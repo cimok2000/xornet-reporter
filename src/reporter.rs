@@ -101,6 +101,7 @@ impl Reporter {
         ram: dd.ram,
         swap: dd.swap,
         gpu: dd.gpu,
+        docker: dd.docker,
         process_count: dd.process_count,
         disks: dd.disks,
         temps: dd.temps,
