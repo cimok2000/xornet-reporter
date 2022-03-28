@@ -16,7 +16,6 @@ impl DataCollector {
         disk.mount_point().to_string_lossy(),
       );
 
-      // Ignore docker disks because they are the same as their host's disk
       if name.contains("docker") || mount.contains("docker") || mount.contains("boot") {
         continue;
       }

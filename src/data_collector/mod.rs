@@ -1,6 +1,5 @@
 mod cpu;
 mod disks;
-mod docker;
 mod geolocation;
 mod gpu;
 mod nics;
@@ -8,10 +7,7 @@ mod ram;
 mod temps;
 mod uptimes;
 
-use crate::{
-  config_manager::ConfigManager,
-  types::{DockerStats, DynamicData, StaticData},
-};
+use crate::types::{DynamicData, StaticData};
 use anyhow::{anyhow, Result};
 use nvml::NVML;
 use std::{collections::HashMap, time::SystemTime};
@@ -26,8 +22,6 @@ pub enum DataCollectorError {
   NoGPU,
   #[error("Temperature unavailable")]
   NoTemp,
-  #[error("Docker Stats unavailable")]
-  NoDockerStats,
 }
 
 #[derive(Debug)]
@@ -36,15 +30,13 @@ pub struct DataCollector {
   pub fetcher: System,
   pub program_iterations: usize,
   iterator_index: usize,
-  config_manager: ConfigManager,
-  docker_stats_buffer: Vec<DockerStats>,
   network_interface_speeds: HashMap<String, f32>,
   start_timestamp: u128,
 }
 
 impl DataCollector {
   /// Creates a new data collector
-  pub fn new(config_manager: ConfigManager) -> Result<Self> {
+  pub fn new() -> Result<Self> {
     let (fetcher, gpu_fetcher) = (
       System::new_all(),
       GPUFetcher {
@@ -57,8 +49,6 @@ impl DataCollector {
       fetcher,
       iterator_index: 0,
       program_iterations: 60,
-      config_manager,
-      docker_stats_buffer: vec![],
       network_interface_speeds: HashMap::new(),
       start_timestamp: SystemTime::now()
         .duration_since(SystemTime::UNIX_EPOCH)?
@@ -75,15 +65,6 @@ impl DataCollector {
   }
 
   pub fn get_all_dynamic_data(&mut self) -> Result<DynamicData> {
-    match self.config_manager.config.docker_integration {
-      Some(true) => {
-        if self.iterator_index % 5 == 0 {
-          self.docker_stats_buffer = self.get_docker_stats()?;
-        }
-      }
-      _ => {}
-    }
-
     Ok(DynamicData {
       cpu: self.get_cpu()?,
       ram: self.get_ram()?,
@@ -95,7 +76,6 @@ impl DataCollector {
       network: self.get_network()?,
       host_uptime: self.get_uptime()?,
       reporter_uptime: self.get_reporter_uptime()?,
-      docker: Some(self.docker_stats_buffer.clone()),
     })
   }
 

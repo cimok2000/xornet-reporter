@@ -20,7 +20,7 @@ impl Reporter {
     let websocket_manager: Option<WebsocketManager> = None;
 
     let config_manager: ConfigManager = ConfigManager::new()?;
-    let mut data_collector: DataCollector = DataCollector::new(config_manager.clone())?;
+    let mut data_collector: DataCollector = DataCollector::new()?;
     let version: String = env!("CARGO_PKG_VERSION").to_string();
     let dynamic_data: DynamicData = data_collector.get_all_dynamic_data()?;
 
@@ -44,11 +44,7 @@ impl Reporter {
   pub fn init_connection(&mut self) -> Result<()> {
     let websocket_url: String = format!(
       "wss://{}/reporter",
-      if self.args.use_local_backend {
-        String::from("localhost:7000")
-      } else {
-        self.config_manager.config.backend_hostname.to_owned()
-      }
+      self.config_manager.config.backend_hostname.to_owned()
     );
     self.websocket_manager = Some(WebsocketManager::new(&websocket_url)?);
     self.login()?;
@@ -101,7 +97,6 @@ impl Reporter {
         ram: dd.ram,
         swap: dd.swap,
         gpu: dd.gpu,
-        docker: dd.docker,
         process_count: dd.process_count,
         disks: dd.disks,
         temps: dd.temps,

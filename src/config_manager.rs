@@ -9,7 +9,6 @@ pub struct Config {
   pub access_token: String,
   pub backend_hostname: String,
   pub uuid: String,
-  pub docker_integration: Option<bool>,
 }
 
 /// Manages the config.json for the reporter
@@ -55,9 +54,6 @@ impl ConfigManager {
           if config.backend_hostname.is_empty() {
             config.uuid = "backend.xornet.cloud".to_string();
           }
-          if config.docker_integration.is_none() {
-            config.docker_integration = Some(false);
-          }
           ConfigManager::save_config(config.clone())?;
           return Ok(config);
         }
@@ -76,7 +72,6 @@ impl ConfigManager {
       access_token: String::new(),
       backend_hostname: "backend.xornet.cloud".to_string(),
       uuid: ConfigManager::create_uuid(),
-      docker_integration: Some(false),
     };
     ConfigManager::save_config(config.clone())?;
     return Ok(config);
