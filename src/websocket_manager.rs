@@ -66,10 +66,10 @@ pub struct WebsocketManager {
 impl WebsocketManager {
   pub fn new(websocket_url: &str) -> Result<Self> {
     let mut client = ClientBuilder::new(websocket_url)?;
-    return Ok(Self {
+    Ok(Self {
       websocket_url: websocket_url.to_string(),
       websocket: arcmutex(client.connect_secure(None)?),
-    });
+    })
   }
 
   pub fn send(&mut self, data: WebsocketEvent) -> Result<()> {

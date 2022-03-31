@@ -20,32 +20,32 @@ pub struct ConfigManager {
 impl ConfigManager {
   pub fn new() -> Result<ConfigManager> {
     let config = ConfigManager::load_config()?;
-    return Ok(Self { config });
+    Ok(Self { config })
   }
 
   pub fn save_access_token(access_token: &str) -> Result<()> {
     let mut config = ConfigManager::load_config()?;
     config.access_token = access_token.to_string();
     ConfigManager::save_config(config)?;
-    return Ok(());
+    Ok(())
   }
 
   /// Saves the modified config to the config file
   pub fn save_config(config: Config) -> Result<()> {
     let file = File::create("config.json")?;
     serde_json::to_writer_pretty(file, &config)?;
-    return Ok(());
+    Ok(())
   }
 
   /// Loads the config file from disk or creates a new one if it doesn't exist.
   pub fn load_config() -> Result<Config> {
     if !Path::new("config.json").exists() {
-      return Ok(ConfigManager::create_config()?);
+      Ok(ConfigManager::create_config()?)
     } else {
       let file = File::open("config.json")?;
 
       let result = serde_json::from_reader(file);
-      return match result {
+      match result {
         Ok(config) => {
           let mut config: Config = config;
           if config.uuid.is_empty() {
@@ -55,15 +55,15 @@ impl ConfigManager {
             config.uuid = "backend.xornet.cloud".to_string();
           }
           ConfigManager::save_config(config.clone())?;
-          return Ok(config);
+          Ok(config)
         }
         Err(_) => Ok(ConfigManager::create_config()?),
-      };
+      }
     }
   }
 
   pub fn create_uuid() -> String {
-    return Uuid::new_v4().to_string();
+    Uuid::new_v4().to_string()
   }
 
   /// Creates a new config file with an empty access token and default backend address.
@@ -74,6 +74,6 @@ impl ConfigManager {
       uuid: ConfigManager::create_uuid(),
     };
     ConfigManager::save_config(config.clone())?;
-    return Ok(config);
+    Ok(config)
   }
 }

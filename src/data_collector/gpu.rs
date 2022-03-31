@@ -22,15 +22,13 @@ impl DataCollector {
           device.utilization_rates()?,
         );
 
-        return Ok(GPUStats {
+        Ok(GPUStats {
           brand,
           gpu_usage: util.gpu,
           power_usage: device.power_usage()?,
-        });
+        })
       }
-      None => {
-        return Err(DataCollectorError::NoGPU)?;
-      }
-    };
+      None => Err(DataCollectorError::NoGPU.into())
+    }
   }
 }

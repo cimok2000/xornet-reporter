@@ -44,7 +44,7 @@ impl DataCollector {
       },
     );
 
-    return Ok(Self {
+    Ok(Self {
       gpu_fetcher,
       fetcher,
       iterator_index: 0,
@@ -53,7 +53,7 @@ impl DataCollector {
       start_timestamp: SystemTime::now()
         .duration_since(SystemTime::UNIX_EPOCH)?
         .as_millis(),
-    });
+    })
   }
 
   /// Increments the iterator index by one or resets it to 0 if it reaches the program iterations

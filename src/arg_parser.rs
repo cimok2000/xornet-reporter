@@ -78,7 +78,7 @@ impl ArgParser {
             let two_factor_key = &args[index];
             let config_manager: ConfigManager = ConfigManager::new()?;
 
-            if config_manager.config.backend_hostname == "" {
+            if config_manager.config.backend_hostname.is_empty() {
               println!(
                 "{}",
                 "Backend Hostname is not set in the config.json, please set it and retry:".red(),
@@ -137,6 +137,6 @@ impl ArgParser {
       }
       index += 1;
     }
-    return Ok(arg_parser);
+    Ok(arg_parser)
   }
 }

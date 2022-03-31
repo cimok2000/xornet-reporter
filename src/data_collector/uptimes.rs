@@ -13,7 +13,7 @@ impl DataCollector {
       .duration_since(SystemTime::UNIX_EPOCH)?
       .as_millis() as u64
       - boot_time;
-    return Ok(timeframe);
+    Ok(timeframe)
   }
 
   /// Get uptime of the reporter
@@ -22,6 +22,6 @@ impl DataCollector {
       .duration_since(SystemTime::UNIX_EPOCH)?
       .as_millis()
       - self.start_timestamp;
-    return Ok(timeframe as u64);
+    Ok(timeframe as u64)
   }
 }

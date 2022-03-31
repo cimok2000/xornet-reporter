@@ -8,6 +8,7 @@ use std::str::FromStr;
 use std::env;
 use sysinfo::{NetworkExt, SystemExt};
 
+#[allow(non_snake_case)] // https://github.com/xornet-cloud/Reporter/pull/24#pullrequestreview-927780254
 #[derive(Serialize, Deserialize, Debug)]
 pub struct WindowsNetworkInterface {
   pub name: String,
@@ -41,14 +42,14 @@ impl DataCollector {
       if self.iterator_index == 0 {
         // Get the speed of the interface on linux otherwise it's 0
         let speed = match env::consts::OS {
-          "linux" => DataCollector::get_nic_linkspeed(&interface_name)?,
+          "linux" => DataCollector::get_nic_linkspeed(interface_name)?,
           "windows" => {
             let nic_index = nicspeeds
               .iter()
               .position(|(name, _)| name == interface_name);
 
-            if nic_index.is_some() {
-              nicspeeds[nic_index.unwrap()].1
+            if let Some(nic_index) = nic_index {
+              nicspeeds[nic_index].1
             } else {
               0.0
             }
@@ -74,7 +75,7 @@ impl DataCollector {
       nics.push(nic);
     }
 
-    return Ok(nics);
+    Ok(nics)
   }
 
   fn get_nic_linkspeed(interface_name: &str) -> Result<f32> {
@@ -83,7 +84,7 @@ impl DataCollector {
     let interface_speed =
       f32::from_str(&String::from_utf8_lossy(&interface_speed.stdout).replace("\n", ""))
         .unwrap_or(0.0);
-    return Ok(interface_speed);
+    Ok(interface_speed)
   }
 
   fn get_nic_linkspeeds() -> Result<Vec<(String, f32)>> {
@@ -113,6 +114,6 @@ impl DataCollector {
       });
     }
 
-    return Ok(nics);
+    Ok(nics)
   }
 }
