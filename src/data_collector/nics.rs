@@ -8,10 +8,11 @@ use std::str::FromStr;
 use std::env;
 use sysinfo::{NetworkExt, SystemExt};
 
+#[allow(non_snake_case)] // https://github.com/xornet-cloud/Reporter/pull/24#pullrequestreview-927780254
 #[derive(Serialize, Deserialize, Debug)]
 pub struct WindowsNetworkInterface {
   pub name: String,
-  pub link_speed: String,
+  pub LinkSpeed: String,
 }
 
 use super::DataCollector;
@@ -102,7 +103,7 @@ impl DataCollector {
 
     if let Ok(output_json) = output_json {
       output_json.iter().for_each(|nic| {
-        let split: Vec<&str> = nic.link_speed.split_whitespace().collect();
+        let split: Vec<&str> = nic.LinkSpeed.split_whitespace().collect();
         let speed = split[0];
         let mult = split[1];
 
