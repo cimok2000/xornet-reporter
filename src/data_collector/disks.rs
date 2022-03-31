@@ -37,6 +37,6 @@ impl DataCollector {
 
       disks.push(disk);
     }
-    return Ok(disks);
+    Ok(disks)
   }
 }

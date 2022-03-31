@@ -11,7 +11,7 @@ impl DataCollector {
 
     let components = self.fetcher.components();
 
-    if components.len() == 0 {
+    if components.is_empty() {
       return Err(anyhow!(DataCollectorError::NoTemp));
     };
 
@@ -23,6 +23,6 @@ impl DataCollector {
         value: temp,
       });
     }
-    return Ok(temps);
+    Ok(temps)
   }
 }

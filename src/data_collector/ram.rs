@@ -10,17 +10,17 @@ impl DataCollector {
   pub fn get_ram(&mut self) -> Result<RAMStats> {
     self.fetcher.refresh_memory();
 
-    return Ok(RAMStats {
+    Ok(RAMStats {
       used: self.fetcher.used_memory(),
       total: self.fetcher.total_memory(),
-    });
+    })
   }
 
   /// Gets the current swap states
   pub fn get_swap(&mut self) -> Result<SwapStats> {
-    return Ok(SwapStats {
+    Ok(SwapStats {
       used: self.fetcher.used_swap(),
       total: self.fetcher.total_swap(),
-    });
+    })
   }
 }

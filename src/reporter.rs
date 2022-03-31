@@ -38,7 +38,7 @@ impl Reporter {
       this.send_static_data().await?;
     }
 
-    return Ok(this);
+    Ok(this)
   }
 
   pub fn init_connection(&mut self) -> Result<()> {
@@ -52,16 +52,13 @@ impl Reporter {
   }
 
   pub fn login(&mut self) -> Result<()> {
-    match self.websocket_manager.as_mut() {
-      Some(websocket_manager) => {
-        websocket_manager.send(WebsocketEvent::Login {
-          auth_token: self.config_manager.config.access_token.to_string(),
-        })?;
-      }
-      None => {}
+    if let Some(websocket_manager) = self.websocket_manager.as_mut() {
+      websocket_manager.send(WebsocketEvent::Login {
+        auth_token: self.config_manager.config.access_token.to_string(),
+      })?;
     }
 
-    return Ok(());
+    Ok(())
   }
 
   pub async fn send_static_data(&mut self) -> Result<()> {
@@ -86,7 +83,7 @@ impl Reporter {
   pub async fn update_dynamic_data(&mut self) -> Result<()> {
     self.dynamic_data = self.data_collector.get_all_dynamic_data()?;
     self.data_collector.increment_iterator_index();
-    return Ok(());
+    Ok(())
   }
 
   pub async fn send_dynamic_data(&mut self) -> Result<()> {

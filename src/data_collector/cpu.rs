@@ -17,6 +17,6 @@ impl DataCollector {
 
     self.fetcher.refresh_cpu();
 
-    return Ok(CPUStats { usage, freq });
+    Ok(CPUStats { usage, freq })
   }
 }
