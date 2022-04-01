@@ -80,7 +80,7 @@ impl DataCollector {
 
   fn get_nic_linkspeed(interface_name: &str) -> Result<f32> {
     let interface_path = format!("/sys/class/net/{}/speed", interface_name);
-    let interface_speed = Command::new("/usr/bin/cat").arg(&interface_path).output()?;
+    let interface_speed = Command::new("cat").arg(&interface_path).output()?;
     let interface_speed =
       f32::from_str(&String::from_utf8_lossy(&interface_speed.stdout).replace("\n", ""))
         .unwrap_or(0.0);
