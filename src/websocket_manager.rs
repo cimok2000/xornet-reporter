@@ -34,6 +34,10 @@ pub enum WebsocketEvent {
   StaticData {
     hostname: Option<String>,
     public_ip: String,
+    country: String,
+    city: String,
+    isp: String,
+    timezone: usize,
     cpu_model: String,
     os_version: Option<String>,
     os_name: Option<String>,

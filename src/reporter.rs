@@ -64,9 +64,14 @@ impl Reporter {
   pub async fn send_static_data(&mut self) -> Result<()> {
     if let Some(websocket_manager) = self.websocket_manager.as_mut() {
       let static_data = self.data_collector.get_statics().await?;
+
       websocket_manager.send(WebsocketEvent::StaticData {
         hostname: static_data.hostname,
         public_ip: static_data.public_ip,
+        country: static_data.country,
+        city: static_data.city,
+        isp: static_data.isp,
+        timezone: static_data.timezone,
         cpu_model: static_data.cpu_model,
         os_version: static_data.os_version,
         os_name: static_data.os_name,
