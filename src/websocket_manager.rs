@@ -37,7 +37,7 @@ pub enum WebsocketEvent {
     country: String,
     city: String,
     isp: String,
-    timezone: usize,
+    timezone: i32,
     cpu_model: String,
     os_version: Option<String>,
     os_name: Option<String>,

@@ -10,7 +10,7 @@ pub struct StaticData {
   pub isp: String,
   pub country: String,
   pub city: String,
-  pub timezone: usize,
+  pub timezone: i32,
   pub cpu_model: String,
   pub cpu_threads: usize,
   pub total_mem: u64,

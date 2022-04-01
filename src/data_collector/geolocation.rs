@@ -12,7 +12,7 @@ pub struct GeolocationInfo {
   pub country_code: String,
   pub isp: String,
   pub city: String,
-  pub timezone_gmtOffset: usize,
+  pub timezone_gmtOffset: i32,
 }
 
 impl DataCollector {
