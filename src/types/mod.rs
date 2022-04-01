@@ -7,6 +7,7 @@ pub struct StaticData {
   pub os_name: Option<String>,
   pub cpu_cores: Option<usize>,
   pub public_ip: String,
+  pub country: String,
   pub cpu_model: String,
   pub cpu_threads: usize,
   pub total_mem: u64,

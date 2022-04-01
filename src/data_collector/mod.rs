@@ -100,10 +100,11 @@ impl DataCollector {
   /// that can't change in runtime
   pub async fn get_statics(&self) -> Result<StaticData> {
     let processor_info = self.fetcher.global_processor_info();
-
+    let public_ip = DataCollector::get_current_ip().await?;
     return Ok(StaticData {
       cpu_model: processor_info.brand().trim().to_string(),
-      public_ip: DataCollector::get_current_ip().await?,
+      public_ip: public_ip.clone(),
+      country: DataCollector::get_current_country(Some(public_ip)).await?,
       hostname: self.fetcher.host_name(),
       os_version: self.fetcher.os_version(),
       os_name: self.fetcher.name(),
