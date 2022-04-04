@@ -53,7 +53,7 @@ impl AuthManager {
       | reqwest::StatusCode::NOT_FOUND
       | reqwest::StatusCode::INTERNAL_SERVER_ERROR => {
         let response_json: SignupResponseError = serde_json::from_str(&response.text().await?)?;
-        Err(anyhow::anyhow!(response_json.message))
+        Err(anyhow::anyhow!(response_json.error))
       }
       _any_other => {
         println!("{:?}", _any_other);
