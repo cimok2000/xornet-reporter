@@ -1,12 +1,15 @@
 {
   "$schema": "https://raw.githubusercontent.com/ScoopInstaller/Scoop/master/schema.json",
-  "version": "0.16.1",
+  "version": "0.16.4",
   "description": "The app that sends your data to Xornet servers for monitoring",
   "license": "GPL-3.0-or-later",
   "homepage": "https://xornet.cloud/",
-  "url": "https://github.com/xornet-cloud/Reporter/releases/download/v0.16.1/xornet-reporter.exe",
+  "url": "https://github.com/xornet-cloud/Reporter/releases/download/v0.16.4/xornet-reporter.exe",
   "bin": "xornet-reporter.exe",
-  "depends": ["nssm", "sudo"],
+  "depends": [
+    "nssm",
+    "sudo"
+  ],
   "autoupdate": {
     "url": "https://github.com/xornet-cloud/Reporter/releases/download/v$version/xornet-reporter.exe",
     "pre_install": "sudo nssm stop 'Xornet Reporter'"
@@ -18,11 +21,13 @@
       "sudo nssm remove 'Xornet Reporter' confirm"
     ]
   },
-  "pre_install": ["sudo nssm remove 'Xornet Reporter' confirm"],
+  "pre_install": [
+    "sudo nssm remove 'Xornet Reporter' confirm"
+  ],
   "post_install": [
     "$token = Read-Host -Prompt 'Please enter your signup token: '",
     "$curPath = Get-Location",
-    "cd ~/scoop/apps/xornet-reporter/0.16.1",
+    "cd ~/scoop/apps/xornet-reporter/0.16.4",
     "$xornetPath = Get-Location",
     "sudo nssm install 'Xornet Reporter' $xornetPath/xornet-reporter.exe \"--silent\"",
     "xornet-reporter.exe -su $token",
