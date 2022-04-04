@@ -15,7 +15,7 @@ pub struct SignupResponse {
 
 #[derive(Deserialize)]
 pub struct SignupResponseError {
-  pub message: String,
+  pub error: String,
 }
 
 #[derive(Debug)]
