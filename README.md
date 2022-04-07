@@ -30,7 +30,7 @@ Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
 iwr -useb get.scoop.sh | iex
 ```
 
-2. Install Xornet Reporter
+2. Install Xornet Reporter (with admin for no popups)
 
 ```powershell
 scoop install "https://raw.githubusercontent.com/xornet-cloud/Reporter/main/scripts/xornet-reporter.json"
