@@ -19,6 +19,11 @@ curl https://raw.githubusercontent.com/xornet-cloud/Reporter/main/scripts/instal
 
 ### Scoop
 
+0. Set execution policies so you can install scoop
+```powershell
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
+
 1. Install scoop (if you haven't already)
 
 ```powershell
