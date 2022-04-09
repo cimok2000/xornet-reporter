@@ -27,7 +27,8 @@
   "post_install": [
     "$token = Read-Host -Prompt 'Please enter your signup token: '",
     "$curPath = Get-Location",
-    "cd ~/scoop/apps/xornet-reporter/0.16.4",
+    "if ($null -ne $env:SCOOP) { $scoopRoot = $env:SCOOP } else { $scoopRoot = '~/scoop' }",
+    "cd $scoopRoot/apps/xornet-reporter/0.16.4",
     "$xornetPath = Get-Location",
     "sudo nssm install 'Xornet Reporter' $xornetPath/xornet-reporter.exe \"--silent\"",
     "xornet-reporter.exe -su $token",
