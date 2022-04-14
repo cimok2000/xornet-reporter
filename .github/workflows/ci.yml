@@ -41,6 +41,8 @@ jobs:
     steps:
       - name: 🛎 Checkout
         uses: actions/checkout@v2
+      - name: 🛎 Install cross
+        run: cargo install cross
       - name: 🛎 Build ${{matrix.target}}
         run: cross build --target ${{matrix.target}} --verbose --release
       - name: 💎 Upload artifact
