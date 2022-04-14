@@ -35,3 +35,9 @@ iwr -useb get.scoop.sh | iex
 ```powershell
 scoop install "https://raw.githubusercontent.com/xornet-cloud/Reporter/main/scripts/xornet-reporter.json"
 ```
+
+## 🌐 OpenWRT
+
+```bash
+wget https://raw.githubusercontent.com/xornet-cloud/Reporter/main/scripts/update-mipsel.sh -O update-mipsel.sh && chmod +x update-mipsel.sh && ./update-mipsel.sh
+```
