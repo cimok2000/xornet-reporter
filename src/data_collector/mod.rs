@@ -100,14 +100,35 @@ impl DataCollector {
   /// that can't change in runtime
   pub async fn get_statics(&self) -> Result<StaticData> {
     let processor_info = self.fetcher.global_processor_info();
-    let geolocation_stuff = DataCollector::get_geolocation_info().await?;
+    let geolocation_stuff = DataCollector::get_geolocation_info().await;
+
+    if geolocation_stuff.is_err() {
+      return Ok(StaticData {
+        cpu_model: processor_info.brand().trim().to_string(),
+        public_ip: None,
+        country: None,
+        isp: None,
+        city: None,
+        timezone: None,
+        hostname: self.fetcher.host_name(),
+        os_version: self.fetcher.os_version(),
+        os_name: self.fetcher.name(),
+        cpu_cores: self.fetcher.physical_core_count(),
+        cpu_threads: self.fetcher.processors().len(),
+        total_mem: self.fetcher.total_memory(),
+        reporter_version: env!("CARGO_PKG_VERSION").to_string(),
+      });
+    }
+
+    let geolocation_stuff = geolocation_stuff?;
+
     return Ok(StaticData {
       cpu_model: processor_info.brand().trim().to_string(),
-      public_ip: geolocation_stuff.ip,
-      country: geolocation_stuff.country_code,
-      isp: geolocation_stuff.isp,
-      city: geolocation_stuff.city,
-      timezone: geolocation_stuff.timezone_gmtOffset,
+      public_ip: Some(geolocation_stuff.ip),
+      country: Some(geolocation_stuff.country_code),
+      isp: Some(geolocation_stuff.isp),
+      city: Some(geolocation_stuff.city),
+      timezone: Some(geolocation_stuff.timezone_gmtOffset),
       hostname: self.fetcher.host_name(),
       os_version: self.fetcher.os_version(),
       os_name: self.fetcher.name(),

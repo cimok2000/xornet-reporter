@@ -1,7 +1,6 @@
-use anyhow::Result;
-use serde::{Deserialize, Serialize};
-
 use super::DataCollector;
+use anyhow::{anyhow, Result};
+use serde::{Deserialize, Serialize};
 
 const GEOLOCATION_URL: &str = "https://ipwhois.app/json/";
 
@@ -17,11 +16,14 @@ pub struct GeolocationInfo {
 
 impl DataCollector {
   /// Gets the geolocation information
-  pub async fn get_geolocation_info() -> Result<GeolocationInfo, reqwest::Error> {
-    let geolocation_info: GeolocationInfo = reqwest::get(GEOLOCATION_URL)
-      .await?
-      .json::<GeolocationInfo>()
-      .await?;
-    Ok(geolocation_info)
+  pub async fn get_geolocation_info() -> Result<GeolocationInfo> {
+    let response = reqwest::get(GEOLOCATION_URL).await?;
+
+    if (response.status() == reqwest::StatusCode::OK) {
+      let geolocation_info: GeolocationInfo = response.json().await?;
+      return Ok(geolocation_info);
+    } else {
+      return Err(anyhow!("Could not get geolocation info"));
+    }
   }
 }
