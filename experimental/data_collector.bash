@@ -85,11 +85,11 @@ function getMemoryJson {
 }
 
 function getDiskTotal {
-  echo $(df -h | grep $1 | awk '{print $2}' | tr -d 'G')
+  echo $(df -h | grep $1 | awk '{print $2}')
 }
 
 function getDiskFree {
-  echo $(df -h | grep $1 | awk '{print $4}' | tr -d 'G')
+  echo $(df -h | grep $1 | awk '{print $4}')
 }
 
 function getDisksJson {
