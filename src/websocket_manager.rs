@@ -51,8 +51,8 @@ pub enum WebsocketEvent {
 pub fn get_event_id(ev: &WebsocketEvent) -> &str {
   match ev {
     WebsocketEvent::Login { .. } => "login",
-    WebsocketEvent::StaticData { .. } => "staticData",
-    WebsocketEvent::DynamicData { .. } => "dynamicData",
+    WebsocketEvent::StaticData { .. } => "static-data",
+    WebsocketEvent::DynamicData { .. } => "dynamic-data",
   }
 }
 
