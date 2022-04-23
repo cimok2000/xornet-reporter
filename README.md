@@ -40,5 +40,5 @@ scoop install "https://raw.githubusercontent.com/xornet-cloud/Reporter/main/scri
 
 This script updates an existing installation of Xornet Reporter. It will not work if you have not already installed Xornet Reporter.
 ```bash
-wget https://raw.githubusercontent.com/xornet-cloud/Reporter/main/scripts/update-mipsel.sh -O /tmp/update-mipsel.sh && chmod +x update-mipsel.sh && ./update-mipsel.sh && rm update-mipsel.sh
+wget https://raw.githubusercontent.com/xornet-cloud/Reporter/main/scripts/update-mipsel.sh -O /tmp/update-mipsel.sh && chmod +x /tmp/update-mipsel.sh && ./update-mipsel.sh && rm update-mipsel.sh
 ```
