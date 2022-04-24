@@ -76,6 +76,9 @@ case $arch in
 armv7* | armv8*)
   arch="armv7"
   ;;
+amd64)
+  arch="x86_64"
+  ;;
 arm*)
   arch="arm"
   ;;
