@@ -1,17 +1,15 @@
 use anyhow::Result;
-use parking_lot::Mutex;
+use futures_util::stream::{SplitSink, SplitStream};
+use futures_util::{SinkExt, StreamExt};
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
-use std::net::TcpStream;
-use std::sync::Arc;
-use websocket::sync::stream::TlsStream;
-use websocket::sync::Client;
-use websocket::{ClientBuilder, Message};
+use tokio::net::TcpStream;
+use tokio_tungstenite::tungstenite::Message;
+use tokio_tungstenite::{self, MaybeTlsStream, WebSocketStream};
 
 use crate::types::{
   CPUStats, DiskStats, GPUStats, NetworkInterfaceStats, RAMStats, SwapStats, TempStats,
 };
-use crate::util::arcmutex;
 
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(untagged)]
@@ -64,27 +62,33 @@ pub struct WebsocketMessage {
 
 pub struct WebsocketManager {
   pub websocket_url: String,
-  pub websocket: Arc<Mutex<Client<TlsStream<TcpStream>>>>,
+  pub read: SplitStream<WebSocketStream<MaybeTlsStream<TcpStream>>>,
+  pub write:
+    SplitSink<WebSocketStream<MaybeTlsStream<TcpStream>>, tokio_tungstenite::tungstenite::Message>,
 }
 
 impl WebsocketManager {
-  pub fn new(websocket_url: &str) -> Result<Self> {
-    let mut client = ClientBuilder::new(websocket_url)?;
+  pub async fn new(websocket_url: &str) -> Result<Self> {
+    let (stream, _) = tokio_tungstenite::connect_async(websocket_url).await?;
+    let (write, read) = stream.split();
+
     Ok(Self {
       websocket_url: websocket_url.to_string(),
-      websocket: arcmutex(client.connect_secure(None)?),
+      read,
+      write,
     })
   }
 
-  pub fn send(&mut self, data: WebsocketEvent) -> Result<()> {
-    let message = Message::text(
-      json!({
-          "e": get_event_id(&data),
-          "d": &data,
-      })
-      .to_string(),
-    );
+  pub async fn send(&mut self, data: WebsocketEvent) -> Result<()> {
+    let message = json!({
+      "e": get_event_id(&data),
+      "d": &data,
+    })
+    .to_string();
 
-    Ok(self.websocket.lock().send_message(&message)?)
+    self.write.send(Message::Text(message)).await?;
+    // send the string through the websocket
+
+    Ok(())
   }
 }
