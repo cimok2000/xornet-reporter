@@ -19,7 +19,7 @@ impl DataCollector {
   pub async fn get_geolocation_info() -> Result<GeolocationInfo> {
     let response = reqwest::get(GEOLOCATION_URL).await?;
 
-    if response.status() == reqwest::StatusCode::OK {
+    if (response.status() == reqwest::StatusCode::OK) {
       let geolocation_info: GeolocationInfo = response.json().await?;
       return Ok(geolocation_info);
     } else {

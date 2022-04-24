@@ -34,30 +34,28 @@ impl Reporter {
     };
 
     if !this.args.offline {
-      this.init_connection().await?;
+      this.init_connection()?;
       this.send_static_data().await?;
     }
 
     Ok(this)
   }
 
-  pub async fn init_connection(&mut self) -> Result<()> {
+  pub fn init_connection(&mut self) -> Result<()> {
     let websocket_url: String = format!(
       "wss://{}/reporter",
       self.config_manager.config.backend_hostname.to_owned()
     );
-    self.websocket_manager = Some(WebsocketManager::new(&websocket_url).await?);
-    self.login().await?;
+    self.websocket_manager = Some(WebsocketManager::new(&websocket_url)?);
+    self.login()?;
     Ok(())
   }
 
-  pub async fn login(&mut self) -> Result<()> {
+  pub fn login(&mut self) -> Result<()> {
     if let Some(websocket_manager) = self.websocket_manager.as_mut() {
-      websocket_manager
-        .send(WebsocketEvent::Login {
-          auth_token: self.config_manager.config.access_token.to_string(),
-        })
-        .await?;
+      websocket_manager.send(WebsocketEvent::Login {
+        auth_token: self.config_manager.config.access_token.to_string(),
+      })?;
     }
 
     Ok(())
@@ -67,23 +65,21 @@ impl Reporter {
     if let Some(websocket_manager) = self.websocket_manager.as_mut() {
       let static_data = self.data_collector.get_statics().await?;
 
-      websocket_manager
-        .send(WebsocketEvent::StaticData {
-          hostname: static_data.hostname,
-          public_ip: static_data.public_ip,
-          country: static_data.country,
-          city: static_data.city,
-          isp: static_data.isp,
-          timezone: static_data.timezone,
-          cpu_model: static_data.cpu_model,
-          os_version: static_data.os_version,
-          os_name: static_data.os_name,
-          cpu_cores: static_data.cpu_cores,
-          cpu_threads: static_data.cpu_threads,
-          total_mem: static_data.total_mem,
-          reporter_version: self.version.clone(),
-        })
-        .await?;
+      websocket_manager.send(WebsocketEvent::StaticData {
+        hostname: static_data.hostname,
+        public_ip: static_data.public_ip,
+        country: static_data.country,
+        city: static_data.city,
+        isp: static_data.isp,
+        timezone: static_data.timezone,
+        cpu_model: static_data.cpu_model,
+        os_version: static_data.os_version,
+        os_name: static_data.os_name,
+        cpu_cores: static_data.cpu_cores,
+        cpu_threads: static_data.cpu_threads,
+        total_mem: static_data.total_mem,
+        reporter_version: self.version.clone(),
+      })?;
     }
 
     Ok(())
@@ -98,23 +94,20 @@ impl Reporter {
   pub async fn send_dynamic_data(&mut self) -> Result<()> {
     if let Some(websocket_manager) = self.websocket_manager.as_mut() {
       let dd = self.dynamic_data.clone();
-      if let Err(e) = websocket_manager
-        .send(WebsocketEvent::DynamicData {
-          cpu: dd.cpu,
-          ram: dd.ram,
-          swap: dd.swap,
-          gpu: dd.gpu,
-          process_count: dd.process_count,
-          disks: dd.disks,
-          temps: dd.temps,
-          network: dd.network,
-          host_uptime: dd.host_uptime,
-          reporter_uptime: dd.reporter_uptime,
-        })
-        .await
-      {
+      if let Err(e) = websocket_manager.send(WebsocketEvent::DynamicData {
+        cpu: dd.cpu,
+        ram: dd.ram,
+        swap: dd.swap,
+        gpu: dd.gpu,
+        process_count: dd.process_count,
+        disks: dd.disks,
+        temps: dd.temps,
+        network: dd.network,
+        host_uptime: dd.host_uptime,
+        reporter_uptime: dd.reporter_uptime,
+      }) {
         eprintln!("Websocket error: {}", e);
-        self.init_connection().await?;
+        self.init_connection()?;
         self.send_static_data().await?;
       }
     }

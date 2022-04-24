@@ -1,15 +1,17 @@
 use anyhow::Result;
-use futures_util::stream::{SplitSink, SplitStream};
-use futures_util::{SinkExt, StreamExt};
+use parking_lot::Mutex;
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
-use tokio::net::TcpStream;
-use tokio_tungstenite::tungstenite::Message;
-use tokio_tungstenite::{self, MaybeTlsStream, WebSocketStream};
+use std::net::TcpStream;
+use std::sync::Arc;
+use websocket::sync::stream::TlsStream;
+use websocket::sync::Client;
+use websocket::{ClientBuilder, Message};
 
 use crate::types::{
   CPUStats, DiskStats, GPUStats, NetworkInterfaceStats, RAMStats, SwapStats, TempStats,
 };
+use crate::util::arcmutex;
 
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(untagged)]
@@ -62,33 +64,27 @@ pub struct WebsocketMessage {
 
 pub struct WebsocketManager {
   pub websocket_url: String,
-  pub read: SplitStream<WebSocketStream<MaybeTlsStream<TcpStream>>>,
-  pub write:
-    SplitSink<WebSocketStream<MaybeTlsStream<TcpStream>>, tokio_tungstenite::tungstenite::Message>,
+  pub websocket: Arc<Mutex<Client<TlsStream<TcpStream>>>>,
 }
 
 impl WebsocketManager {
-  pub async fn new(websocket_url: &str) -> Result<Self> {
-    let (stream, _) = tokio_tungstenite::connect_async(websocket_url).await?;
-    let (write, read) = stream.split();
-
+  pub fn new(websocket_url: &str) -> Result<Self> {
+    let mut client = ClientBuilder::new(websocket_url)?;
     Ok(Self {
       websocket_url: websocket_url.to_string(),
-      read,
-      write,
+      websocket: arcmutex(client.connect_secure(None)?),
     })
   }
 
-  pub async fn send(&mut self, data: WebsocketEvent) -> Result<()> {
-    let message = json!({
-      "e": get_event_id(&data),
-      "d": &data,
-    })
-    .to_string();
+  pub fn send(&mut self, data: WebsocketEvent) -> Result<()> {
+    let message = Message::text(
+      json!({
+          "e": get_event_id(&data),
+          "d": &data,
+      })
+      .to_string(),
+    );
 
-    self.write.send(Message::Text(message)).await?;
-    // send the string through the websocket
-
-    Ok(())
+    Ok(self.websocket.lock().send_message(&message)?)
   }
 }

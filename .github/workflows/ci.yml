@@ -7,21 +7,6 @@ env:
 
 jobs:
   # Compilations
-  build-freebsd: 
-    name: "🛠 Compile for FreeBSD"
-    runs-on: ubuntu-latest
-    steps:
-      - name: 🛎 Checkout
-        uses: actions/checkout@v2
-      - name: 🛎 Install cross
-        run: cargo install cross
-      - name: 🛎 Build x86_64-unknown-freebsd
-        run: cross build --target x86_64-unknown-freebsd --verbose --release
-      - name: 💎 Upload artifact
-        uses: actions/upload-artifact@v1
-        with:
-          name: xornet-reporter_compiled_x86_64-unknown-freebsd
-          path: target/x86_64-unknown-freebsd/release/xornet-reporter
   build-linux:
     strategy:
       fail-fast: false
@@ -151,7 +136,7 @@ jobs:
   create-release:
     name: "📦 Create Release"
     runs-on: ubuntu-latest
-    needs: [build-freebsd, test-linux, test-macos, test-windows]
+    needs: [test-linux, test-macos, test-windows]
     outputs:
       upload_url: ${{ steps.create_release.outputs.upload_url }}
     steps:
