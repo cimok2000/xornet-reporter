@@ -64,7 +64,7 @@ echo "This script will install and set up Xornet reporter for your system."
 echo
 echo "Checking for root privileges..."
 if [ "$EUID" -ne 0 ]; then
-  echo "Please run this script as root"
+  echo "Please run this script as root. Exiting..."
   exit 1
 fi
 echo "Ok."
