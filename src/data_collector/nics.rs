@@ -22,7 +22,12 @@ impl DataCollector {
 
   pub fn get_network(&mut self) -> Result<Vec<NetworkInterfaceStats>> {
     let mut nics = Vec::new();
-    self.fetcher.refresh_networks();
+
+    if self.iterator_index == 0 {
+      self.fetcher.refresh_networks_list();
+    } else {
+      self.fetcher.refresh_networks();
+    }
 
     let nicspeeds = if self.iterator_index == 0 && env::consts::OS == "windows" {
       DataCollector::get_nic_linkspeeds()?

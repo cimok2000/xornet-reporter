@@ -7,9 +7,9 @@ use super::DataCollector;
 
 impl DataCollector {
   /// Gets the current disk(s) stats
-  pub fn get_disks(&self) -> Result<Vec<DiskStats>> {
+  pub fn get_disks(&mut self) -> Result<Vec<DiskStats>> {
     let mut disks = Vec::<DiskStats>::new();
-
+    self.fetcher.refresh_disks_list();
     for disk in self.fetcher.disks() {
       let (name, mount) = (
         disk.name().to_string_lossy(),
