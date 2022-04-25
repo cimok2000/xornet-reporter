@@ -23,9 +23,13 @@ parking_lot = "0.11.2"
 anyhow = "1.0.51"
 thiserror = "1.0.30"
 websocket = "0.26.2"
+native-tls = "0.2.8"
 reqwest = { version = "0.11.7", features = ["json"] }
 tokio = { version = "1.15.0", features = ["full"] }
 uuid = { version = "0.8", features = ["serde", "v4"] }
 
 # User interface
 colored = "2.0.0"
+
+[target.'cfg(unix)'.build-dependencies]
+openssl = { version = "0.10.38", features = ["vendored"] }
