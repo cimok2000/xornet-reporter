@@ -49,10 +49,10 @@ logo=$(
   cat <<'EOF'
   .,::      .:  ...    :::::::.. :::.    :::..,::::::::::::::::::
   `;;;,  .,;;.;;;;;;;. ;;;;``;;;;`;;;;,  `;;;;;;;'''';;;;;;;;''''
-    '[[,,[[',[[     \[[,[[[,/[[['  [[[[[. '[[ [[cccc      [[     
-     Y$$$P  $$$,     $$$$$$$$$c    $$$ "Y$c$$ $$""""      $$     
-   oP"``"Yo,"888,_ _,88P888b "88bo,888    Y88 888oo,__    88,    
-,m"       "Mm,"YMMMMMP" MMMM   "W" MMM     YM """"YUMMM   MMM   
+    '[[,,[[',[[     \[[,[[[,/[[['  [[[[[. '[[ [[cccc      [[
+     Y$$$P  $$$,     $$$$$$$$$c    $$$ "Y$c$$ $$""""      $$
+   oP"``"Yo,"888,_ _,88P888b "88bo,888    Y88 888oo,__    88,
+,m"       "Mm,"YMMMMMP" MMMM   "W" MMM     YM """"YUMMM   MMM
 version: 1.1.0
 EOF
 )
@@ -95,12 +95,18 @@ if [ ! -f /usr/bin/curl ]; then
 fi
 echo "Curl is installed."
 
-if ps --no-headers -o comm 1 | grep 'systemd' > /dev/null; then 
-  echo "Systemd is installed."
-  systemctl_installed=true
-else
-  echo "Systemd is not installed. This script cannot create the systemd service."
-  systemctl_installed=false
+service_manager="none"
+
+if ps --no-headers -o comm 1 | grep 'systemd' >/dev/null; then
+  echo "Systemd found."
+  service_manager="systemd"
+fi
+if [ -f /sbin/openrc ]; then
+  echo "OpenRC found."
+  service_manager="openrc"
+fi
+if [ $service_manager = "none" ]; then
+  echo "Neither Systemd or OpenRC was not found. This script cannot create the automatic system service."
 fi
 echo "Ok."
 echo
@@ -119,7 +125,7 @@ if [ -d /opt/xornet ]; then
     case $choice in
     1)
       echo "Uninstalling old Xornet reporter entirely..."
-      if [ $systemctl_installed = true ]; then
+      if [ $service_manager = "systemd" ]; then
         echo "Stopping Xornet reporter service..."
         systemctl stop xornet-reporter.service
         handle_exit_code_non_crucial
@@ -128,6 +134,19 @@ if [ -d /opt/xornet ]; then
         handle_exit_code_non_crucial
         echo "Removing Xornet reporter service..."
         rm /etc/systemd/system/xornet-reporter.service
+        handle_exit_code_non_crucial
+      elif [ $service_manager = "openrc" ]; then
+        echo "Stopping Xornet reporter service..."
+        rc-service xornet-reporter stop
+        if [ $? -ne 0 ]; then
+          rc-service xornet-reporter zap
+          handle_exit_code_non_crucial
+        fi
+        echo "Removing Xornet reporter service from default runlevel..."
+        rc-update delete xornet-reporter default
+        handle_exit_code_non_crucial
+        echo "Removing Xornet reporter service..."
+        rm /etc/init.d/xornet-reporter
         handle_exit_code_non_crucial
       fi
       echo "Removing old Xornet reporter installation directory..."
@@ -140,10 +159,16 @@ if [ -d /opt/xornet ]; then
       ;;
     2)
       echo "Updating Xornet reporter..."
-      if [ $systemctl_installed = true ]; then
+      if [ $service_manager = "systemd" ]; then
         echo "Stopping Xornet reporter service..."
         systemctl stop xornet-reporter.service
         handle_exit_code_non_crucial
+      elif [ $service_manager = "openrc" ]; then
+        rc-service xornet-reporter stop
+        if [ $? -ne 0 ]; then
+          rc-service xornet-reporter zap
+          handle_exit_code_non_crucial
+        fi
       fi
       echo "Removing old Xornet reporter executable..."
       rm /opt/xornet/xornet-reporter
@@ -192,7 +217,7 @@ if [ ! -f /opt/xornet/config.json ]; then
   cd $path
 fi
 
-if [ $systemctl_installed = true ]; then
+if [ $service_manager = "systemd" ]; then
   if [ ! -f /etc/systemd/system/xornet-reporter.service ]; then
 
     # Create the systemd service
@@ -228,16 +253,63 @@ EOF
   systemctl start xornet-reporter.service
   echo "Ok."
   echo
+
+elif [ $service_manager = "openrc" ]; then
+  if [ ! -f /etc/init.d/xornet-reporter ]; then
+
+    # Create the openrc service
+    echo "Creating the openrc service..."
+    cat >/etc/init.d/xornet-reporter <<EOF
+#!/sbin/openrc-run
+command=/opt/xornet/xornet-reporter
+command_args="--silent"
+command_user="root:root"
+pidfile=/var/run/xornet-reporter.pid
+directory="/opt/xornet/"
+supervisor=supervise-daemon
+supervise_daemon_args="--respawn-delay 5 --pidfile /var/run/xornet-reporter.pid"
+name="Xornet Reporter service"
+
+description="Xornet Reporter is a service for Xornet status reporting"
+
+depend() {
+	need net
+  after localmount
+}
+
+EOF
+    echo "Ok."
+    echo
+
+    echo "Marking the file as executable..."
+    chmod +x /etc/init.d/xornet-reporter
+    handle_exit_code
+
+    # Add the service to default runlevel
+    echo "Enabling the openrc service to default runlevel..."
+    rc-update add xornet-reporter default
+    echo "Ok."
+    echo
+  fi
+
+  # Start the service
+  echo "Starting the xornet-reporter service..."
+  rc-service xornet-reporter start
+  echo "Ok."
+  echo
 fi
 cleanup
 
 echo "Installation complete. Xornet reporter is now installed."
 echo "Please check the logs for any errors."
-if [ $systemctl_installed = true ]; then
+if [ $service_manager = "systemd" ]; then
   echo "You can stop the service by running the following command:"
   echo "systemctl stop xornet-reporter.service"
+elif [ $service_manager = "openrc" ]; then
+  echo "You can stop the service by running the following command:"
+  echo "rc-service xornet-reporter stop"
 else
-  echo "Systemd is not installed. No background service was created."
+  echo "No supported service manager was found. No background service was created."
   echo "You can start the reporter by running the following command:"
-  echo "sudo /opt/xornet/xornet-reporter --silent"
+  echo "cd /opt/xornet && sudo ./xornet-reporter --silent"
 fi
