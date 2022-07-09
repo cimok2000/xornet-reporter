@@ -145,7 +145,7 @@ impl DataCollector {
       }
 
 
-      PdhGetFormattedCounterArrayA(self.pdh_proc_perf_counter,
+      let ret = PdhGetFormattedCounterArrayA(self.pdh_proc_perf_counter,
                                    PDH_FMT_DOUBLE,
                                    ptr_perf_sz,
                                    ptr_perf_cnt,
@@ -157,11 +157,11 @@ impl DataCollector {
       }
 
 
-      PdhGetFormattedCounterArrayA(self.pdh_proc_util_counter,
-                                   PDH_FMT_DOUBLE,
-                                   ptr_util_sz,
-                                   ptr_util_cnt,
-                                   proc_util_data.as_mut_ptr());
+      let ret = PdhGetFormattedCounterArrayA(self.pdh_proc_util_counter,
+                                                  PDH_FMT_DOUBLE,
+                                                  ptr_util_sz,
+                                                  ptr_util_cnt,
+                                                  proc_util_data.as_mut_ptr());
 
       if ret != ERROR_SUCCESS.0 as i32 {
           eprintln!("Unable to fetch processor utilization data. Errno: {}", ret);
