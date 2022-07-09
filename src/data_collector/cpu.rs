@@ -236,10 +236,13 @@ impl DataCollector {
         while i < proc_freq_cnt as isize {
             let sz_name_cstr: &CStr = CStr::from_ptr(
                 (*ptr_freq_data_target.offset(i)).szName.0 as *const i8);
-            let str_slice: &str = sz_name_cstr.to_str().unwrap();
+            let str_slice: &str = sz_name_cstr.to_str().unwrap_or("oh shit");
             if str_slice.contains("Total") {
                 i = i + 1;
                 continue;
+            } else if str_slice.contains("oh shit") {
+                eprintln!("Inconsistent data received from perfmon. Aborting.");
+                exit(1);
             }
 
             usage.push(f64::floor(
