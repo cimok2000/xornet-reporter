@@ -1,6 +1,3 @@
-use std::ffi::CStr;
-use std::mem;
-use std::process::exit;
 #[cfg(target_family = "unix")]
 use sysinfo::{ProcessorExt, SystemExt};
 
@@ -13,7 +10,18 @@ use windows::Win32::System::Performance::*;
 
 #[cfg(target_family = "windows")]
 use std::ptr;
+
+#[cfg(target_family = "windows")]
 use windows::Win32::Foundation::ERROR_SUCCESS;
+
+#[cfg(target_family = "windows")]
+use std::ffi::CStr;
+
+#[cfg(target_family = "windows")]
+use std::mem;
+
+#[cfg(target_family = "windows")]
+use std::process::exit;
 
 use super::DataCollector;
 
@@ -113,16 +121,16 @@ impl DataCollector {
       // We simply do not know.
       //
       // However, this method *does* continue to work given some padding to avoid
-      // some padding to avoid buffer overruns. So we add some slush here to capture
+      // some padding to avoid buffer overruns. So double the size of our allocation to capture
       // this problem and then proceed not to worry about it for the foreseeable future.
       let mut proc_freq_data: Vec<PDH_FMT_COUNTERVALUE_ITEM_A> =
-          vec!(PDH_FMT_COUNTERVALUE_ITEM_A::default(); (proc_freq_cnt + 2) as usize);
+          vec!(PDH_FMT_COUNTERVALUE_ITEM_A::default(); (proc_freq_cnt * 2) as usize);
 
       let mut proc_perf_data: Vec<PDH_FMT_COUNTERVALUE_ITEM_A> =
-          vec!(PDH_FMT_COUNTERVALUE_ITEM_A::default(); (proc_perf_cnt  + 2) as usize);
+          vec!(PDH_FMT_COUNTERVALUE_ITEM_A::default(); (proc_perf_cnt * 2) as usize);
 
       let mut proc_util_data: Vec<PDH_FMT_COUNTERVALUE_ITEM_A> =
-          vec!(PDH_FMT_COUNTERVALUE_ITEM_A::default(); (proc_util_cnt + 2) as usize);
+          vec!(PDH_FMT_COUNTERVALUE_ITEM_A::default(); (proc_util_cnt * 2) as usize);
 
       // Now when we invoke these methods again they should always return ERROR_SUCCESS.
       let ret = PdhGetFormattedCounterArrayA(self.pdh_proc_freq_counter,
