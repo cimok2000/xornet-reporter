@@ -1,6 +1,6 @@
 [package]
 name = "xornet-reporter"
-version = "0.17.1"
+version = "0.17.2"
 edition = "2018"
 
 # Optimize for size
@@ -35,7 +35,7 @@ colored = "2.0.0"
 openssl = { version = "0.10.38", features = ["vendored"] }
 
 # For data collection that supercedes sysinfo crate functions on Windows
-[dependencies.windows]
+[target.'cfg(windows)'.dependencies.windows]
 version = "0.38.0"
 features = [
     "alloc",
