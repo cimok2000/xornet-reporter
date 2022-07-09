@@ -219,7 +219,10 @@ impl DataCollector {
     #[cfg(target_family = "windows")]
     unsafe {
       let ret = PdhCollectQueryData(self.pdh_query);
-      assert_eq!(ret, ERROR_SUCCESS.0 as i32);
+      if ret != ERROR_SUCCESS.0 as i32 {
+        eprintln!("Unable to query latest CPU information from perfmon.");
+        exit(1);
+      }
     }
 
     Ok(DynamicData {
