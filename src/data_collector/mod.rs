@@ -11,7 +11,6 @@ use crate::types::{DynamicData, StaticData};
 use anyhow::{anyhow, Result};
 use nvml::NVML;
 use std::{collections::HashMap, time::SystemTime};
-use std::process::exit;
 use sysinfo::{ProcessRefreshKind, ProcessorExt, System, SystemExt};
 use thiserror::Error;
 
@@ -31,6 +30,9 @@ use windows::core::PCSTR;
 
 #[cfg(target_family = "windows")]
 use windows::Win32::Foundation::ERROR_SUCCESS;
+
+#[cfg(target_family = "windows")]
+use std::process::exit;
 
 #[derive(Error, Debug)]
 pub enum DataCollectorError {
