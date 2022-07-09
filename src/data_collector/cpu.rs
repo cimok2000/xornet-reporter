@@ -115,13 +115,13 @@ impl DataCollector {
       }
 
       // The windows-rs crate does a little trolling and fails to generate an array of
-      // counter value item structs below whose size match the output the above calls
+      // counter value item structs whose size matches the output the above calls
       // are given. This could be due to mismatch in how the rust struct implementation
       // is handled vs what the C struct is like. It could be a byte alignment issue.
       // We simply do not know.
       //
       // However, this method *does* continue to work given some padding to avoid
-      // some padding to avoid buffer overruns. So double the size of our allocation to capture
+      // buffer overruns. So double the size of our allocation to capture
       // this problem and then proceed not to worry about it for the foreseeable future.
       let mut proc_freq_data: Vec<PDH_FMT_COUNTERVALUE_ITEM_A> =
           vec!(PDH_FMT_COUNTERVALUE_ITEM_A::default(); (proc_freq_cnt * 2) as usize);
