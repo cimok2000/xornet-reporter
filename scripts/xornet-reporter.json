@@ -1,10 +1,10 @@
 {
   "$schema": "https://raw.githubusercontent.com/ScoopInstaller/Scoop/master/schema.json",
-  "version": "0.17.1",
+  "version": "0.17.2",
   "description": "The app that sends your data to Xornet servers for monitoring",
   "license": "GPL-3.0-or-later",
   "homepage": "https://xornet.cloud/",
-  "url": "https://github.com/xornet-cloud/Reporter/releases/download/v0.17.1/xornet-reporter.exe",
+  "url": "https://github.com/xornet-cloud/Reporter/releases/download/v0.17.2/xornet-reporter.exe",
   "bin": "xornet-reporter.exe",
   "depends": [
     "nssm",
@@ -28,7 +28,7 @@
     "$token = Read-Host -Prompt 'Please enter your signup token: '",
     "$curPath = Get-Location",
     "if ($null -ne $env:SCOOP) { $scoopRoot = $env:SCOOP } else { $scoopRoot = '~/scoop' }",
-    "cd $scoopRoot/apps/xornet-reporter/0.17.1",
+    "cd $scoopRoot/apps/xornet-reporter/0.17.2",
     "$xornetPath = Get-Location",
     "sudo nssm install 'Xornet Reporter' $xornetPath/xornet-reporter.exe \"--silent\"",
     "xornet-reporter.exe -su $token",
