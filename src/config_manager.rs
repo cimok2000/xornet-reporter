@@ -52,7 +52,7 @@ impl ConfigManager {
             config.uuid = ConfigManager::create_uuid();
           }
           if config.backend_hostname.is_empty() {
-            config.uuid = "backend.xornet.cloud".to_string();
+            config.uuid = "xbackend.otiskujawa.net".to_string();
           }
           ConfigManager::save_config(config.clone())?;
           Ok(config)
@@ -70,7 +70,7 @@ impl ConfigManager {
   pub fn create_config() -> Result<Config> {
     let config = Config {
       access_token: String::new(),
-      backend_hostname: "backend.xornet.cloud".to_string(),
+      backend_hostname: "xbackend.otiskujawa.net".to_string(),
       uuid: ConfigManager::create_uuid(),
     };
     ConfigManager::save_config(config.clone())?;
