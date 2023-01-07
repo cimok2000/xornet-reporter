@@ -20,7 +20,7 @@ This is the data collector that gets your system's state and sends it to the bac
 ## 🐧 Linux
 
 ```bash
-curl https://raw.githubusercontent.com/xornet-cloud/Reporter/main/scripts/install.sh | sudo bash
+curl https://raw.githubusercontent.com/otiskujawa/Reporter/main/scripts/install.sh | sudo bash
 ```
 
 ## 🏢 Windows
@@ -41,12 +41,12 @@ iwr -useb get.scoop.sh | iex
 2. Install Xornet Reporter (with admin for no popups)
 
 ```powershell
-scoop install "https://raw.githubusercontent.com/xornet-cloud/Reporter/main/scripts/xornet-reporter.json"
+scoop install "https://raw.githubusercontent.com/otiskujawa/Reporter/main/scripts/xornet-reporter.json"
 ```
 
 ## 🌐 OpenWRT
 
 This script updates an existing installation of Xornet Reporter. It will not work if you have not already installed Xornet Reporter.
 ```bash
-wget https://raw.githubusercontent.com/xornet-cloud/Reporter/main/scripts/update-mipsel.sh -O /tmp/update-mipsel.sh && chmod +x /tmp/update-mipsel.sh && /tmp/update-mipsel.sh && rm /tmp/update-mipsel.sh
+wget https://raw.githubusercontent.com/otiskujawa/Reporter/main/scripts/update-mipsel.sh -O /tmp/update-mipsel.sh && chmod +x /tmp/update-mipsel.sh && /tmp/update-mipsel.sh && rm /tmp/update-mipsel.sh
 ```
