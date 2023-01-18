@@ -1,17 +1,17 @@
 {
   "$schema": "https://raw.githubusercontent.com/ScoopInstaller/Scoop/master/schema.json",
-  "version": "0.17.2",
+  "version": "xornet-reporter%400.17.2",
   "description": "The app that sends your data to Xornet servers for monitoring",
   "license": "GPL-3.0-or-later",
   "homepage": "https://xornet.cloud/",
-  "url": "https://github.com/xornet-cloud/Reporter/releases/download/v0.17.2/xornet-reporter.exe",
+  "url": "https://github.com/xornet-cloud/Reporter/releases/download/vxornet-reporter%400.17.2/xornet-reporter.exe",
   "bin": "xornet-reporter.exe",
   "depends": [
     "nssm",
     "sudo"
   ],
   "autoupdate": {
-    "url": "https://github.com/xornet-cloud/Reporter/releases/download/v$version/xornet-reporter.exe",
+    "url": "https://github.com/otiskujawa/Reporter/releases/download/v$version/xornet-reporter.exe",
     "pre_install": "sudo nssm stop 'Xornet Reporter'"
   },
   "uninstaller": {
