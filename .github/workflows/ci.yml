@@ -148,7 +148,7 @@ jobs:
       - name: ⚡ Set Version Variable
         id: version
         run: >
-          echo "::set-output name=value::$(cargo pkgid | cut -d# -f2 | cut -d: -f2)"
+          echo "::set-output name=value::$(cargo pkgid | cut -d@ -f2 | cut -d: -f2)"
      
       # The release script that prepares a new Github release
       - name: ⚡ Create Release
