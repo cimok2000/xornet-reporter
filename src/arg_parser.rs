@@ -133,6 +133,19 @@ impl ArgParser {
             std::process::exit(1);
           }
         }
+        "-hs" | "--host" => {
+          if args.len() > index + 1 {
+            index += 1;
+            let hostname = &args[index];
+            ConfigManager::custom_backend_hostname(hostname)?;
+          } else {
+            println!(
+              "{}",
+              "Missing argument for option -h <hostname>, use -h for help".red()
+            );
+            std::process::exit(1);
+          }
+        }
         _ => {}
       }
       index += 1;

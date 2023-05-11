@@ -76,4 +76,11 @@ impl ConfigManager {
     ConfigManager::save_config(config.clone())?;
     Ok(config)
   }
+
+  pub fn custom_backend_hostname(hostname: &str) -> Result<()> {
+    let mut config = ConfigManager::load_config()?;
+    config.backend_hostname = hostname.to_string();
+    ConfigManager::save_config(config)?;
+    Ok(())
+  }
 }
